@@ -25,8 +25,10 @@ func TestNewMockedHttpClient(t *testing.T) {
 		WithRequestMatch(
 			GetUsersOrgsByUsername,
 			[][]byte{
-				MustMarshal(github.Organization{
-					Name: github.String("foobar123thisorgwasmocked"),
+				MustMarshal([]github.Organization{
+					{
+						Name: github.String("foobar123thisorgwasmocked"),
+					},
 				}),
 			},
 		),
