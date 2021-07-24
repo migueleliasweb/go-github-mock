@@ -63,6 +63,15 @@ func WithRequestMatch(
 	}
 }
 
+func WithRequestMatchHandler(
+	pattern EndpointPattern,
+	handler func(w http.ResponseWriter, r *http.Request),
+) MockBackendOption {
+	return func(router *mux.Router) {
+		router.HandleFunc(pattern, handler)
+	}
+}
+
 func MustMarshal(v interface{}) []byte {
 	b, err := json.Marshal(v)
 
