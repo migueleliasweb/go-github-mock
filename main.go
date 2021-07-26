@@ -102,8 +102,16 @@ func scrapeApiReference(url string) <-chan ScrapeResult {
 //	sr.HttpMethod = "get"
 //
 //	sr.EndpointPattern = "/repos/{owner}/{repo}/actions/artifacts"
+//	sr.EndpointPattern = "/repos/{owner}/{repo}/actions/artifacts/{artifact_id}"
+//	sr.EndpointPattern = "/orgs/{org}/actions/permissions/selected-actions"
+//	sr.EndpointPattern = "/repos/{owner}/{repo}/actions/runs/{run_id}/pending_deployments"
 func formatToGolangVarName(sr ScrapeResult) string {
-	epSplit := strings.Split(strings.ReplaceAll(sr.EndpointPattern, "-", "/"), "/")
+	pattern := strings.ReplaceAll(sr.EndpointPattern, "-", "/")
+
+	epSplit := strings.Split(
+		pattern,
+		"/",
+	)
 
 	result := ""
 
@@ -112,7 +120,11 @@ func formatToGolangVarName(sr ScrapeResult) string {
 			continue
 		}
 
-		result = result + strings.Title(part)
+		splitPart := strings.Split(part, "_")
+
+		for _, p := range splitPart {
+			result = result + strings.Title(p)
+		}
 	}
 
 	regex := regexp.MustCompile(`[a-z]+`)
@@ -123,11 +135,8 @@ func formatToGolangVarName(sr ScrapeResult) string {
 		}
 
 		if string(part[0]) == "{" {
-			result = result + "By" + strings.ReplaceAll(
-				strings.Title(regex.FindString(part)),
-				" ",
-				"",
-			)
+			result = result + "By" +
+				strings.Title(regex.FindString(part))
 		}
 	}
 
