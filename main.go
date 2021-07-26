@@ -145,10 +145,15 @@ func formatToGolangVarName(sr ScrapeResult) string {
 
 func formatToGolangVarNameAndValue(sr ScrapeResult) string {
 	return fmt.Sprintf(
-		"var %s EndpointPattern = \"%s\"\n",
+		`var %s EndpointPattern = EndpointPattern{
+	Pattern: "%s",
+	Method:  "%s",
+}
+`,
 		formatToGolangVarName(sr),
 		sr.EndpointPattern,
-	)
+		strings.ToUpper(sr.HttpMethod),
+	) + "\n"
 }
 
 func main() {

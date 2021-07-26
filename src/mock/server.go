@@ -1,7 +1,6 @@
 package mock
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -11,7 +10,10 @@ import (
 )
 
 // EndpointPattern models the GitHub's API endpoints
-type EndpointPattern = string
+type EndpointPattern struct {
+	Pattern string // eg. "/repos/{owner}/{repo}/actions/artifacts"
+	Method  string // "GET", "POST", "PATCH", etc
+}
 
 // MockBackendOption is used to configure the *mux.router
 // for the mocked backend
@@ -26,16 +28,10 @@ type FIFOReponseHandler struct {
 // ServeHTTP implementation of `http.Handler`
 func (srh *FIFOReponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(srh.Responses) == 0 {
-		http.Error(
-			w,
-			fmt.Sprintf(
-				"go-github-mock: not more mocks available for %s",
-				r.URL.Path,
-			),
-			400,
-		)
-
-		return
+		panic(fmt.Sprintf(
+			"go-github-mock: not more mocks available for %s",
+			r.URL.Path,
+		))
 	}
 
 	defer func() {
@@ -74,13 +70,13 @@ func (efrt *EnforceHostRoundTripper) RoundTrip(r *http.Request) (*http.Response,
 // 		},
 // 	)
 func WithRequestMatch(
-	pattern EndpointPattern,
+	ep EndpointPattern,
 	responsesFIFO [][]byte,
 ) MockBackendOption {
 	return func(router *mux.Router) {
-		router.Handle(pattern, &FIFOReponseHandler{
+		router.Handle(ep.Pattern, &FIFOReponseHandler{
 			Responses: responsesFIFO,
-		})
+		}).Methods(ep.Method)
 	}
 }
 
@@ -103,23 +99,12 @@ func WithRequestMatch(
 // 		},
 // 	)
 func WithRequestMatchHandler(
-	pattern EndpointPattern,
+	ep EndpointPattern,
 	handler func(w http.ResponseWriter, r *http.Request),
 ) MockBackendOption {
 	return func(router *mux.Router) {
-		router.HandleFunc(pattern, handler)
+		router.HandleFunc(ep.Pattern, handler).Methods(ep.Method)
 	}
-}
-
-// MustMarshal helper function
-func MustMarshal(v interface{}) []byte {
-	b, err := json.Marshal(v)
-
-	if err == nil {
-		return b
-	}
-
-	panic(err)
 }
 
 // NewMockedHttpClient creates and configures an http.Client that points to
@@ -166,7 +151,11 @@ func NewMockedHttpClient(options ...MockBackendOption) *http.Client {
 	router := mux.NewRouter()
 
 	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(fmt.Sprintf("mocked response not found for %s", r.URL.Path)))
+		WriteError(
+			w,
+			http.StatusNotFound,
+			fmt.Sprintf("mock response not found for %s", r.URL.Path),
+		)
 	})
 
 	for _, o := range options {

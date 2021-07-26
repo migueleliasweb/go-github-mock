@@ -2,11 +2,9 @@ package mock
 
 import (
 	"context"
-	"fmt"
-	"io"
-	"log"
 	"net/http"
-	"net/http/httptest"
+	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/google/go-github/v37/github"
@@ -93,29 +91,82 @@ func TestNewMockedHttpClient(t *testing.T) {
 	}
 }
 
-func TestExampleServer(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Hello, client")
-	}))
-	defer ts.Close()
+func TestMockErrors(t *testing.T) {
+	mockedHttpClient := NewMockedHttpClient(
+		WithRequestMatchHandler(
+			GetUsersByUsername,
+			func(w http.ResponseWriter, r *http.Request) {
+				WriteError(
+					w,
+					http.StatusInternalServerError,
+					"github went belly up or something",
+				)
+			},
+		),
+	)
+	c := github.NewClient(mockedHttpClient)
 
-	c := ts.Client()
+	ctx := context.Background()
 
-	c.Transport = &EnforceHostRoundTripper{
-		Host:                 ts.URL,
-		UpstreamRoundTripper: ts.Client().Transport,
+	user, _, userErr := c.Users.Get(ctx, "someUser")
+
+	if userV := reflect.ValueOf(user); !userV.IsZero() {
+		t.Errorf("user is %s, want nil", user)
 	}
 
-	res, err := c.Get("https://docs.github.com")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	greeting, err := io.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		log.Fatal(err)
+	if userErr == nil {
+		t.Fatal("user err is nil, want *github.ErrorResponse")
 	}
 
-	fmt.Printf("%s", greeting)
+	ghErr, ok := userErr.(*github.ErrorResponse)
+
+	if !ok {
+		t.Fatal("couldn't cast userErr to *github.ErrorResponse")
+	}
+
+	if ghErr.Message != "github went belly up or something" {
+		t.Errorf("user err is %s, want 'github went belly up or something'", userErr.Error())
+	}
+}
+
+func TestMocksNotConfiguredError(t *testing.T) {
+	mockedHttpClient := NewMockedHttpClient(
+		WithRequestMatch(
+			GetUsersByUsername,
+			[][]byte{
+				MustMarshal(github.User{
+					Name: github.String("foobar"),
+				}),
+			},
+		),
+	)
+	c := github.NewClient(mockedHttpClient)
+
+	ctx := context.Background()
+
+	user, _, userErr := c.Users.Get(ctx, "someUser")
+
+	if user == nil || user.Name == nil || *user.Name != "foobar" {
+		t.Fatalf("user name is %s, want foobar", user)
+	}
+
+	if userErr != nil {
+		t.Errorf("user err is %s, want nil", userErr.Error())
+	}
+
+	orgs, _, orgsErr := c.Organizations.List(
+		ctx,
+		"someuser",
+		&github.ListOptions{},
+	)
+
+	if len(orgs) > 0 {
+		t.Errorf("orgs len is %d, want 0", len(orgs))
+	}
+
+	if r, ok := orgsErr.(*github.ErrorResponse); ok {
+		if !strings.Contains(r.Message, "mock response not found for") {
+			t.Errorf("error message should contain 'mock response not found for'")
+		}
+	}
 }
