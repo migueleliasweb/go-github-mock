@@ -11,37 +11,41 @@ go get github.com/migueleliasweb/go-github-mock
 
 - Create mocks for successive calls for the same endpoint
 - Mock error returns
-- High level abstraction helps writing readabe unittests (see `WithRequestMatch`)
-- Lower level abstraction for advanced uses (see `WithRequestMatchHandler`)
+- High level abstraction helps writing readabe unittests (see `mock.WithRequestMatch`)
+- Lower level abstraction for advanced uses (see `mock.WithRequestMatchHandler`)
 
 # Example
+
+```
+import "github.com/migueleliasweb/go-github-mock/src/mock"
+```
 
 ## Multiple requests
 
 ```golang
-mockedHttpClient := NewMockedHttpClient(
-    WithRequestMatch(
-        GetUsersByUsername,
+mockedHttpClient := mock.NewMockedHttpClient(
+    mock.WithRequestMatch(
+        mock.GetUsersByUsername,
         [][]byte{
-            MustMarshal(github.User{
+            mock.MustMarshal(github.User{
                 Name: github.String("foobar"),
             }),
         },
     ),
-    WithRequestMatch(
-        GetUsersOrgsByUsername,
+    mock.WithRequestMatch(
+        mock.GetUsersOrgsByUsername,
         [][]byte{
-            MustMarshal([]github.Organization{
+            mock.MustMarshal([]github.Organization{
                 {
                     Name: github.String("foobar123thisorgwasmocked"),
                 },
             }),
         },
     ),
-    WithRequestMatchHandler(
-        GetOrgsProjectsByOrg,
+    mock.WithRequestMatchHandler(
+        mock.GetOrgsProjectsByOrg,
         http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-            w.Write(MustMarshal([]github.Project{
+            w.Write(mock.MustMarshal([]github.Project{
                 {
                     Name: github.String("mocked-proj-1"),
                 },
@@ -82,9 +86,9 @@ projs, _, projsErr := c.Organizations.ListProjects(
 ## Mocking errors from the API
 
 ```golang
-mockedHttpClient := NewMockedHttpClient(
-    WithRequestMatchHandler(
-        GetUsersByUsername,
+mockedHttpClient := mock.NewMockedHttpClient(
+    mock.WithRequestMatchHandler(
+        mock.GetUsersByUsername,
         http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
             WriteError(
                 w,
