@@ -32,7 +32,7 @@ func TestNewMockedHttpClient(t *testing.T) {
 		),
 		WithRequestMatchHandler(
 			GetOrgsProjectsByOrg,
-			func(w http.ResponseWriter, _ *http.Request) {
+			http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 				w.Write(MustMarshal([]github.Project{
 					{
 						Name: github.String("mocked-proj-1"),
@@ -41,7 +41,7 @@ func TestNewMockedHttpClient(t *testing.T) {
 						Name: github.String("mocked-proj-2"),
 					},
 				}))
-			},
+			}),
 		),
 	)
 	c := github.NewClient(mockedHttpClient)
@@ -95,13 +95,13 @@ func TestMockErrors(t *testing.T) {
 	mockedHttpClient := NewMockedHttpClient(
 		WithRequestMatchHandler(
 			GetUsersByUsername,
-			func(w http.ResponseWriter, r *http.Request) {
+			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				WriteError(
 					w,
 					http.StatusInternalServerError,
 					"github went belly up or something",
 				)
-			},
+			}),
 		),
 	)
 	c := github.NewClient(mockedHttpClient)

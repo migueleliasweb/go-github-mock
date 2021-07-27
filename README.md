@@ -12,7 +12,8 @@ A reuseable, and not overly verbose, way of writing the tests was reached after 
 
 - Create mocks for successive calls for the same endpoint
 - Mock error returns
-- High level abstraction helps writing readabe unittests
+- High level abstraction helps writing readabe unittests (see `WithRequestMatch`)
+- Lower level abstraction for advanced uses (see `WithRequestMatchHandler`)
 
 # Example
 
@@ -40,7 +41,7 @@ mockedHttpClient := NewMockedHttpClient(
     ),
     WithRequestMatchHandler(
         GetOrgsProjectsByOrg,
-        func(w http.ResponseWriter, _ *http.Request) {
+        http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
             w.Write(MustMarshal([]github.Project{
                 {
                     Name: github.String("mocked-proj-1"),
@@ -49,7 +50,7 @@ mockedHttpClient := NewMockedHttpClient(
                     Name: github.String("mocked-proj-2"),
                 },
             }))
-        },
+        }),
     ),
 )
 c := github.NewClient(mockedHttpClient)
@@ -85,13 +86,13 @@ projs, _, projsErr := c.Organizations.ListProjects(
 mockedHttpClient := NewMockedHttpClient(
     WithRequestMatchHandler(
         GetUsersByUsername,
-        func(w http.ResponseWriter, r *http.Request) {
+        http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
             WriteError(
                 w,
                 http.StatusInternalServerError,
                 "github went belly up or something",
             )
-        },
+        }),
     ),
 )
 c := github.NewClient(mockedHttpClient)
@@ -109,8 +110,6 @@ if userErr == nil {
 }
 
 ```
-
-## Advanced use with custom handlers
 
 # Thanks
 

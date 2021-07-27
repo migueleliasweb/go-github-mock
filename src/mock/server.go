@@ -100,10 +100,10 @@ func WithRequestMatch(
 // 	)
 func WithRequestMatchHandler(
 	ep EndpointPattern,
-	handler func(w http.ResponseWriter, r *http.Request),
+	handler http.Handler,
 ) MockBackendOption {
 	return func(router *mux.Router) {
-		router.HandleFunc(ep.Pattern, handler).Methods(ep.Method)
+		router.Handle(ep.Pattern, handler).Methods(ep.Method)
 	}
 }
 
