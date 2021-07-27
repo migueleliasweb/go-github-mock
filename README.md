@@ -3,7 +3,7 @@ A library to aid unittesting code that uses Golang's Github SDK
 
 # Why
 
-Some conversations started on [go-github#1800](https://github.com/google/go-github/issues/1800)) since it didn't provide an interface that could be easily reimplemented for unittests. After lots of conversations from the folks from [go-github](https://github.com/google/go-github) and quite a few PR ideas later, this style of testing was deemed not suitable to be part of the core SDK as it's not a feature of the API itself. Nonetheless, the ability of writing unittests for code that use the `go-github` package is critical. 
+Some conversations got started on [go-github#1800](https://github.com/google/go-github/issues/1800) since `go-github` didn't provide an interface that could be easily reimplemented for unittests. After lots of conversations from the folks from [go-github](https://github.com/google/go-github) and quite a few PR ideas later, this style of testing was deemed not suitable to be part of the core SDK as it's not a feature of the API itself. Nonetheless, the ability of writing unittests for code that uses the `go-github` package is critical. 
 
 A reuseable, and not overly verbose, way of writing the tests was reached after some more conversations (months down the line) and here we are.
 
