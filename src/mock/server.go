@@ -107,12 +107,12 @@ func WithRequestMatchHandler(
 	}
 }
 
-// NewMockedHttpClient creates and configures an http.Client that points to
+// NewMockedHTTPClient creates and configures an http.Client that points to
 // a mocked GitHub's backend API.
 //
 // Example:
 //
-// mockedHttpClient := NewMockedHttpClient(
+// mockedHTTPClient := NewMockedHTTPClient(
 // 		WithRequestMatch(
 // 			GetUsersByUsername,
 // 			[][]byte{
@@ -145,9 +145,9 @@ func WithRequestMatchHandler(
 // 			},
 // 		),
 // )
-
-// c := github.NewClient(mockedHttpClient)
-func NewMockedHttpClient(options ...MockBackendOption) *http.Client {
+//
+// c := github.NewClient(mockedHTTPClient)
+func NewMockedHTTPClient(options ...MockBackendOption) *http.Client {
 	router := mux.NewRouter()
 
 	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

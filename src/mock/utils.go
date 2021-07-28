@@ -7,7 +7,7 @@ import (
 	"github.com/google/go-github/v37/github"
 )
 
-// MustMarshal helper function
+// MustMarshal helper function that wraps json.Marshal
 func MustMarshal(v interface{}) []byte {
 	b, err := json.Marshal(v)
 
@@ -18,6 +18,7 @@ func MustMarshal(v interface{}) []byte {
 	panic(err)
 }
 
+// WriteError helper function to write errors to HTTP handlers
 func WriteError(
 	w http.ResponseWriter,
 	httpStatus int,

@@ -1,4 +1,6 @@
 # go-github-mock
+[![Go Reference](https://pkg.go.dev/badge/github.com/migueleliasweb/go-github-mock.svg)](https://pkg.go.dev/github.com/migueleliasweb/go-github-mock) [![Go Report Card](https://goreportcard.com/badge/github.com/migueleliasweb/go-github-mock)](https://goreportcard.com/report/github.com/migueleliasweb/go-github-mock)
+
 A library to aid unittesting code that uses Golang's Github SDK
 
 # Installation
@@ -23,7 +25,7 @@ import "github.com/migueleliasweb/go-github-mock/src/mock"
 ## Multiple requests
 
 ```golang
-mockedHttpClient := mock.NewMockedHttpClient(
+mockedHTTPClient := mock.NewMockedHTTPClient(
     mock.WithRequestMatch(
         mock.GetUsersByUsername,
         [][]byte{
@@ -56,7 +58,7 @@ mockedHttpClient := mock.NewMockedHttpClient(
         }),
     ),
 )
-c := github.NewClient(mockedHttpClient)
+c := github.NewClient(mockedHTTPClient)
 
 ctx := context.Background()
 
@@ -86,7 +88,7 @@ projs, _, projsErr := c.Organizations.ListProjects(
 ## Mocking errors from the API
 
 ```golang
-mockedHttpClient := mock.NewMockedHttpClient(
+mockedHTTPClient := mock.NewMockedHTTPClient(
     mock.WithRequestMatchHandler(
         mock.GetUsersByUsername,
         http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -98,7 +100,7 @@ mockedHttpClient := mock.NewMockedHttpClient(
         }),
     ),
 )
-c := github.NewClient(mockedHttpClient)
+c := github.NewClient(mockedHTTPClient)
 
 ctx := context.Background()
 

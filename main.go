@@ -24,7 +24,7 @@ const OUTPUT_FILE_HEADER = `package mock
 const OUTPUT_FILEPATH = "src/mock/endpointpattern.go"
 
 type ScrapeResult struct {
-	HttpMethod      string
+	HTTPMethod      string
 	EndpointPattern string
 }
 
@@ -82,7 +82,7 @@ func scrapeApiReference(url string) <-chan ScrapeResult {
 				)
 
 				scrapedEndpoints <- ScrapeResult{
-					HttpMethod:      combinedInnerTextSplit[0],
+					HTTPMethod:      combinedInnerTextSplit[0],
 					EndpointPattern: combinedInnerTextSplit[1],
 				}
 			},
@@ -99,7 +99,7 @@ func scrapeApiReference(url string) <-chan ScrapeResult {
 //
 // Input:
 //
-//	sr.HttpMethod = "get"
+//	sr.HTTPMethod = "get"
 //
 //	sr.EndpointPattern = "/repos/{owner}/{repo}/actions/artifacts"
 //	sr.EndpointPattern = "/repos/{owner}/{repo}/actions/artifacts/{artifact_id}"
@@ -140,7 +140,7 @@ func formatToGolangVarName(sr ScrapeResult) string {
 		}
 	}
 
-	return strings.Title(sr.HttpMethod) + result
+	return strings.Title(sr.HTTPMethod) + result
 }
 
 func formatToGolangVarNameAndValue(sr ScrapeResult) string {
@@ -152,7 +152,7 @@ func formatToGolangVarNameAndValue(sr ScrapeResult) string {
 `,
 		formatToGolangVarName(sr),
 		sr.EndpointPattern,
-		strings.ToUpper(sr.HttpMethod),
+		strings.ToUpper(sr.HTTPMethod),
 	) + "\n"
 }
 

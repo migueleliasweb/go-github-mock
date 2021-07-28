@@ -10,8 +10,8 @@ import (
 	"github.com/google/go-github/v37/github"
 )
 
-func TestNewMockedHttpClient(t *testing.T) {
-	mockedHttpClient := NewMockedHttpClient(
+func TestNewMockedHTTPClient(t *testing.T) {
+	mockedHTTPClient := NewMockedHTTPClient(
 		WithRequestMatch(
 			GetUsersByUsername,
 			[][]byte{
@@ -44,7 +44,7 @@ func TestNewMockedHttpClient(t *testing.T) {
 			}),
 		),
 	)
-	c := github.NewClient(mockedHttpClient)
+	c := github.NewClient(mockedHTTPClient)
 
 	ctx := context.Background()
 
@@ -92,7 +92,7 @@ func TestNewMockedHttpClient(t *testing.T) {
 }
 
 func TestMockErrors(t *testing.T) {
-	mockedHttpClient := NewMockedHttpClient(
+	mockedHTTPClient := NewMockedHTTPClient(
 		WithRequestMatchHandler(
 			GetUsersByUsername,
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -104,7 +104,7 @@ func TestMockErrors(t *testing.T) {
 			}),
 		),
 	)
-	c := github.NewClient(mockedHttpClient)
+	c := github.NewClient(mockedHTTPClient)
 
 	ctx := context.Background()
 
@@ -130,7 +130,7 @@ func TestMockErrors(t *testing.T) {
 }
 
 func TestMocksNotConfiguredError(t *testing.T) {
-	mockedHttpClient := NewMockedHttpClient(
+	mockedHTTPClient := NewMockedHTTPClient(
 		WithRequestMatch(
 			GetUsersByUsername,
 			[][]byte{
@@ -140,7 +140,7 @@ func TestMocksNotConfiguredError(t *testing.T) {
 			},
 		),
 	)
-	c := github.NewClient(mockedHttpClient)
+	c := github.NewClient(mockedHTTPClient)
 
 	ctx := context.Background()
 
