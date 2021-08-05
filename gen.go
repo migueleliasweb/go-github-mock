@@ -12,6 +12,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+//go:generate go run gen.go
+
 const BASE_URL = "https://docs.github.com"
 
 const GITHUB_REST_API_URL = "https://docs.github.com/en/rest"

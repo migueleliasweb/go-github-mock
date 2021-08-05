@@ -1,0 +1,27 @@
+name: runtests
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        go-version: [1.16.x]
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+
+    - uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - uses: actions/checkout@v2
+
+    - name: Run go fmt
+      run: diff -u <(echo -n) <(gofmt -d -s .)
+
+    - name: Run go vet
+      run: go vet ./...
+
+    - name: Run go test
+      run: go test -v -race -coverprofile coverage.txt -covermode atomic ./...
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
