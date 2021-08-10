@@ -2,6 +2,7 @@ package mock
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"reflect"
 	"strings"
@@ -169,4 +170,60 @@ func TestMocksNotConfiguredError(t *testing.T) {
 			t.Errorf("error message should contain 'mock response not found for'")
 		}
 	}
+}
+
+func ListAllReposByOrg(ctx context.Context, org string, client *github.Client) ([]*github.Repository, error) {
+	opt := &github.RepositoryListByOrgOptions{
+		ListOptions: github.ListOptions{PerPage: 2},
+	}
+
+	var allRepos []*github.Repository
+	for {
+		repos, resp, err := client.Repositories.ListByOrg(ctx, org, opt)
+		if err != nil {
+			return nil, err
+		}
+		allRepos = append(allRepos, repos...)
+		if resp.NextPage == 0 {
+			break
+		}
+		opt.Page = resp.NextPage
+	}
+
+	return allRepos, nil
+}
+
+func TestMocksPagination(t *testing.T) {
+	mockedHTTPClient := NewMockedHTTPClient(
+		WithRequestMatchPages(
+			GetOrgsReposByOrg,
+			[][]byte{
+				MustMarshal([]github.Repository{
+					{
+						Name: github.String("repo-A-on-first-page"),
+					},
+					{
+						Name: github.String("repo-B-on-first-page"),
+					},
+				}),
+				MustMarshal([]github.Repository{
+					{
+						Name: github.String("repo-C-on-second-page"),
+					},
+					{
+						Name: github.String("repo-D-on-second-page"),
+					},
+				}),
+			},
+		),
+	)
+
+	c := github.NewClient(mockedHTTPClient)
+
+	ctx := context.Background()
+
+	repos, err := ListAllReposByOrg(ctx, "foobar", c)
+
+	fmt.Println(err)
+	fmt.Println(repos)
 }
