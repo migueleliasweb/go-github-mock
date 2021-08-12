@@ -2462,6 +2462,26 @@ var GetUsersReposByUsername EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var GetReposAutolinksByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/autolinks",
+	Method:  "GET",
+}
+
+var PostReposAutolinksByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/autolinks",
+	Method:  "POST",
+}
+
+var GetReposAutolinksByOwnerByRepoByAutolink EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/autolinks/{autolink_id}",
+	Method:  "GET",
+}
+
+var DeleteReposAutolinksByOwnerByRepoByAutolink EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/autolinks/{autolink_id}",
+	Method:  "DELETE",
+}
+
 var GetReposBranchesByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/branches",
 	Method:  "GET",
@@ -3676,4 +3696,3 @@ var GetUsersGpgKeysByUsername EndpointPattern = EndpointPattern{
 	Pattern: "/users/{username}/gpg_keys",
 	Method:  "GET",
 }
-
