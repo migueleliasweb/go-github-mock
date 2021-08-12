@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os/exec"
 	"regexp"
 	"strings"
 
@@ -174,4 +175,8 @@ func main() {
 		buf.Bytes(),
 		0755,
 	)
+
+	if err := exec.Command("gofmt", "-w", "src/mock/endpointpattern.go").Run(); err != nil {
+		log.Fatal(fmt.Sprintf("error executing gofmt: %s", err.Error()))
+	}
 }

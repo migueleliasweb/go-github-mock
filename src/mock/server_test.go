@@ -170,3 +170,68 @@ func TestMocksNotConfiguredError(t *testing.T) {
 		}
 	}
 }
+
+func TestMocksPaginationAllPages(t *testing.T) {
+	mockedHTTPClient := NewMockedHTTPClient(
+		WithRequestMatchPages(
+			GetOrgsReposByOrg,
+			[][]byte{
+				MustMarshal([]github.Repository{
+					{
+						Name: github.String("repo-A-on-first-page"),
+					},
+					{
+						Name: github.String("repo-B-on-first-page"),
+					},
+				}),
+				MustMarshal([]github.Repository{
+					{
+						Name: github.String("repo-C-on-second-page"),
+					},
+					{
+						Name: github.String("repo-D-on-second-page"),
+					},
+				}),
+			},
+		),
+	)
+
+	c := github.NewClient(mockedHTTPClient)
+
+	ctx := context.Background()
+
+	opt := &github.RepositoryListByOrgOptions{
+		ListOptions: github.ListOptions{
+			// in fact, the perPage option is ignored
+			// but this would be present in production code
+			PerPage: 2,
+		},
+	}
+
+	var allRepos []*github.Repository
+
+	for {
+		repos, resp, listErr := c.Repositories.ListByOrg(ctx, "foobar", opt)
+
+		if listErr != nil {
+			t.Errorf("error listing repositories: %s", listErr.Error())
+		}
+
+		// matches mock definition
+		if len(repos) != 2 {
+			t.Errorf("len(repos) is %d, want 2", len(repos))
+		}
+
+		allRepos = append(allRepos, repos...)
+
+		if resp.NextPage == 0 {
+			break
+		}
+
+		opt.Page = resp.NextPage
+	}
+
+	if len(allRepos) != 4 {
+		t.Errorf("len(allRepos) is %d, want 4", len(allRepos))
+	}
+}
