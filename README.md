@@ -116,6 +116,69 @@ if userErr == nil {
 
 ```
 
+## Mocking with pagination
+
+```golang
+mockedHTTPClient := NewMockedHTTPClient(
+    WithRequestMatchPages(
+        GetOrgsReposByOrg,
+        [][]byte{
+            MustMarshal([]github.Repository{
+                {
+                    Name: github.String("repo-A-on-first-page"),
+                },
+                {
+                    Name: github.String("repo-B-on-first-page"),
+                },
+            }),
+            MustMarshal([]github.Repository{
+                {
+                    Name: github.String("repo-C-on-second-page"),
+                },
+                {
+                    Name: github.String("repo-D-on-second-page"),
+                },
+            }),
+        },
+    ),
+)
+
+c := github.NewClient(mockedHTTPClient)
+
+ctx := context.Background()
+
+opt := &github.RepositoryListByOrgOptions{
+    ListOptions: github.ListOptions{
+        // in fact, the perPage option is ignored my the mocks
+        // but this would be present in production code
+        PerPage: 2,
+    },
+}
+
+var allRepos []*github.Repository
+
+for {
+    repos, resp, listErr := c.Repositories.ListByOrg(ctx, "foobar", opt)
+
+    if listErr != nil {
+        t.Errorf("error listing repositories: %s", listErr.Error())
+    }
+
+    // len(repos) == 2
+
+    allRepos = append(allRepos, repos...)
+
+    if resp.NextPage == 0 {
+        break
+    }
+
+    opt.Page = resp.NextPage
+}
+
+// matches the mock definitions (len(page[0]) + len(page[1])
+// len(allRepos) == 4
+```
+
 # Why
 
 Some conversations got started on [go-github#1800](https://github.com/google/go-github/issues/1800) since `go-github` didn't provide an interface that could be easily reimplemented for unittests. After lots of conversations from the folks from [go-github](https://github.com/google/go-github) and quite a few PR ideas later, this style of testing was deemed not suitable to be part of the core SDK as it's not a feature of the API itself. Nonetheless, the ability of writing unittests for code that uses the `go-github` package is critical. 
