@@ -9,6 +9,8 @@ import (
 // WithRequestMatchHandler implements a request callback
 // for the given `pattern`.
 //
+// For custom implementations, this handler usage is encouraged.
+//
 // Example:
 //
 // 	WithRequestMatchHandler(
@@ -36,6 +38,8 @@ func WithRequestMatchHandler(
 // WithRequestMatch implements a simple FIFO for requests
 // of the given `pattern`.
 //
+// Once all responses have been used, it shall panic()!
+//
 // Example:
 //
 // 	WithRequestMatch(
@@ -57,7 +61,37 @@ func WithRequestMatch(
 	}
 }
 
-// WithRequestMatchPages
+// WithRequestMatchPages honors pagination directives.
+//
+// Each page can be called multiple times.
+//
+// The order in which the pages are requested doesn't matter
+//
+// E.g.
+//
+// 		mockedHTTPClient := NewMockedHTTPClient(
+// 			WithRequestMatchPages(
+// 				GetOrgsReposByOrg,
+// 				[][]byte{
+// 					MustMarshal([]github.Repository{
+// 						{
+// 							Name: github.String("repo-A-on-first-page"),
+// 						},
+// 						{
+// 							Name: github.String("repo-B-on-first-page"),
+// 						},
+// 					}),
+// 					MustMarshal([]github.Repository{
+// 						{
+// 							Name: github.String("repo-C-on-second-page"),
+// 						},
+// 						{
+// 							Name: github.String("repo-D-on-second-page"),
+// 						},
+// 					}),
+// 				},
+// 			),
+// 		)
 func WithRequestMatchPages(
 	ep EndpointPattern,
 	pages [][]byte,

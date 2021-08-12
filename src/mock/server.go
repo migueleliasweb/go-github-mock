@@ -23,6 +23,8 @@ type MockBackendOption func(*mux.Router)
 
 // FIFOReponseHandler handler implementation that
 // responds to the HTTP requests following a FIFO approach.
+//
+// Once all available `Responses` have been used, this handler will panic()!
 type FIFOReponseHandler struct {
 	Responses    [][]byte
 	CurrentIndex int
@@ -45,7 +47,7 @@ func (srh *FIFOReponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
 // PaginatedReponseHandler handler implementation that
-// responds to the HTTP requests obeying the pagination headers
+// responds to the HTTP requests and honors the pagination headers
 //
 //  Header e.g: `Link: <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15>; rel="next",
 //   <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=34>; rel="last",
@@ -70,7 +72,7 @@ func (prh *PaginatedReponseHandler) getCurrentPage(r *http.Request) int {
 		return page
 	}
 
-	// this should never happen
+	// this should never happen as the request is being made by the SDK
 	panic(fmt.Sprintf("invalid page: %s", strPage))
 }
 
@@ -85,6 +87,8 @@ func (prh *PaginatedReponseHandler) generateLinkHeader(
 	buf.WriteString(fmt.Sprintf(`<?page=%d>; rel="last",`, lastPage))
 
 	if currentPage < lastPage {
+		// when resp.NextPage == 0, it means no more pages
+		// which is basically as not setting it in the response
 		buf.WriteString(fmt.Sprintf(`<?page=%d>; rel="next",`, currentPage+1))
 	}
 
