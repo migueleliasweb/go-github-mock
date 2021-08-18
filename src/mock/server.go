@@ -32,6 +32,9 @@ type FIFOReponseHandler struct {
 
 // ServeHTTP implementation of `http.Handler`
 func (srh *FIFOReponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if len(srh.Responses) == 0 {
+		return
+	}
 	if srh.CurrentIndex > len(srh.Responses) {
 		panic(fmt.Sprintf(
 			"go-github-mock: no more mocks available for %s",
@@ -102,7 +105,9 @@ func (prh *PaginatedReponseHandler) generateLinkHeader(
 // ServeHTTP implementation of `http.Handler`
 func (prh *PaginatedReponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	prh.generateLinkHeader(w, r)
-	w.Write(prh.ResponsePages[prh.getCurrentPage(r)-1])
+	if len(prh.ResponsePages) != 0 {
+		w.Write(prh.ResponsePages[prh.getCurrentPage(r)-1])
+	}
 }
 
 // EnforceHostRoundTripper rewrites all requests with the given `Host`.

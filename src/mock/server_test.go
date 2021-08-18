@@ -235,3 +235,44 @@ func TestMocksPaginationAllPages(t *testing.T) {
 		t.Errorf("len(allRepos) is %d, want 4", len(allRepos))
 	}
 }
+
+func TestMocksEmptyResult(t *testing.T) {
+	mockedHTTPClient := NewMockedHTTPClient(
+		WithRequestMatch(
+			GetReposReleasesByOwnerByRepo,
+			[][]byte{},
+		),
+		WithRequestMatchPages(
+			GetReposCommitsByOwnerByRepo,
+			[][]byte{},
+		),
+	)
+	c := github.NewClient(mockedHTTPClient)
+
+	ctx := context.Background()
+
+	releases, _, releaseErr := c.Repositories.ListReleases(ctx, "thecompany", "therepo", &github.ListOptions{})
+
+	if releases != nil {
+		t.Fatalf("releases is %s, want nil", releases)
+	}
+
+	if releaseErr != nil {
+		t.Errorf("releases err is %s, want nil", releaseErr.Error())
+	}
+
+	commits, _, orgsErr := c.Repositories.ListCommits(
+		ctx,
+		"thecompany",
+		"repo",
+		&github.CommitsListOptions{},
+	)
+
+	if len(commits) != 0 {
+		t.Errorf("commits len is %d want 0", len(commits))
+	}
+
+	if orgsErr != nil {
+		t.Errorf("orgs err is %s, want nil", orgsErr.Error())
+	}
+}
