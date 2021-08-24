@@ -235,3 +235,48 @@ func TestMocksPaginationAllPages(t *testing.T) {
 		t.Errorf("len(allRepos) is %d, want 4", len(allRepos))
 	}
 }
+
+func TestEmptyArrayResult(t *testing.T) {
+	mockedHTTPClient := NewMockedHTTPClient(
+		WithRequestMatch(
+			GetReposIssuesByOwnerByRepo,
+			[][]byte{
+				MustMarshal([]github.Issue{
+					{
+						ID:    github.Int64(123),
+						Title: github.String("Issue 1"),
+					},
+					{
+						ID:    github.Int64(456),
+						Title: github.String("Issue 2"),
+					},
+				}),
+				MustMarshal([]github.Issue{}),
+			},
+		),
+	)
+
+	c := github.NewClient(mockedHTTPClient)
+
+	ctx := context.Background()
+
+	issues1, _, repo1Err := c.Issues.ListByRepo(ctx, "owner1", "repo1", &github.IssueListByRepoOptions{})
+
+	if repo1Err != nil {
+		t.Errorf("error listing repository1 issues: %s", repo1Err.Error())
+	}
+
+	if len(issues1) != 2 {
+		t.Errorf("len(issues1) is %d, want 2", len(issues1))
+	}
+
+	issues2, _, repo2Err := c.Issues.ListByRepo(ctx, "owner1", "repo2", &github.IssueListByRepoOptions{})
+
+	if repo2Err != nil {
+		t.Errorf("error listing repository2 issues: %s", repo2Err.Error())
+	}
+
+	if len(issues2) != 0 {
+		t.Errorf("len(issues2) is %d, want 0", len(issues2))
+	}
+}
