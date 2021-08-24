@@ -85,6 +85,43 @@ projs, _, projsErr := c.Organizations.ListProjects(
 
 ```
 
+## Returning empty results
+
+```golang
+mockedHTTPClient := NewMockedHTTPClient(
+    WithRequestMatch(
+        GetReposIssuesByOwnerByRepo,
+        [][]byte{
+            MustMarshal([]github.Issue{
+                {
+                    ID:    github.Int64(123),
+                    Title: github.String("Issue 1"),
+                },
+                {
+                    ID:    github.Int64(456),
+                    Title: github.String("Issue 2"),
+                },
+            }),
+            MustMarshal([]github.Issue{}),
+        },
+    ),
+)
+
+c := github.NewClient(mockedHTTPClient)
+
+ctx := context.Background()
+
+issues1, _, repo1Err := c.Issues.ListByRepo(ctx, "owner1", "repo1", &github.IssueListByRepoOptions{})
+
+// len(issues1) == 2
+// repo1Err == nil
+
+issues2, _, repo2Err := c.Issues.ListByRepo(ctx, "owner1", "repo2", &github.IssueListByRepoOptions{})
+
+// len(issues1) == 0
+// repo1Err == nil
+```
+
 ## Mocking errors from the API
 
 ```golang
@@ -175,7 +212,7 @@ for {
     opt.Page = resp.NextPage
 }
 
-// matches the mock definitions (len(page[0]) + len(page[1])
+// matches the mock definitions len(page[0]) + len(page[1])
 // len(allRepos) == 4
 ```
 
