@@ -52,13 +52,17 @@ func WithRequestMatchHandler(
 // 	)
 func WithRequestMatch(
 	ep EndpointPattern,
-	responsesFIFO [][]byte,
+	responsesFIFO ...interface{},
 ) MockBackendOption {
-	return func(router *mux.Router) {
-		router.Handle(ep.Pattern, &FIFOReponseHandler{
-			Responses: responsesFIFO,
-		}).Methods(ep.Method)
+	responses := [][]byte{}
+
+	for _, r := range responsesFIFO {
+		responses = append(responses, MustMarshal(r))
 	}
+
+	return WithRequestMatchHandler(ep, &FIFOReponseHandler{
+		Responses: responses,
+	})
 }
 
 // WithRequestMatchPages honors pagination directives.
@@ -94,11 +98,15 @@ func WithRequestMatch(
 // 		)
 func WithRequestMatchPages(
 	ep EndpointPattern,
-	pages [][]byte,
+	pages ...interface{},
 ) MockBackendOption {
-	return func(router *mux.Router) {
-		router.Handle(ep.Pattern, &PaginatedReponseHandler{
-			ResponsePages: pages,
-		}).Methods(ep.Method)
+	p := [][]byte{}
+
+	for _, r := range pages {
+		p = append(p, MustMarshal(r))
 	}
+
+	return WithRequestMatchHandler(ep, &PaginatedReponseHandler{
+		ResponsePages: p,
+	})
 }
