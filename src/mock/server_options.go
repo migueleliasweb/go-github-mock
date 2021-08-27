@@ -44,10 +44,8 @@ func WithRequestMatchHandler(
 //
 // 	WithRequestMatch(
 // 		GetUsersByUsername,
-// 		[][]byte{
-// 			MustMarshal(github.User{
-// 				Name: github.String("foobar"),
-// 			}),
+// 		github.User{
+// 			Name: github.String("foobar"),
 // 		},
 // 	)
 func WithRequestMatch(
@@ -67,32 +65,28 @@ func WithRequestMatch(
 
 // WithRequestMatchPages honors pagination directives.
 //
-// Each page can be called multiple times.
-//
-// The order in which the pages are requested doesn't matter
+// Pages can be requested in any order and each page can be called multiple times.
 //
 // E.g.
 //
 // 		mockedHTTPClient := NewMockedHTTPClient(
 // 			WithRequestMatchPages(
 // 				GetOrgsReposByOrg,
-// 				[][]byte{
-// 					MustMarshal([]github.Repository{
-// 						{
-// 							Name: github.String("repo-A-on-first-page"),
-// 						},
-// 						{
-// 							Name: github.String("repo-B-on-first-page"),
-// 						},
-// 					}),
-// 					MustMarshal([]github.Repository{
-// 						{
-// 							Name: github.String("repo-C-on-second-page"),
-// 						},
-// 						{
-// 							Name: github.String("repo-D-on-second-page"),
-// 						},
-// 					}),
+// 				[]github.Repository{
+// 					{
+// 						Name: github.String("repo-A-on-first-page"),
+// 					},
+// 					{
+// 						Name: github.String("repo-B-on-first-page"),
+// 					},
+// 				},
+// 				[]github.Repository{
+// 					{
+// 						Name: github.String("repo-C-on-second-page"),
+// 					},
+// 					{
+// 						Name: github.String("repo-D-on-second-page"),
+// 					},
 // 				},
 // 			),
 // 		)
