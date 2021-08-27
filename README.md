@@ -17,9 +17,10 @@ go get github.com/migueleliasweb/go-github-mock
 - High level abstraction helps writing readabe unittests (see `mock.WithRequestMatch`)
 - Lower level abstraction for advanced uses (see `mock.WithRequestMatchHandler`)
 
-# v0.0.3 Breaking changes
+# Breaking changes
 
-From `v0.0.3` the API for the server options have beem simplified, causing breaking changes.
+- `v0.0.3` the API for the server options have beem simplified
+- `v0.0.4` fixes to the gen script caused multiple url matches to change
 
 # Example
 
