@@ -14,20 +14,16 @@ func TestNewMockedHTTPClient(t *testing.T) {
 	mockedHTTPClient := NewMockedHTTPClient(
 		WithRequestMatch(
 			GetUsersByUsername,
-			[][]byte{
-				MustMarshal(github.User{
-					Name: github.String("foobar"),
-				}),
+			github.User{
+				Name: github.String("foobar"),
 			},
 		),
 		WithRequestMatch(
 			GetUsersOrgsByUsername,
-			[][]byte{
-				MustMarshal([]github.Organization{
-					{
-						Name: github.String("foobar123thisorgwasmocked"),
-					},
-				}),
+			[]github.Organization{
+				{
+					Name: github.String("foobar123thisorgwasmocked"),
+				},
 			},
 		),
 		WithRequestMatchHandler(
@@ -133,10 +129,8 @@ func TestMocksNotConfiguredError(t *testing.T) {
 	mockedHTTPClient := NewMockedHTTPClient(
 		WithRequestMatch(
 			GetUsersByUsername,
-			[][]byte{
-				MustMarshal(github.User{
-					Name: github.String("foobar"),
-				}),
+			github.User{
+				Name: github.String("foobar"),
 			},
 		),
 	)
@@ -175,23 +169,21 @@ func TestMocksPaginationAllPages(t *testing.T) {
 	mockedHTTPClient := NewMockedHTTPClient(
 		WithRequestMatchPages(
 			GetOrgsReposByOrg,
-			[][]byte{
-				MustMarshal([]github.Repository{
-					{
-						Name: github.String("repo-A-on-first-page"),
-					},
-					{
-						Name: github.String("repo-B-on-first-page"),
-					},
-				}),
-				MustMarshal([]github.Repository{
-					{
-						Name: github.String("repo-C-on-second-page"),
-					},
-					{
-						Name: github.String("repo-D-on-second-page"),
-					},
-				}),
+			[]github.Repository{
+				{
+					Name: github.String("repo-A-on-first-page"),
+				},
+				{
+					Name: github.String("repo-B-on-first-page"),
+				},
+			},
+			[]github.Repository{
+				{
+					Name: github.String("repo-C-on-second-page"),
+				},
+				{
+					Name: github.String("repo-D-on-second-page"),
+				},
 			},
 		),
 	)
@@ -240,19 +232,17 @@ func TestEmptyArrayResult(t *testing.T) {
 	mockedHTTPClient := NewMockedHTTPClient(
 		WithRequestMatch(
 			GetReposIssuesByOwnerByRepo,
-			[][]byte{
-				MustMarshal([]github.Issue{
-					{
-						ID:    github.Int64(123),
-						Title: github.String("Issue 1"),
-					},
-					{
-						ID:    github.Int64(456),
-						Title: github.String("Issue 2"),
-					},
-				}),
-				MustMarshal([]github.Issue{}),
+			[]github.Issue{
+				{
+					ID:    github.Int64(123),
+					Title: github.String("Issue 1"),
+				},
+				{
+					ID:    github.Int64(456),
+					Title: github.String("Issue 2"),
+				},
 			},
+			[]github.Issue{},
 		),
 	)
 

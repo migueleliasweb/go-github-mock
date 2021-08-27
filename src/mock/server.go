@@ -128,20 +128,16 @@ func (efrt *EnforceHostRoundTripper) RoundTrip(r *http.Request) (*http.Response,
 // mockedHTTPClient := NewMockedHTTPClient(
 // 		WithRequestMatch(
 // 			GetUsersByUsername,
-// 			[][]byte{
-// 				MustMarshal(github.User{
-// 					Name: github.String("foobar"),
-// 				}),
+// 			github.User{
+// 				Name: github.String("foobar"),
 // 			},
 // 		),
 // 		WithRequestMatch(
 // 			GetUsersOrgsByUsername,
-// 			[][]byte{
-// 				MustMarshal([]github.Organization{
-// 					{
-// 						Name: github.String("foobar123thisorgwasmocked"),
-// 					},
-// 				}),
+// 			[]github.Organization{
+// 				{
+// 					Name: github.String("foobar123thisorgwasmocked"),
+// 				},
 // 			},
 // 		),
 // 		WithRequestMatchHandler(

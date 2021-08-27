@@ -44,61 +44,63 @@ func WithRequestMatchHandler(
 //
 // 	WithRequestMatch(
 // 		GetUsersByUsername,
-// 		[][]byte{
-// 			MustMarshal(github.User{
-// 				Name: github.String("foobar"),
-// 			}),
+// 		github.User{
+// 			Name: github.String("foobar"),
 // 		},
 // 	)
 func WithRequestMatch(
 	ep EndpointPattern,
-	responsesFIFO [][]byte,
+	responsesFIFO ...interface{},
 ) MockBackendOption {
-	return func(router *mux.Router) {
-		router.Handle(ep.Pattern, &FIFOReponseHandler{
-			Responses: responsesFIFO,
-		}).Methods(ep.Method)
+	responses := [][]byte{}
+
+	for _, r := range responsesFIFO {
+		responses = append(responses, MustMarshal(r))
 	}
+
+	return WithRequestMatchHandler(ep, &FIFOReponseHandler{
+		Responses: responses,
+	})
 }
 
 // WithRequestMatchPages honors pagination directives.
 //
-// Each page can be called multiple times.
-//
-// The order in which the pages are requested doesn't matter
+// Pages can be requested in any order and each page can be called multiple times.
 //
 // E.g.
 //
 // 		mockedHTTPClient := NewMockedHTTPClient(
 // 			WithRequestMatchPages(
 // 				GetOrgsReposByOrg,
-// 				[][]byte{
-// 					MustMarshal([]github.Repository{
-// 						{
-// 							Name: github.String("repo-A-on-first-page"),
-// 						},
-// 						{
-// 							Name: github.String("repo-B-on-first-page"),
-// 						},
-// 					}),
-// 					MustMarshal([]github.Repository{
-// 						{
-// 							Name: github.String("repo-C-on-second-page"),
-// 						},
-// 						{
-// 							Name: github.String("repo-D-on-second-page"),
-// 						},
-// 					}),
+// 				[]github.Repository{
+// 					{
+// 						Name: github.String("repo-A-on-first-page"),
+// 					},
+// 					{
+// 						Name: github.String("repo-B-on-first-page"),
+// 					},
+// 				},
+// 				[]github.Repository{
+// 					{
+// 						Name: github.String("repo-C-on-second-page"),
+// 					},
+// 					{
+// 						Name: github.String("repo-D-on-second-page"),
+// 					},
 // 				},
 // 			),
 // 		)
 func WithRequestMatchPages(
 	ep EndpointPattern,
-	pages [][]byte,
+	pages ...interface{},
 ) MockBackendOption {
-	return func(router *mux.Router) {
-		router.Handle(ep.Pattern, &PaginatedReponseHandler{
-			ResponsePages: pages,
-		}).Methods(ep.Method)
+	p := [][]byte{}
+
+	for _, r := range pages {
+		p = append(p, MustMarshal(r))
 	}
+
+	return WithRequestMatchHandler(ep, &PaginatedReponseHandler{
+		ResponsePages: p,
+	})
 }
