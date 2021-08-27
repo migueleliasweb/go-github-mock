@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
-	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -97,16 +96,8 @@ func scrapeApiReference(url string) <-chan ScrapeResult {
 
 // formatToGolangVarName generated the proper golang variable name
 // given a endpoint format from the API
-//
-// Input:
-//
-//	sr.HTTPMethod = "get"
-//
-//	sr.EndpointPattern = "/repos/{owner}/{repo}/actions/artifacts"
-//	sr.EndpointPattern = "/repos/{owner}/{repo}/actions/artifacts/{artifact_id}"
-//	sr.EndpointPattern = "/orgs/{org}/actions/permissions/selected-actions"
-//	sr.EndpointPattern = "/repos/{owner}/{repo}/actions/runs/{run_id}/pending_deployments"
 func formatToGolangVarName(sr ScrapeResult) string {
+	// handles urls with dashes in them
 	pattern := strings.ReplaceAll(sr.EndpointPattern, "-", "/")
 
 	epSplit := strings.Split(
@@ -116,6 +107,7 @@ func formatToGolangVarName(sr ScrapeResult) string {
 
 	result := ""
 
+	// handle the first part of the variable name
 	for _, part := range epSplit {
 		if len(part) < 1 || string(part[0]) == "{" {
 			continue
@@ -128,20 +120,25 @@ func formatToGolangVarName(sr ScrapeResult) string {
 		}
 	}
 
-	regex := regexp.MustCompile(`[a-z]+`)
-
+	//handle the "By`X`" part of the variable name
 	for _, part := range epSplit {
 		if len(part) < 1 {
 			continue
 		}
 
 		if string(part[0]) == "{" {
-			result = result + "By" +
-				strings.Title(regex.FindString(part))
+			part = strings.ReplaceAll(part, "{", "")
+			part = strings.ReplaceAll(part, "}", "")
+
+			result += "By"
+
+			for _, splitPart := range strings.Split(part, "_") {
+				result += strings.Title(splitPart)
+			}
 		}
 	}
 
-	return strings.Title(sr.HTTPMethod) + result
+	return strings.Title(strings.ToLower(sr.HTTPMethod)) + result
 }
 
 func formatToGolangVarNameAndValue(sr ScrapeResult) string {
