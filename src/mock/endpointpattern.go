@@ -3157,11 +3157,6 @@ var PostScimV2OrganizationsUsersByOrg EndpointPattern = EndpointPattern{
 	Method:  "POST",
 }
 
-var GetScimV2OrganizationsUsersByOrgByScimUserId EndpointPattern = EndpointPattern{
-	Pattern: "/scim/v2/organizations/{org}/Users/{scim_user_id}",
-	Method:  "GET",
-}
-
 var PutScimV2OrganizationsUsersByOrgByScimUserId EndpointPattern = EndpointPattern{
 	Pattern: "/scim/v2/organizations/{org}/Users/{scim_user_id}",
 	Method:  "PUT",
