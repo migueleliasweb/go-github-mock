@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/go-kit/log"
+)
 
 func TestFormatToGolangVarName(t *testing.T) {
 	tests := []struct {
@@ -51,7 +55,7 @@ func TestFormatToGolangVarName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := formatToGolangVarName(tt.sr); got != tt.want {
+			if got := formatToGolangVarName(log.NewNopLogger(), tt.sr); got != tt.want {
 				t.Errorf("formatToGolangVarName() = %v, want %v", got, tt.want)
 			}
 		})

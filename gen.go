@@ -2,14 +2,19 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
+	"os"
+
 	"net/http"
 	"os/exec"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 )
 
 const BASE_URL = "https://docs.github.com"
@@ -28,29 +33,39 @@ type ScrapeResult struct {
 	EndpointPattern string
 }
 
-func getGoQueryDocumentFromUrl(urlToScrape string) (*goquery.Document, error) {
+var debug bool
+
+func init() {
+	flag.BoolVar(&debug, "debug", false, "output debug information")
+}
+
+func getGoQueryDocumentFromUrl(l log.Logger, urlToScrape string) (*goquery.Document, error) {
 	res, err := http.Get(urlToScrape)
 	if err != nil {
-		log.Fatal(err)
+		level.Error(l).Log(err)
+		os.Exit(1)
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+		level.Error(l).Log("status code error: %d %s", res.StatusCode, res.Status)
+		os.Exit(1)
 	}
 
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Fatal(err)
+		level.Error(l).Log(err)
+		os.Exit(1)
 	}
 
 	return doc, err
 }
 
-func scrapeReferenceTab() []string {
-	doc, err := getGoQueryDocumentFromUrl(GITHUB_REST_API_URL)
+func scrapeReferenceTab(l log.Logger) []string {
+	doc, err := getGoQueryDocumentFromUrl(l, GITHUB_REST_API_URL)
 
 	if err != nil {
-		log.Fatal(err)
+		level.Error(l).Log(err)
+		os.Exit(1)
 	}
 
 	restEndpoints := []string{}
@@ -65,13 +80,14 @@ func scrapeReferenceTab() []string {
 	return restEndpoints
 }
 
-func scrapeApiReference(url string) <-chan ScrapeResult {
+func scrapeApiReference(l log.Logger, url string) <-chan ScrapeResult {
 	scrapedEndpoints := make(chan ScrapeResult)
 
 	go func() {
-		doc, err := getGoQueryDocumentFromUrl(url)
+		doc, err := getGoQueryDocumentFromUrl(l, url)
 		if err != nil {
-			log.Fatal(err)
+			level.Error(l).Log(err)
+			os.Exit(1)
 		}
 
 		doc.Find("#article-contents > div > pre > code").Each(
@@ -96,7 +112,7 @@ func scrapeApiReference(url string) <-chan ScrapeResult {
 
 // formatToGolangVarName generated the proper golang variable name
 // given a endpoint format from the API
-func formatToGolangVarName(sr ScrapeResult) string {
+func formatToGolangVarName(l log.Logger, sr ScrapeResult) string {
 	// handles urls with dashes in them
 	pattern := strings.ReplaceAll(sr.EndpointPattern, "-", "/")
 
@@ -141,29 +157,43 @@ func formatToGolangVarName(sr ScrapeResult) string {
 	return strings.Title(strings.ToLower(sr.HTTPMethod)) + result
 }
 
-func formatToGolangVarNameAndValue(sr ScrapeResult) string {
+func formatToGolangVarNameAndValue(l log.Logger, lsr ScrapeResult) string {
 	return fmt.Sprintf(
 		`var %s EndpointPattern = EndpointPattern{
 	Pattern: "%s",
 	Method:  "%s",
 }
 `,
-		formatToGolangVarName(sr),
-		sr.EndpointPattern,
-		strings.ToUpper(sr.HTTPMethod),
+		formatToGolangVarName(l, lsr),
+		lsr.EndpointPattern,
+		strings.ToUpper(lsr.HTTPMethod),
 	) + "\n"
 }
 
 func main() {
-	referenceUrlsToScrape := scrapeReferenceTab()
+	flag.Parse()
+
+	var l log.Logger
+
+	l = log.NewLogfmtLogger(log.NewSyncWriter(os.Stdout))
+
+	l = log.With(l, "caller", log.DefaultCaller)
+
+	l = level.NewFilter(l, level.AllowInfo())
+
+	if debug {
+		l = level.NewFilter(l, level.AllowDebug())
+	}
+
+	referenceUrlsToScrape := scrapeReferenceTab(l)
 
 	buf := bytes.NewBuffer([]byte(OUTPUT_FILE_HEADER))
 
 	for _, url := range referenceUrlsToScrape {
-		res := scrapeApiReference(url)
+		res := scrapeApiReference(l, url)
 
 		for r := range res {
-			buf.WriteString(formatToGolangVarNameAndValue(r))
+			buf.WriteString(formatToGolangVarNameAndValue(l, r))
 		}
 	}
 
@@ -173,7 +203,21 @@ func main() {
 		0755,
 	)
 
+	errorsFound := false
+
+	// to catch possible format errors
 	if err := exec.Command("gofmt", "-w", "src/mock/endpointpattern.go").Run(); err != nil {
-		log.Fatal(fmt.Sprintf("error executing gofmt: %s", err.Error()))
+		level.Error(l).Log(fmt.Sprintf("error executing gofmt: %s", err.Error()))
+		errorsFound = true
+	}
+
+	// to catch everything else (hopefully)
+	if err := exec.Command("go", "vet", "src/mock/endpointpattern.go").Run(); err != nil {
+		level.Error(l).Log(fmt.Sprintf("error executing go vet: %s", err.Error()))
+		errorsFound = true
+	}
+
+	if errorsFound {
+		os.Exit(1)
 	}
 }
