@@ -302,6 +302,31 @@ var DeleteEnterprisesActionsRunnersByEnterpriseByRunnerId EndpointPattern = Endp
 	Method:  "DELETE",
 }
 
+var GetEnterprisesActionsRunnersLabelsByEnterpriseByRunnerId EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/actions/runners/{runner_id}/labels",
+	Method:  "GET",
+}
+
+var PostEnterprisesActionsRunnersLabelsByEnterpriseByRunnerId EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/actions/runners/{runner_id}/labels",
+	Method:  "POST",
+}
+
+var PutEnterprisesActionsRunnersLabelsByEnterpriseByRunnerId EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/actions/runners/{runner_id}/labels",
+	Method:  "PUT",
+}
+
+var DeleteEnterprisesActionsRunnersLabelsByEnterpriseByRunnerId EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/actions/runners/{runner_id}/labels",
+	Method:  "DELETE",
+}
+
+var DeleteEnterprisesActionsRunnersLabelsByEnterpriseByRunnerIdByName EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/actions/runners/{runner_id}/labels/{name}",
+	Method:  "DELETE",
+}
+
 var GetEnterprisesAuditLogByEnterprise EndpointPattern = EndpointPattern{
 	Pattern: "/enterprises/{enterprise}/audit-log",
 	Method:  "GET",
@@ -309,6 +334,11 @@ var GetEnterprisesAuditLogByEnterprise EndpointPattern = EndpointPattern{
 
 var GetEnterprisesSettingsBillingActionsByEnterprise EndpointPattern = EndpointPattern{
 	Pattern: "/enterprises/{enterprise}/settings/billing/actions",
+	Method:  "GET",
+}
+
+var GetEnterprisesSettingsBillingAdvancedSecurityByEnterprise EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/settings/billing/advanced-security",
 	Method:  "GET",
 }
 
@@ -557,6 +587,11 @@ var GetOrganizations EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var GetOrganizationsCustomRolesByOrganizationId EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{organization_id}/custom_roles",
+	Method:  "GET",
+}
+
 var GetOrgsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}",
 	Method:  "GET",
@@ -702,6 +737,31 @@ var DeleteOrgsActionsRunnersByOrgByRunnerId EndpointPattern = EndpointPattern{
 	Method:  "DELETE",
 }
 
+var GetOrgsActionsRunnersLabelsByOrgByRunnerId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/actions/runners/{runner_id}/labels",
+	Method:  "GET",
+}
+
+var PostOrgsActionsRunnersLabelsByOrgByRunnerId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/actions/runners/{runner_id}/labels",
+	Method:  "POST",
+}
+
+var PutOrgsActionsRunnersLabelsByOrgByRunnerId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/actions/runners/{runner_id}/labels",
+	Method:  "PUT",
+}
+
+var DeleteOrgsActionsRunnersLabelsByOrgByRunnerId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/actions/runners/{runner_id}/labels",
+	Method:  "DELETE",
+}
+
+var DeleteOrgsActionsRunnersLabelsByOrgByRunnerIdByName EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/actions/runners/{runner_id}/labels/{name}",
+	Method:  "DELETE",
+}
+
 var GetOrgsActionsSecretsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/actions/secrets",
 	Method:  "GET",
@@ -784,6 +844,16 @@ var DeleteOrgsCredentialAuthorizationsByOrgByCredentialId EndpointPattern = Endp
 
 var GetOrgsEventsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/events",
+	Method:  "GET",
+}
+
+var GetOrgsExternalGroupByOrgByGroupId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/external-group/{group_id}",
+	Method:  "GET",
+}
+
+var GetOrgsExternalGroupsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/external-groups",
 	Method:  "GET",
 }
 
@@ -1067,6 +1137,11 @@ var GetOrgsSettingsBillingActionsByOrg EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var GetOrgsSettingsBillingAdvancedSecurityByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/settings/billing/advanced-security",
+	Method:  "GET",
+}
+
 var GetOrgsSettingsBillingPackagesByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/settings/billing/packages",
 	Method:  "GET",
@@ -1184,6 +1259,16 @@ var PostOrgsTeamsDiscussionsReactionsByOrgByTeamSlugByDiscussionNumber EndpointP
 
 var DeleteOrgsTeamsDiscussionsReactionsByOrgByTeamSlugByDiscussionNumberByReactionId EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions/{reaction_id}",
+	Method:  "DELETE",
+}
+
+var PatchOrgsTeamsExternalGroupsByOrgByTeamSlug EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/teams/{team_slug}/external-groups",
+	Method:  "PATCH",
+}
+
+var DeleteOrgsTeamsExternalGroupsByOrgByTeamSlug EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/teams/{team_slug}/external-groups",
 	Method:  "DELETE",
 }
 
@@ -1467,6 +1552,31 @@ var DeleteReposActionsRunnersByOwnerByRepoByRunnerId EndpointPattern = EndpointP
 	Method:  "DELETE",
 }
 
+var GetReposActionsRunnersLabelsByOwnerByRepoByRunnerId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/runners/{runner_id}/labels",
+	Method:  "GET",
+}
+
+var PostReposActionsRunnersLabelsByOwnerByRepoByRunnerId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/runners/{runner_id}/labels",
+	Method:  "POST",
+}
+
+var PutReposActionsRunnersLabelsByOwnerByRepoByRunnerId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/runners/{runner_id}/labels",
+	Method:  "PUT",
+}
+
+var DeleteReposActionsRunnersLabelsByOwnerByRepoByRunnerId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/runners/{runner_id}/labels",
+	Method:  "DELETE",
+}
+
+var DeleteReposActionsRunnersLabelsByOwnerByRepoByRunnerIdByName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/runners/{runner_id}/labels/{name}",
+	Method:  "DELETE",
+}
+
 var GetReposActionsRunsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/actions/runs",
 	Method:  "GET",
@@ -1494,6 +1604,21 @@ var PostReposActionsRunsApproveByOwnerByRepoByRunId EndpointPattern = EndpointPa
 
 var GetReposActionsRunsArtifactsByOwnerByRepoByRunId EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/actions/runs/{run_id}/artifacts",
+	Method:  "GET",
+}
+
+var GetReposActionsRunsAttemptsByOwnerByRepoByRunIdByAttemptNumber EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}",
+	Method:  "GET",
+}
+
+var GetReposActionsRunsAttemptsJobsByOwnerByRepoByRunIdByAttemptNumber EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/jobs",
+	Method:  "GET",
+}
+
+var GetReposActionsRunsAttemptsLogsByOwnerByRepoByRunIdByAttemptNumber EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs",
 	Method:  "GET",
 }
 
@@ -1529,11 +1654,6 @@ var PostReposActionsRunsPendingDeploymentsByOwnerByRepoByRunId EndpointPattern =
 
 var PostReposActionsRunsRerunByOwnerByRepoByRunId EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/actions/runs/{run_id}/rerun",
-	Method:  "POST",
-}
-
-var PostReposActionsRunsRetryByOwnerByRepoByRunId EndpointPattern = EndpointPattern{
-	Pattern: "/repos/{owner}/{repo}/actions/runs/{run_id}/retry",
 	Method:  "POST",
 }
 
@@ -1842,6 +1962,11 @@ var GetReposCheckRunsAnnotationsByOwnerByRepoByCheckRunId EndpointPattern = Endp
 	Method:  "GET",
 }
 
+var PostReposCheckRunsRerequestByOwnerByRepoByCheckRunId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/check-runs/{check_run_id}/rerequest",
+	Method:  "POST",
+}
+
 var PostReposCheckSuitesByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/check-suites",
 	Method:  "POST",
@@ -1909,6 +2034,21 @@ var PostReposCodeScanningSarifsByOwnerByRepo EndpointPattern = EndpointPattern{
 
 var GetReposCodeScanningSarifsByOwnerByRepoBySarifId EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/code-scanning/sarifs/{sarif_id}",
+	Method:  "GET",
+}
+
+var GetReposCodespacesByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/codespaces",
+	Method:  "GET",
+}
+
+var PostReposCodespacesByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/codespaces",
+	Method:  "POST",
+}
+
+var GetReposCodespacesMachinesByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/codespaces/machines",
 	Method:  "GET",
 }
 
@@ -2030,11 +2170,6 @@ var GetReposCommunityProfileByOwnerByRepo EndpointPattern = EndpointPattern{
 var GetReposCompareByOwnerByRepoByBasehead EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/compare/{basehead}",
 	Method:  "GET",
-}
-
-var PostReposContentReferencesAttachmentsByOwnerByRepoByContentReferenceId EndpointPattern = EndpointPattern{
-	Pattern: "/repos/{owner}/{repo}/content_references/{content_reference_id}/attachments",
-	Method:  "POST",
 }
 
 var GetReposContentsByOwnerByRepoByPath EndpointPattern = EndpointPattern{
@@ -2702,6 +2837,11 @@ var PatchReposPullsByOwnerByRepoByPullNumber EndpointPattern = EndpointPattern{
 	Method:  "PATCH",
 }
 
+var PostReposPullsCodespacesByOwnerByRepoByPullNumber EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/pulls/{pull_number}/codespaces",
+	Method:  "POST",
+}
+
 var GetReposPullsCommentsByOwnerByRepoByPullNumber EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/pulls/{pull_number}/comments",
 	Method:  "GET",
@@ -2832,6 +2972,11 @@ var DeleteReposReleasesAssetsByOwnerByRepoByAssetId EndpointPattern = EndpointPa
 	Method:  "DELETE",
 }
 
+var PostReposReleasesGenerateNotesByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/releases/generate-notes",
+	Method:  "POST",
+}
+
 var GetReposReleasesLatestByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/releases/latest",
 	Method:  "GET",
@@ -2885,6 +3030,11 @@ var GetReposSecretScanningAlertsByOwnerByRepoByAlertNumber EndpointPattern = End
 var PatchReposSecretScanningAlertsByOwnerByRepoByAlertNumber EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/secret-scanning/alerts/{alert_number}",
 	Method:  "PATCH",
+}
+
+var GetReposSecretScanningAlertsLocationsByOwnerByRepoByAlertNumber EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/secret-scanning/alerts/{alert_number}/locations",
+	Method:  "GET",
 }
 
 var GetReposStargazersByOwnerByRepo EndpointPattern = EndpointPattern{
@@ -3380,6 +3530,91 @@ var PutUserBlocksByUsername EndpointPattern = EndpointPattern{
 var DeleteUserBlocksByUsername EndpointPattern = EndpointPattern{
 	Pattern: "/user/blocks/{username}",
 	Method:  "DELETE",
+}
+
+var GetUserCodespaces EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces",
+	Method:  "GET",
+}
+
+var PostUserCodespaces EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces",
+	Method:  "POST",
+}
+
+var GetUserCodespacesSecrets EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/secrets",
+	Method:  "GET",
+}
+
+var GetUserCodespacesSecretsPublicKey EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/secrets/public-key",
+	Method:  "GET",
+}
+
+var GetUserCodespacesSecretsBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/secrets/{secret_name}",
+	Method:  "GET",
+}
+
+var PutUserCodespacesSecretsBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/secrets/{secret_name}",
+	Method:  "PUT",
+}
+
+var DeleteUserCodespacesSecretsBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/secrets/{secret_name}",
+	Method:  "DELETE",
+}
+
+var GetUserCodespacesSecretsRepositoriesBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/secrets/{secret_name}/repositories",
+	Method:  "GET",
+}
+
+var PutUserCodespacesSecretsRepositoriesBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/secrets/{secret_name}/repositories",
+	Method:  "PUT",
+}
+
+var PutUserCodespacesSecretsRepositoriesBySecretNameByRepositoryId EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/secrets/{secret_name}/repositories/{repository_id}",
+	Method:  "PUT",
+}
+
+var DeleteUserCodespacesSecretsRepositoriesBySecretNameByRepositoryId EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/secrets/{secret_name}/repositories/{repository_id}",
+	Method:  "DELETE",
+}
+
+var GetUserCodespacesByCodespaceName EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/{codespace_name}",
+	Method:  "GET",
+}
+
+var PatchUserCodespacesByCodespaceName EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/{codespace_name}",
+	Method:  "PATCH",
+}
+
+var DeleteUserCodespacesByCodespaceName EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/{codespace_name}",
+	Method:  "DELETE",
+}
+
+var GetUserCodespacesMachinesByCodespaceName EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/{codespace_name}/machines",
+	Method:  "GET",
+}
+
+var PostUserCodespacesStartByCodespaceName EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/{codespace_name}/start",
+	Method:  "POST",
+}
+
+var PostUserCodespacesStopByCodespaceName EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/{codespace_name}/stop",
+	Method:  "POST",
 }
 
 var PatchUserEmailVisibility EndpointPattern = EndpointPattern{
