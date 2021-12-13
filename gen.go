@@ -130,6 +130,40 @@ func formatToGolangVarNameAndValue(l log.Logger, lsr ScrapeResult) string {
 	) + "\n"
 }
 
+func parseOpenApiDefinition(apiDefinition []byte) <-chan ScrapeResult {
+	outputChan := make(chan ScrapeResult)
+
+	go func() {
+		jsonparser.ObjectEach(
+			apiDefinition,
+			func(objectKey, endpointDefinition []byte, _ jsonparser.ValueType, _ int) error {
+				endpointPattern := string(objectKey)
+
+				jsonparser.ObjectEach(
+					endpointDefinition,
+					func(method, _ []byte, _ jsonparser.ValueType, _ int) error {
+						httpMethod := string(method)
+
+						outputChan <- ScrapeResult{
+							HTTPMethod:      httpMethod,
+							EndpointPattern: endpointPattern,
+						}
+
+						return nil
+					},
+				)
+
+				return nil
+			},
+			"paths",
+		)
+
+		close(outputChan)
+	}()
+
+	return outputChan
+}
+
 func main() {
 	flag.Parse()
 
@@ -150,38 +184,20 @@ func main() {
 
 	buf := bytes.NewBuffer([]byte(OUTPUT_FILE_HEADER))
 
-	jsonparser.ObjectEach(
-		apiDefinition,
-		func(key, endpointDefinition []byte, _ jsonparser.ValueType, _ int) error {
-			endpointPattern := string(key)
+	scrapeResultChan := parseOpenApiDefinition(apiDefinition)
 
-			httpMethods := []string{}
+	for sr := range scrapeResultChan {
+		level.Debug(l).Log(
+			"msg", fmt.Sprintf("Writing %s", sr.EndpointPattern),
+		)
 
-			jsonparser.ObjectEach(
-				endpointDefinition,
-				func(key, _ []byte, _ jsonparser.ValueType, _ int) error {
-					httpMethods = append(httpMethods, string(key))
+		code := formatToGolangVarNameAndValue(
+			l,
+			sr,
+		)
 
-					return nil
-				},
-			)
-
-			for _, httpMethod := range httpMethods {
-				code := formatToGolangVarNameAndValue(
-					l,
-					ScrapeResult{
-						HTTPMethod:      httpMethod,
-						EndpointPattern: endpointPattern,
-					},
-				)
-
-				buf.WriteString(code)
-			}
-
-			return nil
-		},
-		"paths",
-	)
+		buf.WriteString(code)
+	}
 
 	ioutil.WriteFile(
 		OUTPUT_FILEPATH,
