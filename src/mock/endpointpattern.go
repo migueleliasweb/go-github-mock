@@ -332,6 +332,11 @@ var GetEnterprisesAuditLogByEnterprise EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var GetEnterprisesSecretScanningAlertsByEnterprise EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/secret-scanning/alerts",
+	Method:  "GET",
+}
+
 var GetEnterprisesSettingsBillingActionsByEnterprise EndpointPattern = EndpointPattern{
 	Pattern: "/enterprises/{enterprise}/settings/billing/actions",
 	Method:  "GET",
@@ -592,6 +597,11 @@ var GetOrganizationsCustomRolesByOrganizationId EndpointPattern = EndpointPatter
 	Method:  "GET",
 }
 
+var GetOrganizationsTeamExternalGroupsByOrgByTeamSlug EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{org}/team/{team_slug}/external-groups",
+	Method:  "GET",
+}
+
 var GetOrgsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}",
 	Method:  "GET",
@@ -639,6 +649,16 @@ var GetOrgsActionsPermissionsSelectedActionsByOrg EndpointPattern = EndpointPatt
 
 var PutOrgsActionsPermissionsSelectedActionsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/actions/permissions/selected-actions",
+	Method:  "PUT",
+}
+
+var GetOrgsActionsPermissionsWorkflowByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/actions/permissions/workflow",
+	Method:  "GET",
+}
+
+var PutOrgsActionsPermissionsWorkflowByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/actions/permissions/workflow",
 	Method:  "PUT",
 }
 
@@ -832,6 +852,11 @@ var DeleteOrgsBlocksByOrgByUsername EndpointPattern = EndpointPattern{
 	Method:  "DELETE",
 }
 
+var GetOrgsCodeScanningAlertsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/code-scanning/alerts",
+	Method:  "GET",
+}
+
 var GetOrgsCredentialAuthorizationsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/credential-authorizations",
 	Method:  "GET",
@@ -839,6 +864,51 @@ var GetOrgsCredentialAuthorizationsByOrg EndpointPattern = EndpointPattern{
 
 var DeleteOrgsCredentialAuthorizationsByOrgByCredentialId EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/credential-authorizations/{credential_id}",
+	Method:  "DELETE",
+}
+
+var GetOrgsDependabotSecretsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/dependabot/secrets",
+	Method:  "GET",
+}
+
+var GetOrgsDependabotSecretsPublicKeyByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/dependabot/secrets/public-key",
+	Method:  "GET",
+}
+
+var GetOrgsDependabotSecretsByOrgBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/dependabot/secrets/{secret_name}",
+	Method:  "GET",
+}
+
+var PutOrgsDependabotSecretsByOrgBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/dependabot/secrets/{secret_name}",
+	Method:  "PUT",
+}
+
+var DeleteOrgsDependabotSecretsByOrgBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/dependabot/secrets/{secret_name}",
+	Method:  "DELETE",
+}
+
+var GetOrgsDependabotSecretsRepositoriesByOrgBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/dependabot/secrets/{secret_name}/repositories",
+	Method:  "GET",
+}
+
+var PutOrgsDependabotSecretsRepositoriesByOrgBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/dependabot/secrets/{secret_name}/repositories",
+	Method:  "PUT",
+}
+
+var PutOrgsDependabotSecretsRepositoriesByOrgBySecretNameByRepositoryId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/dependabot/secrets/{secret_name}/repositories/{repository_id}",
+	Method:  "PUT",
+}
+
+var DeleteOrgsDependabotSecretsRepositoriesByOrgBySecretNameByRepositoryId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/dependabot/secrets/{secret_name}/repositories/{repository_id}",
 	Method:  "DELETE",
 }
 
@@ -1452,11 +1522,6 @@ var GetRateLimit EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
-var DeleteReactionsByReactionId EndpointPattern = EndpointPattern{
-	Pattern: "/reactions/{reaction_id}",
-	Method:  "DELETE",
-}
-
 var GetReposByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}",
 	Method:  "GET",
@@ -2037,6 +2102,11 @@ var GetReposCodeScanningSarifsByOwnerByRepoBySarifId EndpointPattern = EndpointP
 	Method:  "GET",
 }
 
+var GetReposCodeownersErrorsByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/codeowners/errors",
+	Method:  "GET",
+}
+
 var GetReposCodespacesByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/codespaces",
 	Method:  "GET",
@@ -2190,6 +2260,31 @@ var DeleteReposContentsByOwnerByRepoByPath EndpointPattern = EndpointPattern{
 var GetReposContributorsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/contributors",
 	Method:  "GET",
+}
+
+var GetReposDependabotSecretsByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/dependabot/secrets",
+	Method:  "GET",
+}
+
+var GetReposDependabotSecretsPublicKeyByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/dependabot/secrets/public-key",
+	Method:  "GET",
+}
+
+var GetReposDependabotSecretsByOwnerByRepoBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/dependabot/secrets/{secret_name}",
+	Method:  "GET",
+}
+
+var PutReposDependabotSecretsByOwnerByRepoBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/dependabot/secrets/{secret_name}",
+	Method:  "PUT",
+}
+
+var DeleteReposDependabotSecretsByOwnerByRepoBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/dependabot/secrets/{secret_name}",
+	Method:  "DELETE",
 }
 
 var GetReposDeploymentsByOwnerByRepo EndpointPattern = EndpointPattern{
@@ -3600,6 +3695,16 @@ var PatchUserCodespacesByCodespaceName EndpointPattern = EndpointPattern{
 var DeleteUserCodespacesByCodespaceName EndpointPattern = EndpointPattern{
 	Pattern: "/user/codespaces/{codespace_name}",
 	Method:  "DELETE",
+}
+
+var PostUserCodespacesExportsByCodespaceName EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/{codespace_name}/exports",
+	Method:  "POST",
+}
+
+var GetUserCodespacesExportsByCodespaceNameByExportId EndpointPattern = EndpointPattern{
+	Pattern: "/user/codespaces/{codespace_name}/exports/{export_id}",
+	Method:  "GET",
 }
 
 var GetUserCodespacesMachinesByCodespaceName EndpointPattern = EndpointPattern{
