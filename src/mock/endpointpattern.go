@@ -167,6 +167,11 @@ var GetEmojis EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var GetEnterprisesActionsCacheUsageByEnterprise EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/actions/cache/usage",
+	Method:  "GET",
+}
+
 var GetEnterprisesActionsPermissionsByEnterprise EndpointPattern = EndpointPattern{
 	Pattern: "/enterprises/{enterprise}/actions/permissions",
 	Method:  "GET",
@@ -597,11 +602,6 @@ var GetOrganizationsCustomRolesByOrganizationId EndpointPattern = EndpointPatter
 	Method:  "GET",
 }
 
-var GetOrganizationsTeamExternalGroupsByOrgByTeamSlug EndpointPattern = EndpointPattern{
-	Pattern: "/organizations/{org}/team/{team_slug}/external-groups",
-	Method:  "GET",
-}
-
 var GetOrgsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}",
 	Method:  "GET",
@@ -610,6 +610,16 @@ var GetOrgsByOrg EndpointPattern = EndpointPattern{
 var PatchOrgsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}",
 	Method:  "PATCH",
+}
+
+var GetOrgsActionsCacheUsageByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/actions/cache/usage",
+	Method:  "GET",
+}
+
+var GetOrgsActionsCacheUsageByRepositoryByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/actions/cache/usage-by-repository",
+	Method:  "GET",
 }
 
 var GetOrgsActionsPermissionsByOrg EndpointPattern = EndpointPattern{
@@ -1332,6 +1342,11 @@ var DeleteOrgsTeamsDiscussionsReactionsByOrgByTeamSlugByDiscussionNumberByReacti
 	Method:  "DELETE",
 }
 
+var GetOrgsTeamsExternalGroupsByOrgByTeamSlug EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/teams/{team_slug}/external-groups",
+	Method:  "GET",
+}
+
 var PatchOrgsTeamsExternalGroupsByOrgByTeamSlug EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/teams/{team_slug}/external-groups",
 	Method:  "PATCH",
@@ -1557,6 +1572,11 @@ var GetReposActionsArtifactsByOwnerByRepoByArtifactIdByArchiveFormat EndpointPat
 	Method:  "GET",
 }
 
+var GetReposActionsCacheUsageByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/cache/usage",
+	Method:  "GET",
+}
+
 var GetReposActionsJobsByOwnerByRepoByJobId EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/actions/jobs/{job_id}",
 	Method:  "GET",
@@ -1567,6 +1587,11 @@ var GetReposActionsJobsLogsByOwnerByRepoByJobId EndpointPattern = EndpointPatter
 	Method:  "GET",
 }
 
+var PostReposActionsJobsRerunByOwnerByRepoByJobId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/jobs/{job_id}/rerun",
+	Method:  "POST",
+}
+
 var GetReposActionsPermissionsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/actions/permissions",
 	Method:  "GET",
@@ -1574,6 +1599,16 @@ var GetReposActionsPermissionsByOwnerByRepo EndpointPattern = EndpointPattern{
 
 var PutReposActionsPermissionsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/actions/permissions",
+	Method:  "PUT",
+}
+
+var GetReposActionsPermissionsAccessByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/permissions/access",
+	Method:  "GET",
+}
+
+var PutReposActionsPermissionsAccessByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/permissions/access",
 	Method:  "PUT",
 }
 
@@ -1719,6 +1754,11 @@ var PostReposActionsRunsPendingDeploymentsByOwnerByRepoByRunId EndpointPattern =
 
 var PostReposActionsRunsRerunByOwnerByRepoByRunId EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/actions/runs/{run_id}/rerun",
+	Method:  "POST",
+}
+
+var PostReposActionsRunsRerunFailedJobsByOwnerByRepoByRunId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/runs/{run_id}/rerun-failed-jobs",
 	Method:  "POST",
 }
 
@@ -3107,9 +3147,19 @@ var PostReposReleasesAssetsByOwnerByRepoByReleaseId EndpointPattern = EndpointPa
 	Method:  "POST",
 }
 
+var GetReposReleasesReactionsByOwnerByRepoByReleaseId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/releases/{release_id}/reactions",
+	Method:  "GET",
+}
+
 var PostReposReleasesReactionsByOwnerByRepoByReleaseId EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/releases/{release_id}/reactions",
 	Method:  "POST",
+}
+
+var DeleteReposReleasesReactionsByOwnerByRepoByReleaseIdByReactionId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/releases/{release_id}/reactions/{reaction_id}",
+	Method:  "DELETE",
 }
 
 var GetReposSecretScanningAlertsByOwnerByRepo EndpointPattern = EndpointPattern{
