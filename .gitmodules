@@ -1,0 +1,3 @@
+[submodule "submodules/github-rest-api-description"]
+	path = submodules/github-rest-api-description
+	url = https://github.com/github/rest-api-description.git
