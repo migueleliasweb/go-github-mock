@@ -1,4 +1,4 @@
-package main
+package gen
 
 import (
 	"testing"
@@ -52,10 +52,18 @@ func TestFormatToGolangVarName(t *testing.T) {
 			},
 			want: "GetReposActionsRunsPendingDeploymentsByOwnerByRepoByRunId",
 		},
+		{
+			name: "withUrlWithNumber",
+			sr: ScrapeResult{
+				EndpointPattern: "/repos/{owner}/{repo}/actions/runs/{run_id}/pending_deployments",
+				HTTPMethod:      "GET",
+			},
+			want: "GetReposActionsRunsPendingDeploymentsByOwnerByRepoByRunId",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := formatToGolangVarName(log.NewNopLogger(), tt.sr); got != tt.want {
+			if got := FormatToGolangVarName(log.NewNopLogger(), tt.sr); got != tt.want {
 				t.Errorf("formatToGolangVarName() = %v, want %v", got, tt.want)
 			}
 		})
