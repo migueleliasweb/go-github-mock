@@ -13,8 +13,6 @@ import (
 	"github.com/go-kit/log/level"
 )
 
-//go:generate go run gen.go
-
 const GITHUB_OPENAPI_DEFINITION_LOCATION = "https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json?raw=true"
 
 const OUTPUT_FILE_HEADER = `package mock

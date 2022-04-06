@@ -2327,6 +2327,11 @@ var DeleteReposDependabotSecretsByOwnerByRepoBySecretName EndpointPattern = Endp
 	Method:  "DELETE",
 }
 
+var GetReposDependencyGraphCompareByOwnerByRepoByBasehead EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/dependency-graph/compare/{basehead}",
+	Method:  "GET",
+}
+
 var GetReposDeploymentsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/deployments",
 	Method:  "GET",
@@ -2428,7 +2433,7 @@ var GetReposGitMatchingRefsByOwnerByRepoByRef EndpointPattern = EndpointPattern{
 }
 
 var GetReposGitRefByOwnerByRepoByRef EndpointPattern = EndpointPattern{
-	Pattern: "/repos/{owner}/{repo}/git/ref/{ref}",
+	Pattern: "/repos/{owner}/{repo}/git/ref/{ref:.+}",
 	Method:  "GET",
 }
 
@@ -2438,12 +2443,12 @@ var PostReposGitRefsByOwnerByRepo EndpointPattern = EndpointPattern{
 }
 
 var PatchReposGitRefsByOwnerByRepoByRef EndpointPattern = EndpointPattern{
-	Pattern: "/repos/{owner}/{repo}/git/refs/{ref}",
+	Pattern: "/repos/{owner}/{repo}/git/refs/{ref:.+}",
 	Method:  "PATCH",
 }
 
 var DeleteReposGitRefsByOwnerByRepoByRef EndpointPattern = EndpointPattern{
-	Pattern: "/repos/{owner}/{repo}/git/refs/{ref}",
+	Pattern: "/repos/{owner}/{repo}/git/refs/{ref:.+}",
 	Method:  "DELETE",
 }
 
