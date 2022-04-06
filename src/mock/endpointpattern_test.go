@@ -7,7 +7,7 @@ import (
 	"github.com/google/go-github/v41/github"
 )
 
-func TestRepoGetContents2(t *testing.T) {
+func TestRepoGetContents(t *testing.T) {
 	cases := []struct {
 		name              string
 		repositoryContent github.RepositoryContent
@@ -68,5 +68,69 @@ func TestRepoGetContents2(t *testing.T) {
 				}
 			}
 		}(c.repositoryContent))
+	}
+}
+
+func TestPatchGitReference(t *testing.T) {
+	mockedHTTPClient := NewMockedHTTPClient(
+		WithRequestMatch(
+			PatchReposGitRefsByOwnerByRepoByRef,
+			github.Reference{
+				Ref: github.String("refs/heads/new-branch"),
+			},
+		),
+	)
+
+	c := github.NewClient(mockedHTTPClient)
+
+	ctx := context.Background()
+
+	ref, _, _ := c.Git.UpdateRef(
+		ctx,
+		"owner",
+		"repo-name",
+		&github.Reference{
+			Ref:    github.String("refs/heads/new-branch"),
+			Object: &github.GitObject{SHA: github.String("fake-sha")},
+		},
+		false,
+	)
+
+	if *(ref.Ref) != "refs/heads/new-branch" {
+		t.Errorf(
+			"ref.Ref is %s, want %s",
+			*ref.Ref,
+			"refs/heads/new-branch",
+		)
+	}
+}
+
+func TestGetGitReference(t *testing.T) {
+	mockedHTTPClient := NewMockedHTTPClient(
+		WithRequestMatch(
+			GetReposGitRefByOwnerByRepoByRef,
+			github.Reference{
+				Ref: github.String("refs/heads/new-branch"),
+			},
+		),
+	)
+
+	c := github.NewClient(mockedHTTPClient)
+
+	ctx := context.Background()
+
+	ref, _, _ := c.Git.GetRef(
+		ctx,
+		"owner",
+		"repo-name",
+		"refs/heads/new-branch",
+	)
+
+	if *(ref.Ref) != "refs/heads/new-branch" {
+		t.Errorf(
+			"ref.Ref is %s, want %s",
+			*ref.Ref,
+			"refs/heads/new-branch",
+		)
 	}
 }

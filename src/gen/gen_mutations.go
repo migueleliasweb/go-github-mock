@@ -9,7 +9,7 @@ import (
 var enabledMutators = map[string]func(ScrapeResult) ScrapeResult{
 	"/repos/{owner}/{repo}/contents/{path}": allowExtendedLastParamMutatorHelper(),
 	"/repos/{owner}/{repo}/git/ref/{ref}":   allowExtendedLastParamMutatorHelper(),
-	"/repos/{owner}/{repo}/git/refs/{ref}":  allowExtendedLastParamMutatorHelper(), //thanks for the consistency, GitHub
+	"/repos/{owner}/{repo}/git/refs/{ref}":  allowExtendedLastParamMutatorHelper(), // thanks for the consistency, GitHub
 }
 
 // allowExtendedLastParamMutatorHelper mutates the last param of the endpoint pattern
