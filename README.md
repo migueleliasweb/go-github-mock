@@ -118,8 +118,8 @@ issues1, _, repo1Err := c.Issues.ListByRepo(ctx, "owner1", "repo1", &github.Issu
 
 issues2, _, repo2Err := c.Issues.ListByRepo(ctx, "owner1", "repo2", &github.IssueListByRepoOptions{})
 
-// len(issues1) == 0
-// repo1Err == nil
+// len(issues2) == 0
+// repo2Err == nil
 ```
 
 ## Mocking errors from the API
