@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/gorilla/mux"
 )
@@ -26,12 +27,15 @@ type MockBackendOption func(*mux.Router)
 //
 // Once all available `Responses` have been used, this handler will panic()!
 type FIFOReponseHandler struct {
+	lock         sync.Mutex
 	Responses    [][]byte
 	CurrentIndex int
 }
 
 // ServeHTTP implementation of `http.Handler`
 func (srh *FIFOReponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	srh.lock.Lock()
+	defer srh.lock.Unlock()
 	if srh.CurrentIndex > len(srh.Responses) {
 		panic(fmt.Sprintf(
 			"go-github-mock: no more mocks available for %s",
