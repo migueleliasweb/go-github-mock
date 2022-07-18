@@ -2247,6 +2247,11 @@ var GetReposCodespacesMachinesByOwnerByRepo EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var GetReposCodespacesNewByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/codespaces/new",
+	Method:  "GET",
+}
+
 var GetReposCodespacesSecretsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/codespaces/secrets",
 	Method:  "GET",
