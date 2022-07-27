@@ -13,7 +13,7 @@ go get github.com/migueleliasweb/go-github-mock
 
 - Create mocks for successive calls for the same endpoint
 - Pagination support
-- Mock error returns
+
 - High level abstraction helps writing readabe unittests (see `mock.WithRequestMatch`)
 - Lower level abstraction for advanced uses (see `mock.WithRequestMatchHandler`)
 
@@ -129,7 +129,7 @@ mockedHTTPClient := mock.NewMockedHTTPClient(
     mock.WithRequestMatchHandler(
         mock.GetUsersByUsername,
         http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-            WriteError(
+            mock.WriteError(
                 w,
                 http.StatusInternalServerError,
                 "github went belly up or something",
