@@ -72,21 +72,6 @@ var DeleteAppInstallationsSuspendedByInstallationId EndpointPattern = EndpointPa
 	Method:  "DELETE",
 }
 
-var GetApplicationsGrants EndpointPattern = EndpointPattern{
-	Pattern: "/applications/grants",
-	Method:  "GET",
-}
-
-var GetApplicationsGrantsByGrantId EndpointPattern = EndpointPattern{
-	Pattern: "/applications/grants/{grant_id}",
-	Method:  "GET",
-}
-
-var DeleteApplicationsGrantsByGrantId EndpointPattern = EndpointPattern{
-	Pattern: "/applications/grants/{grant_id}",
-	Method:  "DELETE",
-}
-
 var DeleteApplicationsGrantByClientId EndpointPattern = EndpointPattern{
 	Pattern: "/applications/{client_id}/grant",
 	Method:  "DELETE",
@@ -115,41 +100,6 @@ var PostApplicationsTokenScopedByClientId EndpointPattern = EndpointPattern{
 var GetAppsByAppSlug EndpointPattern = EndpointPattern{
 	Pattern: "/apps/{app_slug}",
 	Method:  "GET",
-}
-
-var GetAuthorizations EndpointPattern = EndpointPattern{
-	Pattern: "/authorizations",
-	Method:  "GET",
-}
-
-var PostAuthorizations EndpointPattern = EndpointPattern{
-	Pattern: "/authorizations",
-	Method:  "POST",
-}
-
-var PutAuthorizationsClientsByClientId EndpointPattern = EndpointPattern{
-	Pattern: "/authorizations/clients/{client_id}",
-	Method:  "PUT",
-}
-
-var PutAuthorizationsClientsByClientIdByFingerprint EndpointPattern = EndpointPattern{
-	Pattern: "/authorizations/clients/{client_id}/{fingerprint}",
-	Method:  "PUT",
-}
-
-var GetAuthorizationsByAuthorizationId EndpointPattern = EndpointPattern{
-	Pattern: "/authorizations/{authorization_id}",
-	Method:  "GET",
-}
-
-var PatchAuthorizationsByAuthorizationId EndpointPattern = EndpointPattern{
-	Pattern: "/authorizations/{authorization_id}",
-	Method:  "PATCH",
-}
-
-var DeleteAuthorizationsByAuthorizationId EndpointPattern = EndpointPattern{
-	Pattern: "/authorizations/{authorization_id}",
-	Method:  "DELETE",
 }
 
 var GetCodesOfConduct EndpointPattern = EndpointPattern{
@@ -354,6 +304,21 @@ var DeleteEnterprisesActionsRunnersLabelsByEnterpriseByRunnerIdByName EndpointPa
 
 var GetEnterprisesAuditLogByEnterprise EndpointPattern = EndpointPattern{
 	Pattern: "/enterprises/{enterprise}/audit-log",
+	Method:  "GET",
+}
+
+var GetEnterprisesCodeScanningAlertsByEnterprise EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/code-scanning/alerts",
+	Method:  "GET",
+}
+
+var GetEnterprisesConsumedLicensesByEnterprise EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/consumed-licenses",
+	Method:  "GET",
+}
+
+var GetEnterprisesLicenseSyncStatusByEnterprise EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/license-sync-status",
 	Method:  "GET",
 }
 
@@ -1257,6 +1222,21 @@ var GetOrgsSecretScanningAlertsByOrg EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var GetOrgsSecurityManagersByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/security-managers",
+	Method:  "GET",
+}
+
+var PutOrgsSecurityManagersTeamsByOrgByTeamSlug EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/security-managers/teams/{team_slug}",
+	Method:  "PUT",
+}
+
+var DeleteOrgsSecurityManagersTeamsByOrgByTeamSlug EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/security-managers/teams/{team_slug}",
+	Method:  "DELETE",
+}
+
 var GetOrgsSettingsBillingActionsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/settings/billing/actions",
 	Method:  "GET",
@@ -1480,6 +1460,11 @@ var PatchOrgsTeamsTeamSyncGroupMappingsByOrgByTeamSlug EndpointPattern = Endpoin
 var GetOrgsTeamsTeamsByOrgByTeamSlug EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/teams/{team_slug}/teams",
 	Method:  "GET",
+}
+
+var PostOrgsByOrgBySecurityProductByEnablement EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/{security_product}/{enablement}",
+	Method:  "POST",
 }
 
 var GetProjectsColumnsCardsByCardId EndpointPattern = EndpointPattern{
@@ -2512,6 +2497,31 @@ var DeleteReposEnvironmentsByOwnerByRepoByEnvironmentName EndpointPattern = Endp
 	Method:  "DELETE",
 }
 
+var GetReposEnvironmentsDeploymentBranchPoliciesByOwnerByRepoByEnvironmentName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/deployment-branch-policies",
+	Method:  "GET",
+}
+
+var PostReposEnvironmentsDeploymentBranchPoliciesByOwnerByRepoByEnvironmentName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/deployment-branch-policies",
+	Method:  "POST",
+}
+
+var GetReposEnvironmentsDeploymentBranchPoliciesByOwnerByRepoByEnvironmentNameByBranchPolicyId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/deployment-branch-policies/{branch_policy_id}",
+	Method:  "GET",
+}
+
+var PutReposEnvironmentsDeploymentBranchPoliciesByOwnerByRepoByEnvironmentNameByBranchPolicyId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/deployment-branch-policies/{branch_policy_id}",
+	Method:  "PUT",
+}
+
+var DeleteReposEnvironmentsDeploymentBranchPoliciesByOwnerByRepoByEnvironmentNameByBranchPolicyId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/deployment-branch-policies/{branch_policy_id}",
+	Method:  "DELETE",
+}
+
 var GetReposEventsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/events",
 	Method:  "GET",
@@ -3025,6 +3035,11 @@ var GetReposPagesBuildsLatestByOwnerByRepo EndpointPattern = EndpointPattern{
 var GetReposPagesBuildsByOwnerByRepoByBuildId EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/pages/builds/{build_id}",
 	Method:  "GET",
+}
+
+var PostReposPagesDeploymentByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/pages/deployment",
+	Method:  "POST",
 }
 
 var GetReposPagesHealthByOwnerByRepo EndpointPattern = EndpointPattern{
@@ -4177,6 +4192,26 @@ var DeleteUserRepositoryInvitationsByInvitationId EndpointPattern = EndpointPatt
 	Method:  "DELETE",
 }
 
+var GetUserSshSigningKeys EndpointPattern = EndpointPattern{
+	Pattern: "/user/ssh_signing_keys",
+	Method:  "GET",
+}
+
+var PostUserSshSigningKeys EndpointPattern = EndpointPattern{
+	Pattern: "/user/ssh_signing_keys",
+	Method:  "POST",
+}
+
+var GetUserSshSigningKeysBySshSigningKeyId EndpointPattern = EndpointPattern{
+	Pattern: "/user/ssh_signing_keys/{ssh_signing_key_id}",
+	Method:  "GET",
+}
+
+var DeleteUserSshSigningKeysBySshSigningKeyId EndpointPattern = EndpointPattern{
+	Pattern: "/user/ssh_signing_keys/{ssh_signing_key_id}",
+	Method:  "DELETE",
+}
+
 var GetUserStarred EndpointPattern = EndpointPattern{
 	Pattern: "/user/starred",
 	Method:  "GET",
@@ -4349,6 +4384,11 @@ var GetUsersSettingsBillingPackagesByUsername EndpointPattern = EndpointPattern{
 
 var GetUsersSettingsBillingSharedStorageByUsername EndpointPattern = EndpointPattern{
 	Pattern: "/users/{username}/settings/billing/shared-storage",
+	Method:  "GET",
+}
+
+var GetUsersSshSigningKeysByUsername EndpointPattern = EndpointPattern{
+	Pattern: "/users/{username}/ssh_signing_keys",
 	Method:  "GET",
 }
 
