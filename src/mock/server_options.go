@@ -13,19 +13,19 @@ import (
 //
 // Example:
 //
-// 	WithRequestMatchHandler(
-// 		GetOrgsProjectsByOrg,
-// 		func(w http.ResponseWriter, _ *http.Request) {
-// 			w.Write(MustMarshal([]github.Project{
-// 				{
-// 					Name: github.String("mocked-proj-1"),
-// 				},
-// 				{
-// 					Name: github.String("mocked-proj-2"),
-// 				},
-// 			}))
-// 		},
-// 	)
+//	WithRequestMatchHandler(
+//		GetOrgsProjectsByOrg,
+//		func(w http.ResponseWriter, _ *http.Request) {
+//			w.Write(MustMarshal([]github.Project{
+//				{
+//					Name: github.String("mocked-proj-1"),
+//				},
+//				{
+//					Name: github.String("mocked-proj-2"),
+//				},
+//			}))
+//		},
+//	)
 func WithRequestMatchHandler(
 	ep EndpointPattern,
 	handler http.Handler,
@@ -42,12 +42,12 @@ func WithRequestMatchHandler(
 //
 // Example:
 //
-// 	WithRequestMatch(
-// 		GetUsersByUsername,
-// 		github.User{
-// 			Name: github.String("foobar"),
-// 		},
-// 	)
+//	WithRequestMatch(
+//		GetUsersByUsername,
+//		github.User{
+//			Name: github.String("foobar"),
+//		},
+//	)
 func WithRequestMatch(
 	ep EndpointPattern,
 	responsesFIFO ...interface{},
@@ -55,7 +55,12 @@ func WithRequestMatch(
 	responses := [][]byte{}
 
 	for _, r := range responsesFIFO {
-		responses = append(responses, MustMarshal(r))
+		switch v := r.(type) {
+		case []byte:
+			responses = append(responses, v)
+		default:
+			responses = append(responses, MustMarshal(r))
+		}
 	}
 
 	return WithRequestMatchHandler(ep, &FIFOReponseHandler{
@@ -69,27 +74,27 @@ func WithRequestMatch(
 //
 // E.g.
 //
-// 		mockedHTTPClient := NewMockedHTTPClient(
-// 			WithRequestMatchPages(
-// 				GetOrgsReposByOrg,
-// 				[]github.Repository{
-// 					{
-// 						Name: github.String("repo-A-on-first-page"),
-// 					},
-// 					{
-// 						Name: github.String("repo-B-on-first-page"),
-// 					},
-// 				},
-// 				[]github.Repository{
-// 					{
-// 						Name: github.String("repo-C-on-second-page"),
-// 					},
-// 					{
-// 						Name: github.String("repo-D-on-second-page"),
-// 					},
-// 				},
-// 			),
-// 		)
+//	mockedHTTPClient := NewMockedHTTPClient(
+//		WithRequestMatchPages(
+//			GetOrgsReposByOrg,
+//			[]github.Repository{
+//				{
+//					Name: github.String("repo-A-on-first-page"),
+//				},
+//				{
+//					Name: github.String("repo-B-on-first-page"),
+//				},
+//			},
+//			[]github.Repository{
+//				{
+//					Name: github.String("repo-C-on-second-page"),
+//				},
+//				{
+//					Name: github.String("repo-D-on-second-page"),
+//				},
+//			},
+//		),
+//	)
 func WithRequestMatchPages(
 	ep EndpointPattern,
 	pages ...interface{},
