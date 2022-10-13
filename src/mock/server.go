@@ -36,6 +36,7 @@ type FIFOReponseHandler struct {
 func (srh *FIFOReponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	srh.lock.Lock()
 	defer srh.lock.Unlock()
+
 	if srh.CurrentIndex > len(srh.Responses) {
 		panic(fmt.Sprintf(
 			"go-github-mock: no more mocks available for %s",
@@ -53,10 +54,10 @@ func (srh *FIFOReponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 // PaginatedReponseHandler handler implementation that
 // responds to the HTTP requests and honors the pagination headers
 //
-//  Header e.g: `Link: <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15>; rel="next",
-//   <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=34>; rel="last",
-//   <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=1>; rel="first",
-//   <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=13>; rel="prev"`
+//	Header e.g: `Link: <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15>; rel="next",
+//	 <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=34>; rel="last",
+//	 <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=1>; rel="first",
+//	 <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=13>; rel="prev"`
 //
 // See: https://docs.github.com/en/rest/guides/traversing-with-pagination
 type PaginatedReponseHandler struct {
@@ -130,33 +131,35 @@ func (efrt *EnforceHostRoundTripper) RoundTrip(r *http.Request) (*http.Response,
 // Example:
 //
 // mockedHTTPClient := NewMockedHTTPClient(
-// 		WithRequestMatch(
-// 			GetUsersByUsername,
-// 			github.User{
-// 				Name: github.String("foobar"),
-// 			},
-// 		),
-// 		WithRequestMatch(
-// 			GetUsersOrgsByUsername,
-// 			[]github.Organization{
-// 				{
-// 					Name: github.String("foobar123thisorgwasmocked"),
-// 				},
-// 			},
-// 		),
-// 		WithRequestMatchHandler(
-// 			GetOrgsProjectsByOrg,
-// 			func(w http.ResponseWriter, _ *http.Request) {
-// 				w.Write(MustMarshal([]github.Project{
-// 					{
-// 						Name: github.String("mocked-proj-1"),
-// 					},
-// 					{
-// 						Name: github.String("mocked-proj-2"),
-// 					},
-// 				}))
-// 			},
-// 		),
+//
+//	WithRequestMatch(
+//		GetUsersByUsername,
+//		github.User{
+//			Name: github.String("foobar"),
+//		},
+//	),
+//	WithRequestMatch(
+//		GetUsersOrgsByUsername,
+//		[]github.Organization{
+//			{
+//				Name: github.String("foobar123thisorgwasmocked"),
+//			},
+//		},
+//	),
+//	WithRequestMatchHandler(
+//		GetOrgsProjectsByOrg,
+//		func(w http.ResponseWriter, _ *http.Request) {
+//			w.Write(MustMarshal([]github.Project{
+//				{
+//					Name: github.String("mocked-proj-1"),
+//				},
+//				{
+//					Name: github.String("mocked-proj-2"),
+//				},
+//			}))
+//		},
+//	),
+//
 // )
 //
 // c := github.NewClient(mockedHTTPClient)

@@ -134,3 +134,38 @@ func TestGetGitReference(t *testing.T) {
 		)
 	}
 }
+
+func TestRepositoriesGetCommitSHA1WithForwardSlash(t *testing.T) {
+	mockedHTTPClient := NewMockedHTTPClient(
+		WithRequestMatch(
+			GetReposCommitsByOwnerByRepoByRef,
+			[]byte("01234567890"),
+		),
+	)
+
+	c := github.NewClient(mockedHTTPClient)
+
+	ctx := context.Background()
+
+	sha, _, err := c.Repositories.GetCommitSHA1(
+		ctx,
+		"myself",
+		"mocked-repo",
+		"refs/heads/ddd",
+		"",
+	)
+
+	if err != nil {
+		t.Errorf(
+			"err is %s, want nil",
+			err.Error(),
+		)
+	}
+
+	if sha != "01234567890" {
+		t.Errorf(
+			"sha is %s, want 01234567890",
+			sha,
+		)
+	}
+}
