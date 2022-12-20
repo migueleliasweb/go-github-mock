@@ -27,8 +27,17 @@ func WriteError(
 ) {
 	w.WriteHeader(httpStatus)
 
-	w.Write(MustMarshal(github.ErrorResponse{
+	w.Write(MustMarshal(gitHubErrorReponse{
 		Message: msg,
 		Errors:  errors,
 	}))
+}
+
+// A struct with fields we need from github.ErrorResponse.
+// We don't use github.ErrorResponse directly because the Response field would
+// also get marshaled as null and that would override the Response that
+// go-github sets before unmarshaling the response body.
+type gitHubErrorReponse struct {
+	Message string         `json:"message"` // error message
+	Errors  []github.Error `json:"errors"`  // more detail on individual errors
 }
