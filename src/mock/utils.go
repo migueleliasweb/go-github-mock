@@ -33,7 +33,7 @@ func WriteError(
 	}))
 }
 
-// A struct with fields we need from github.ErrorResponse.
+// A struct with the fields that we need from github.ErrorResponse.
 // We don't use github.ErrorResponse directly because the Response field would
 // also get marshaled as null and that would override the Response that
 // go-github sets before unmarshaling the response body.
