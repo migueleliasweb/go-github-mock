@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/go-github/v41/github"
+	"github.com/google/go-github/v50/github"
 )
 
 func TestNewMockedHTTPClient(t *testing.T) {
@@ -87,7 +87,7 @@ func TestNewMockedHTTPClient(t *testing.T) {
 	}
 }
 
-func TestMockErrors(t *testing.T) {
+func TestMockErrorSimple(t *testing.T) {
 	mockedHTTPClient := NewMockedHTTPClient(
 		WithRequestMatchHandler(
 			GetUsersByUsername,
@@ -122,6 +122,52 @@ func TestMockErrors(t *testing.T) {
 
 	if ghErr.Message != "github went belly up or something" {
 		t.Errorf("user err is %s, want 'github went belly up or something'", userErr.Error())
+	}
+
+}
+
+func TestMockErrorToError(t *testing.T) {
+	mockedHTTPClient := NewMockedHTTPClient(
+		WithRequestMatchHandler(
+			GetUsersByUsername,
+			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				WriteError(
+					w,
+					http.StatusInternalServerError,
+					"github went belly up or something",
+				)
+			}),
+		),
+	)
+	c := github.NewClient(mockedHTTPClient)
+
+	ctx := context.Background()
+
+	user, _, userErr := c.Users.Get(ctx, "someUser")
+
+	if userV := reflect.ValueOf(user); !userV.IsZero() {
+		t.Errorf("user is %s, want nil", user)
+	}
+
+	if userErr == nil {
+		t.Fatal("user err is nil, want *github.ErrorResponse")
+	}
+
+	ghErr, ok := userErr.(*github.ErrorResponse)
+
+	if !ok {
+		t.Fatal("couldn't cast userErr to *github.ErrorResponse")
+	}
+
+	if ghErr.Message != "github went belly up or something" {
+		t.Errorf("user err is %s, want 'github went belly up or something'", userErr.Error())
+	}
+
+	// We should be able to use the default formatting for the error interface.
+	// This was initially failing due to the `github.ErrorResponse` containing `Response: nil`
+	// thus making the folling call panic due to `nil pointer`.
+	if fmtdErr := userErr.Error(); len(fmtdErr) == 0 {
+		t.Fatal("couldn't use default error formattung for github.ErrorResponse")
 	}
 }
 
