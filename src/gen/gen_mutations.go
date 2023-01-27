@@ -12,6 +12,8 @@ var enabledMutators = map[string]func(ScrapeResult) ScrapeResult{
 	"/repos/{owner}/{repo}/git/refs/{ref}":                      allowExtendedLastParamMutatorHelper(), // thanks for the consistency, GitHub
 	"/repos/{owner}/{repo}/commits/{ref}":                       allowExtendedLastParamMutatorHelper(), // thanks for not base64encode the parameter, GitHub
 	"/repos/{owner}/{repo}/issues/{issue_number}/labels/{name}": allowExtendedLastParamMutatorHelper(),
+	"/orgs/{org}/actions/runners/{runner_id}/labels/{name}":     allowExtendedLastParamMutatorHelper(),
+	"/repos/{owner}/{repo}/labels/{name}":                       allowExtendedLastParamMutatorHelper(),
 }
 
 // allowExtendedLastParamMutatorHelper mutates the last param of the endpoint pattern

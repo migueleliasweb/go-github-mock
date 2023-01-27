@@ -15,7 +15,7 @@ import (
 //
 //	WithRequestMatchHandler(
 //		GetOrgsProjectsByOrg,
-//		func(w http.ResponseWriter, _ *http.Request) {
+//		http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 //			w.Write(MustMarshal([]github.Project{
 //				{
 //					Name: github.String("mocked-proj-1"),
@@ -24,7 +24,7 @@ import (
 //					Name: github.String("mocked-proj-2"),
 //				},
 //			}))
-//		},
+//		}),
 //	)
 func WithRequestMatchHandler(
 	ep EndpointPattern,
