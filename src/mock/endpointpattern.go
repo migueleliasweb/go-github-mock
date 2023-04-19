@@ -42,6 +42,11 @@ var PostAppHookDeliveriesAttemptsByDeliveryId EndpointPattern = EndpointPattern{
 	Method:  "POST",
 }
 
+var GetAppInstallationRequests EndpointPattern = EndpointPattern{
+	Pattern: "/app/installation-requests",
+	Method:  "GET",
+}
+
 var GetAppInstallations EndpointPattern = EndpointPattern{
 	Pattern: "/app/installations",
 	Method:  "GET",
@@ -362,6 +367,46 @@ var GetOrganizations EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var GetOrganizationsPersonalAccessTokenRequestsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{org}/personal-access-token-requests",
+	Method:  "GET",
+}
+
+var PostOrganizationsPersonalAccessTokenRequestsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{org}/personal-access-token-requests",
+	Method:  "POST",
+}
+
+var PostOrganizationsPersonalAccessTokenRequestsByOrgByPatRequestId EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{org}/personal-access-token-requests/{pat_request_id}",
+	Method:  "POST",
+}
+
+var GetOrganizationsPersonalAccessTokenRequestsRepositoriesByOrgByPatRequestId EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{org}/personal-access-token-requests/{pat_request_id}/repositories",
+	Method:  "GET",
+}
+
+var GetOrganizationsPersonalAccessTokensByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{org}/personal-access-tokens",
+	Method:  "GET",
+}
+
+var PostOrganizationsPersonalAccessTokensByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{org}/personal-access-tokens",
+	Method:  "POST",
+}
+
+var PostOrganizationsPersonalAccessTokensByOrgByPatId EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{org}/personal-access-tokens/{pat_id}",
+	Method:  "POST",
+}
+
+var GetOrganizationsPersonalAccessTokensRepositoriesByOrgByPatId EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{org}/personal-access-tokens/{pat_id}/repositories",
+	Method:  "GET",
+}
+
 var GetOrgsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}",
 	Method:  "GET",
@@ -370,6 +415,11 @@ var GetOrgsByOrg EndpointPattern = EndpointPattern{
 var PatchOrgsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}",
 	Method:  "PATCH",
+}
+
+var DeleteOrgsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}",
+	Method:  "DELETE",
 }
 
 var GetOrgsActionsCacheUsageByOrg EndpointPattern = EndpointPattern{
@@ -772,6 +822,11 @@ var DeleteOrgsDependabotSecretsRepositoriesByOrgBySecretNameByRepositoryId Endpo
 	Method:  "DELETE",
 }
 
+var GetOrgsDockerConflictsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/docker/conflicts",
+	Method:  "GET",
+}
+
 var GetOrgsEventsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/events",
 	Method:  "GET",
@@ -1060,6 +1115,31 @@ var GetOrgsReposByOrg EndpointPattern = EndpointPattern{
 var PostOrgsReposByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/repos",
 	Method:  "POST",
+}
+
+var GetOrgsRulesetsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/rulesets",
+	Method:  "GET",
+}
+
+var PostOrgsRulesetsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/rulesets",
+	Method:  "POST",
+}
+
+var GetOrgsRulesetsByOrgByRulesetId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/rulesets/{ruleset_id}",
+	Method:  "GET",
+}
+
+var PutOrgsRulesetsByOrgByRulesetId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/rulesets/{ruleset_id}",
+	Method:  "PUT",
+}
+
+var DeleteOrgsRulesetsByOrgByRulesetId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/rulesets/{ruleset_id}",
+	Method:  "DELETE",
 }
 
 var GetOrgsSecretScanningAlertsByOrg EndpointPattern = EndpointPattern{
@@ -1470,6 +1550,16 @@ var GetReposActionsOidcCustomizationSubByOwnerByRepo EndpointPattern = EndpointP
 var PutReposActionsOidcCustomizationSubByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/actions/oidc/customization/sub",
 	Method:  "PUT",
+}
+
+var GetReposActionsOrganizationSecretsByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/organization-secrets",
+	Method:  "GET",
+}
+
+var GetReposActionsOrganizationVariablesByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/organization-variables",
+	Method:  "GET",
 }
 
 var GetReposActionsPermissionsByOwnerByRepo EndpointPattern = EndpointPattern{
@@ -2062,6 +2152,16 @@ var GetReposCodeScanningCodeqlDatabasesByOwnerByRepoByLanguage EndpointPattern =
 	Method:  "GET",
 }
 
+var GetReposCodeScanningDefaultSetupByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/code-scanning/default-setup",
+	Method:  "GET",
+}
+
+var PatchReposCodeScanningDefaultSetupByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/code-scanning/default-setup",
+	Method:  "PATCH",
+}
+
 var PostReposCodeScanningSarifsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/code-scanning/sarifs",
 	Method:  "POST",
@@ -2309,6 +2409,11 @@ var DeleteReposDependabotSecretsByOwnerByRepoBySecretName EndpointPattern = Endp
 
 var GetReposDependencyGraphCompareByOwnerByRepoByBasehead EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/dependency-graph/compare/{basehead}",
+	Method:  "GET",
+}
+
+var GetReposDependencyGraphSbomByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/dependency-graph/sbom",
 	Method:  "GET",
 }
 
@@ -3187,6 +3292,36 @@ var DeleteReposReleasesReactionsByOwnerByRepoByReleaseIdByReactionId EndpointPat
 	Method:  "DELETE",
 }
 
+var GetReposRulesBranchesByOwnerByRepoByBranch EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/rules/branches/{branch}",
+	Method:  "GET",
+}
+
+var GetReposRulesetsByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/rulesets",
+	Method:  "GET",
+}
+
+var PostReposRulesetsByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/rulesets",
+	Method:  "POST",
+}
+
+var GetReposRulesetsByOwnerByRepoByRulesetId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/rulesets/{ruleset_id}",
+	Method:  "GET",
+}
+
+var PutReposRulesetsByOwnerByRepoByRulesetId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/rulesets/{ruleset_id}",
+	Method:  "PUT",
+}
+
+var DeleteReposRulesetsByOwnerByRepoByRulesetId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/rulesets/{ruleset_id}",
+	Method:  "DELETE",
+}
+
 var GetReposSecretScanningAlertsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/secret-scanning/alerts",
 	Method:  "GET",
@@ -3205,6 +3340,26 @@ var PatchReposSecretScanningAlertsByOwnerByRepoByAlertNumber EndpointPattern = E
 var GetReposSecretScanningAlertsLocationsByOwnerByRepoByAlertNumber EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/secret-scanning/alerts/{alert_number}/locations",
 	Method:  "GET",
+}
+
+var GetReposSecurityAdvisoriesByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/security-advisories",
+	Method:  "GET",
+}
+
+var PostReposSecurityAdvisoriesByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/security-advisories",
+	Method:  "POST",
+}
+
+var GetReposSecurityAdvisoriesByOwnerByRepoByGhsaId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/security-advisories/{ghsa_id}",
+	Method:  "GET",
+}
+
+var PatchReposSecurityAdvisoriesByOwnerByRepoByGhsaId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/security-advisories/{ghsa_id}",
+	Method:  "PATCH",
 }
 
 var GetReposStargazersByOwnerByRepo EndpointPattern = EndpointPattern{
@@ -3742,6 +3897,11 @@ var PostUserCodespacesStopByCodespaceName EndpointPattern = EndpointPattern{
 	Method:  "POST",
 }
 
+var GetUserDockerConflicts EndpointPattern = EndpointPattern{
+	Pattern: "/user/docker/conflicts",
+	Method:  "GET",
+}
+
 var PatchUserEmailVisibility EndpointPattern = EndpointPattern{
 	Pattern: "/user/email/visibility",
 	Method:  "PATCH",
@@ -4007,6 +4167,21 @@ var DeleteUserRepositoryInvitationsByInvitationId EndpointPattern = EndpointPatt
 	Method:  "DELETE",
 }
 
+var GetUserSocialAccounts EndpointPattern = EndpointPattern{
+	Pattern: "/user/social_accounts",
+	Method:  "GET",
+}
+
+var PostUserSocialAccounts EndpointPattern = EndpointPattern{
+	Pattern: "/user/social_accounts",
+	Method:  "POST",
+}
+
+var DeleteUserSocialAccounts EndpointPattern = EndpointPattern{
+	Pattern: "/user/social_accounts",
+	Method:  "DELETE",
+}
+
 var GetUserSshSigningKeys EndpointPattern = EndpointPattern{
 	Pattern: "/user/ssh_signing_keys",
 	Method:  "GET",
@@ -4064,6 +4239,11 @@ var GetUsers EndpointPattern = EndpointPattern{
 
 var GetUsersByUsername EndpointPattern = EndpointPattern{
 	Pattern: "/users/{username}",
+	Method:  "GET",
+}
+
+var GetUsersDockerConflictsByUsername EndpointPattern = EndpointPattern{
+	Pattern: "/users/{username}/docker/conflicts",
 	Method:  "GET",
 }
 
@@ -4199,6 +4379,11 @@ var GetUsersSettingsBillingPackagesByUsername EndpointPattern = EndpointPattern{
 
 var GetUsersSettingsBillingSharedStorageByUsername EndpointPattern = EndpointPattern{
 	Pattern: "/users/{username}/settings/billing/shared-storage",
+	Method:  "GET",
+}
+
+var GetUsersSocialAccountsByUsername EndpointPattern = EndpointPattern{
+	Pattern: "/users/{username}/social_accounts",
 	Method:  "GET",
 }
 
