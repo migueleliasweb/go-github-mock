@@ -1,6 +1,7 @@
 package mock
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -68,6 +69,17 @@ func WithRequestMatch(
 	})
 }
 
+// WithRequestMatchEnterprise Same as `WithRequestMatch` but for Github Enterprise
+func WithRequestMatchEnterprise(
+	ep EndpointPattern,
+	responsesFIFO ...interface{},
+) MockBackendOption {
+	// prepend `/api/v3` like go-github: https://github.com/google/go-github/blob/8c7625e6a26563e0e031916cc44231912fc52e49/github/github.go#L375
+	ep.Pattern = fmt.Sprintf("/api/v3%s", ep.Pattern)
+
+	return WithRequestMatch(ep, responsesFIFO...)
+}
+
 // WithRequestMatchPages honors pagination directives.
 //
 // Pages can be requested in any order and each page can be called multiple times.
@@ -108,4 +120,15 @@ func WithRequestMatchPages(
 	return WithRequestMatchHandler(ep, &PaginatedReponseHandler{
 		ResponsePages: p,
 	})
+}
+
+// WithRequestMatchPagesEnterprise Same as `WithRequestMatchPages` but for Github Enterprise
+func WithRequestMatchPagesEnterprise(
+	ep EndpointPattern,
+	pages ...interface{},
+) MockBackendOption {
+	// prepend `/api/v3` like go-github: https://github.com/google/go-github/blob/8c7625e6a26563e0e031916cc44231912fc52e49/github/github.go#L375
+	ep.Pattern = fmt.Sprintf("/api/v3%s", ep.Pattern)
+
+	return WithRequestMatchPages(ep, pages...)
 }
