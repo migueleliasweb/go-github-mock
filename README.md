@@ -214,6 +214,32 @@ for {
 // len(allRepos) == 4
 ```
 
+## Mocking for Github Enterprise
+
+Github Enterprise uses a different prefix for its endpoints. In order to use the correct endpoints, please use the different set of `*Enterprise` options:
+
+- WithRequestMatchEnterprise
+- WithRequestMatchPagesEnterprise
+
+```golang
+mockedHTTPClient := mock.NewMockedHTTPClient(
+    mock.WithRequestMatchEnterprise( // uses enterprise endpoints instead
+        mock.GetUsersByUsername,
+        github.User{
+            Name: github.String("foobar"),
+        },
+    ),
+)
+
+c := github.NewClient(mockedHTTPClient)
+
+ctx := context.Background()
+
+user, _, userErr := c.Users.Get(ctx, "myuser")
+
+// user.Name == "foobar"
+```
+
 # Why
 
 Some conversations got started on [go-github#1800](https://github.com/google/go-github/issues/1800) since `go-github` didn't provide an interface that could be easily reimplemented for unittests. After lots of conversations from the folks from [go-github](https://github.com/google/go-github) and quite a few PR ideas later, this style of testing was deemed not suitable to be part of the core SDK as it's not a feature of the API itself. Nonetheless, the ability of writing unittests for code that uses the `go-github` package is critical. 
