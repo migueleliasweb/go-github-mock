@@ -231,7 +231,7 @@ mockedHTTPClient := mock.NewMockedHTTPClient(
     ),
 )
 
-c := github.NewClient(mockedHTTPClient)
+c := githubEnterprise.NewClient(mockedHTTPClient)
 
 ctx := context.Background()
 
