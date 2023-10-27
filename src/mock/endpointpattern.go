@@ -1122,6 +1122,41 @@ var PostOrgsProjectsByOrg EndpointPattern = EndpointPattern{
 	Method:  "POST",
 }
 
+var GetOrgsPropertiesSchemaByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/properties/schema",
+	Method:  "GET",
+}
+
+var PatchOrgsPropertiesSchemaByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/properties/schema",
+	Method:  "PATCH",
+}
+
+var GetOrgsPropertiesSchemaByOrgByCustomPropertyName EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/properties/schema/{custom_property_name}",
+	Method:  "GET",
+}
+
+var PutOrgsPropertiesSchemaByOrgByCustomPropertyName EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/properties/schema/{custom_property_name}",
+	Method:  "PUT",
+}
+
+var DeleteOrgsPropertiesSchemaByOrgByCustomPropertyName EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/properties/schema/{custom_property_name}",
+	Method:  "DELETE",
+}
+
+var GetOrgsPropertiesValuesByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/properties/values",
+	Method:  "GET",
+}
+
+var PatchOrgsPropertiesValuesByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/properties/values",
+	Method:  "PATCH",
+}
+
 var GetOrgsPublicMembersByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/public_members",
 	Method:  "GET",
@@ -1160,6 +1195,16 @@ var GetOrgsRulesetsByOrg EndpointPattern = EndpointPattern{
 var PostOrgsRulesetsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/rulesets",
 	Method:  "POST",
+}
+
+var GetOrgsRulesetsRuleSuitesByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/rulesets/rule-suites",
+	Method:  "GET",
+}
+
+var GetOrgsRulesetsRuleSuitesByOrgByRuleSuiteId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/rulesets/rule-suites/{rule_suite_id}",
+	Method:  "GET",
 }
 
 var GetOrgsRulesetsByOrgByRulesetId EndpointPattern = EndpointPattern{
@@ -1742,6 +1787,11 @@ var PostReposActionsRunsDeploymentProtectionRuleByOwnerByRepoByRunId EndpointPat
 	Method:  "POST",
 }
 
+var PostReposActionsRunsForceCancelByOwnerByRepoByRunId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/actions/runs/{run_id}/force-cancel",
+	Method:  "POST",
+}
+
 var GetReposActionsRunsJobsByOwnerByRepoByRunId EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/actions/runs/{run_id}/jobs",
 	Method:  "GET",
@@ -2239,6 +2289,11 @@ var GetReposCodespacesMachinesByOwnerByRepo EndpointPattern = EndpointPattern{
 
 var GetReposCodespacesNewByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/codespaces/new",
+	Method:  "GET",
+}
+
+var GetReposCodespacesPermissionsCheckByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/codespaces/permissions_check",
 	Method:  "GET",
 }
 
@@ -3112,6 +3167,11 @@ var PostReposProjectsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Method:  "POST",
 }
 
+var GetReposPropertiesValuesByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/properties/values",
+	Method:  "GET",
+}
+
 var GetReposPullsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/pulls",
 	Method:  "GET",
@@ -3370,6 +3430,16 @@ var GetReposRulesetsByOwnerByRepo EndpointPattern = EndpointPattern{
 var PostReposRulesetsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/rulesets",
 	Method:  "POST",
+}
+
+var GetReposRulesetsRuleSuitesByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/rulesets/rule-suites",
+	Method:  "GET",
+}
+
+var GetReposRulesetsRuleSuitesByOwnerByRepoByRuleSuiteId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/rulesets/rule-suites/{rule_suite_id}",
+	Method:  "GET",
 }
 
 var GetReposRulesetsByOwnerByRepoByRulesetId EndpointPattern = EndpointPattern{
