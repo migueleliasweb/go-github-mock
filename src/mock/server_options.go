@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"golang.org/x/time/rate"
 )
 
 // WithRequestMatchHandler implements a request callback
@@ -131,4 +132,29 @@ func WithRequestMatchPagesEnterprise(
 	ep.Pattern = fmt.Sprintf("/api/v3%s", ep.Pattern)
 
 	return WithRequestMatchPages(ep, pages...)
+}
+
+// WithRateLimit enforces a rate limit using [golang.org/x/time/rate].
+// rps is the number of requests per second allowed by the rate limiter.
+func WithRateLimit(rps float64) MockBackendOption {
+	limiter := rate.NewLimiter(rate.Limit(rps), 1)
+
+	rateLimitMiddleware := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if !limiter.Allow() {
+				// These values are based on this bit of logic within [github.com/google/go-github]:
+				// https://github.com/google/go-github/blob/5e25c5c215b3d21991d17447fba2e9d13a875159/github/github.go#L1243
+				w.Header().Set("X-RateLimit-Remaining", "0")
+				w.WriteHeader(http.StatusForbidden)
+
+				return
+			}
+
+			next.ServeHTTP(w, r)
+		})
+	}
+
+	return func(router *mux.Router) {
+		router.Use(rateLimitMiddleware)
+	}
 }
