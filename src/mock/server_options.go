@@ -134,12 +134,15 @@ func WithRequestMatchPagesEnterprise(
 	return WithRequestMatchPages(ep, pages...)
 }
 
-// WithRateLimit enforces a rate limit using [golang.org/x/time/rate].
+// rateLimitMiddleware enforces a rate limit using [golang.org/x/time/rate].
 // rps is the number of requests per second allowed by the rate limiter.
-func WithRateLimit(rps float64) MockBackendOption {
-	limiter := rate.NewLimiter(rate.Limit(rps), 1)
+// Higher burst values allow more calls to happen at once.
+// A zero value for burst will not allow any events, unless rps == [rate.Inf].
+// This middleware is intended to be used with [github.com/gorilla/mux].
+func rateLimitMiddleware(rps float64, burst int) func(next http.Handler) http.Handler {
+	limiter := rate.NewLimiter(rate.Limit(rps), burst)
 
-	rateLimitMiddleware := func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if !limiter.Allow() {
 				// These values are based on this bit of logic within [github.com/google/go-github]:
@@ -153,8 +156,11 @@ func WithRateLimit(rps float64) MockBackendOption {
 			next.ServeHTTP(w, r)
 		})
 	}
+}
 
+// WithRateLimit enforces a rate limit on the mocked [http.Client].
+func WithRateLimit(rps float64, burst int) MockBackendOption {
 	return func(router *mux.Router) {
-		router.Use(rateLimitMiddleware)
+		router.Use(rateLimitMiddleware(rps, burst))
 	}
 }
