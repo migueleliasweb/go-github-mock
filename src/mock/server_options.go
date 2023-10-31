@@ -37,6 +37,19 @@ func WithRequestMatchHandler(
 	}
 }
 
+// WithRequestMatchOptions is like [WithRequestMatchHandler] with [RequestMatchOptions] applied.
+func WithRequestMatchOptions(
+	ep EndpointPattern,
+	handler http.Handler,
+	rmo RequestMatchOptions,
+) MockBackendOption {
+	return func(router *mux.Router) {
+		sr := router.NewRoute().Subrouter()
+		sr.Handle(ep.Pattern, handler).Methods(ep.Method)
+		sr.Use(rateLimitMiddleware(rmo.RPS, rmo.Burst))
+	}
+}
+
 // WithRequestMatch implements a simple FIFO for requests
 // of the given `pattern`.
 //
@@ -121,6 +134,23 @@ func WithRequestMatchPages(
 	return WithRequestMatchHandler(ep, &PaginatedReponseHandler{
 		ResponsePages: p,
 	})
+}
+
+// WithRequestMatchOptionsPages is like [WithRequestMatchPages] with [RequestMatchOptions] applied.
+func WithRequestMatchOptionsPages(
+	ep EndpointPattern,
+	rmo RequestMatchOptions,
+	pages ...interface{},
+) MockBackendOption {
+	p := [][]byte{}
+
+	for _, r := range pages {
+		p = append(p, MustMarshal(r))
+	}
+
+	return WithRequestMatchOptions(ep, &PaginatedReponseHandler{
+		ResponsePages: p,
+	}, rmo)
 }
 
 // WithRequestMatchPagesEnterprise Same as `WithRequestMatchPages` but for Github Enterprise
