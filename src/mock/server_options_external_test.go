@@ -2,6 +2,7 @@ package mock_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 	"time"
 
@@ -37,7 +38,8 @@ func TestWithRateLimit(t *testing.T) {
 		repos, resp, err := ghc.Repositories.ListByOrg(context.Background(), "org", opts)
 		if err != nil {
 			// The only type of error we expect is one from the rate limiter.
-			if _, ok := err.(*github.RateLimitError); !ok {
+			var rle *github.RateLimitError
+			if !errors.As(err, &rle) {
 				t.Fatalf("error is not a github.RateLimitError: %v", err)
 			}
 
