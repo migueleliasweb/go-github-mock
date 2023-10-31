@@ -25,8 +25,10 @@ func TestWithRateLimit(t *testing.T) {
 			[]github.Repository{{Name: github.String(repoTwo)}},
 		),
 
-		// The rate limiter will allow 10 requests per second.
-		mock.WithRateLimit(10),
+		// The rate limiter will allow 10 requests per second, and a burst size of 1.
+		// These two options together mean that the rate of requests will be strictly enforced, so if any two requests are
+		// made less than 1/10th of a second apart, the latter will be refused and come back with a rate limit error.
+		mock.WithRateLimit(10, 1),
 	)
 
 	ghc := github.NewClient(mhc)
@@ -45,7 +47,8 @@ func TestWithRateLimit(t *testing.T) {
 
 			rleCount++
 
-			// Sleeping for one tenth of a second should be enough for the rate limiter on the mock server.
+			// After hitting the rate limiter and getting the appropriate error above, sleeping for one tenth of a second
+			// should be enough to reset the limiter and try requesting the repo list again.
 			time.Sleep(time.Second / 10)
 
 			continue
