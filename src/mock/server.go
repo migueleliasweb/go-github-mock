@@ -18,6 +18,11 @@ type EndpointPattern struct {
 	Method  string // "GET", "POST", "PATCH", etc
 }
 
+type RequestMatchOptions struct {
+	RPS   float64
+	Burst int
+}
+
 // MockBackendOption is used to configure the *mux.router
 // for the mocked backend
 type MockBackendOption func(*mux.Router)
