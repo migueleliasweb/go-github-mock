@@ -159,6 +159,7 @@ func rateLimitMiddleware(rps float64, burst int) func(next http.Handler) http.Ha
 }
 
 // WithRateLimit enforces a rate limit on the mocked [http.Client].
+// NOTE: This is an alpha feature. Future changes might break compatibility, until a stable version is released.
 func WithRateLimit(rps float64, burst int) MockBackendOption {
 	return func(router *mux.Router) {
 		router.Use(rateLimitMiddleware(rps, burst))
