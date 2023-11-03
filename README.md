@@ -3,13 +3,13 @@
 
 A library to aid unittesting code that uses Golang's Github SDK
 
-# Installation
+## Installation
 
 ```bash
 go get github.com/migueleliasweb/go-github-mock
 ```
 
-# Features
+## Features
 
 - Create mocks for successive calls for the same endpoint
 - Pagination support
@@ -17,18 +17,18 @@ go get github.com/migueleliasweb/go-github-mock
 - High level abstraction helps writing readabe unittests (see `mock.WithRequestMatch`)
 - Lower level abstraction for advanced uses (see `mock.WithRequestMatchHandler`)
 
-# Breaking changes
+## Breaking changes
 
 - `v0.0.3` the API for the server options have beem simplified
 - `v0.0.4` fixes to the gen script caused multiple url matches to change
 
-# Example
+## Examples
 
-```
+```go
 import "github.com/migueleliasweb/go-github-mock/src/mock"
 ```
 
-## Multiple requests
+### Multiple requests
 
 ```golang
 mockedHTTPClient := mock.NewMockedHTTPClient(
@@ -87,7 +87,7 @@ projs, _, projsErr := c.Organizations.ListProjects(
 
 ```
 
-## Returning empty results
+### Returning empty results
 
 ```golang
 mockedHTTPClient := NewMockedHTTPClient(
@@ -122,7 +122,7 @@ issues2, _, repo2Err := c.Issues.ListByRepo(ctx, "owner1", "repo2", &github.Issu
 // repo2Err == nil
 ```
 
-## Mocking errors from the API
+### Mocking errors from the API
 
 ```golang
 mockedHTTPClient := mock.NewMockedHTTPClient(
@@ -145,7 +145,7 @@ user, _, userErr := c.Users.Get(ctx, "someUser")
 
 // user == nil
 
-if userErr == nil {	
+if userErr == nil {
     if ghErr, ok := userErr.(*github.ErrorResponse); ok {
         fmt.Println(ghErr.Message) // == "github went belly up or something"
     }
@@ -153,7 +153,7 @@ if userErr == nil {
 
 ```
 
-## Mocking with pagination
+### Mocking with pagination
 
 ```golang
 mockedHTTPClient := NewMockedHTTPClient(
@@ -214,7 +214,7 @@ for {
 // len(allRepos) == 4
 ```
 
-## Mocking for Github Enterprise
+### Mocking for GitHub Enterprise
 
 Github Enterprise uses a different prefix for its endpoints. In order to use the correct endpoints, please use the different set of `*Enterprise` options:
 
@@ -240,16 +240,37 @@ user, _, userErr := c.Users.Get(ctx, "myuser")
 // user.Name == "foobar"
 ```
 
-# Why
+### Mocking with rate limits
 
-Some conversations got started on [go-github#1800](https://github.com/google/go-github/issues/1800) since `go-github` didn't provide an interface that could be easily reimplemented for unittests. After lots of conversations from the folks from [go-github](https://github.com/google/go-github) and quite a few PR ideas later, this style of testing was deemed not suitable to be part of the core SDK as it's not a feature of the API itself. Nonetheless, the ability of writing unittests for code that uses the `go-github` package is critical. 
+`WithRateLimit` uses a single rate-limiting middleware across all endpoints on the mock router.
+
+**NOTE:** This is an alpha feature. Future changes might break compatibility, until a stable version is released.
+
+```go
+  mhc := mock.NewMockedHTTPClient(
+    mock.WithRequestMatchPages(
+      mock.GetOrgsReposByOrg,
+      []github.Repository{{Name: github.String(repoOne)}},
+      []github.Repository{{Name: github.String(repoTwo)}},
+    ),
+
+    // The rate limiter will allow 10 requests per second, and a burst size of 1.
+    // These two options together mean that the rate of requests will be strictly enforced, so if any two requests are
+    // made less than 1/10th of a second apart, the latter will be refused and come back with a rate limit error.
+    mock.WithRateLimit(10, 1),
+  )
+```
+
+## Why
+
+Some conversations got started on [go-github#1800](https://github.com/google/go-github/issues/1800) since `go-github` didn't provide an interface that could be easily reimplemented for unittests. After lots of conversations from the folks from [go-github](https://github.com/google/go-github) and quite a few PR ideas later, this style of testing was deemed not suitable to be part of the core SDK as it's not a feature of the API itself. Nonetheless, the ability of writing unittests for code that uses the `go-github` package is critical.
 
 A reuseable, and not overly verbose, way of writing the tests was reached after some more interactions (months down the line) and here we are.
 
-# Thanks
+## Thanks
 
 Thanks for all ideas and feedback from the folks in [go-github](https://github.com/google/go-github/).
 
-# License
+## License
 
 This library is distributed under the MIT License found in LICENSE.
