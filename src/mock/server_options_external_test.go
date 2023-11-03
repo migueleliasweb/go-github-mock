@@ -93,7 +93,7 @@ func TestWithRequestMatchOptionsPages(t *testing.T) {
 		// The rate limiter will allow 10 requests per second to the teams endpoint only.
 		mock.WithRequestMatchOptionsPages(
 			mock.GetOrgsTeamsByOrg,
-			mock.RequestMatchOptions{RPS: 10, Burst: 1},
+			&mock.RequestMatchOptions{RPS: 10, Burst: 1},
 			[]github.Team{{Name: github.String(teamOne)}},
 			[]github.Team{{Name: github.String(teamTwo)}},
 		),

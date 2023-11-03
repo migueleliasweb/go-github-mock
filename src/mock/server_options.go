@@ -32,21 +32,22 @@ func WithRequestMatchHandler(
 	ep EndpointPattern,
 	handler http.Handler,
 ) MockBackendOption {
-	return func(router *mux.Router) {
-		router.Handle(ep.Pattern, handler).Methods(ep.Method)
-	}
+	return WithRequestMatchHandlerOptions(ep, handler, nil)
 }
 
-// WithRequestMatchOptions is like [WithRequestMatchHandler] with [RequestMatchOptions] applied.
-func WithRequestMatchOptions(
+// WithRequestMatchHandlerOptions is like [WithRequestMatchHandler] with [RequestMatchOptions] applied.
+func WithRequestMatchHandlerOptions(
 	ep EndpointPattern,
 	handler http.Handler,
-	rmo RequestMatchOptions,
+	rmo *RequestMatchOptions,
 ) MockBackendOption {
 	return func(router *mux.Router) {
-		sr := router.NewRoute().Subrouter()
-		sr.Handle(ep.Pattern, handler).Methods(ep.Method)
-		sr.Use(rateLimitMiddleware(rmo.RPS, rmo.Burst))
+		if rmo != nil {
+			router = router.NewRoute().Subrouter()
+			router.Use(rateLimitMiddleware(rmo.RPS, rmo.Burst))
+		}
+
+		router.Handle(ep.Pattern, handler).Methods(ep.Method)
 	}
 }
 
@@ -125,21 +126,13 @@ func WithRequestMatchPages(
 	ep EndpointPattern,
 	pages ...interface{},
 ) MockBackendOption {
-	p := [][]byte{}
-
-	for _, r := range pages {
-		p = append(p, MustMarshal(r))
-	}
-
-	return WithRequestMatchHandler(ep, &PaginatedReponseHandler{
-		ResponsePages: p,
-	})
+	return WithRequestMatchOptionsPages(ep, nil, pages...)
 }
 
 // WithRequestMatchOptionsPages is like [WithRequestMatchPages] with [RequestMatchOptions] applied.
 func WithRequestMatchOptionsPages(
 	ep EndpointPattern,
-	rmo RequestMatchOptions,
+	rmo *RequestMatchOptions,
 	pages ...interface{},
 ) MockBackendOption {
 	p := [][]byte{}
@@ -148,7 +141,7 @@ func WithRequestMatchOptionsPages(
 		p = append(p, MustMarshal(r))
 	}
 
-	return WithRequestMatchOptions(ep, &PaginatedReponseHandler{
+	return WithRequestMatchHandlerOptions(ep, &PaginatedReponseHandler{
 		ResponsePages: p,
 	}, rmo)
 }
