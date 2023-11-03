@@ -243,18 +243,18 @@ user, _, userErr := c.Users.Get(ctx, "myuser")
 **NOTE:** This is an alpha feature. Future changes might break compatibility, until a stable version is released.
 
 ```go
-  mhc := mock.NewMockedHTTPClient(
+mockedHTTPClient := mock.NewMockedHTTPClient(
     mock.WithRequestMatchPages(
-      mock.GetOrgsReposByOrg,
-      []github.Repository{{Name: github.String(repoOne)}},
-      []github.Repository{{Name: github.String(repoTwo)}},
+        mock.GetOrgsReposByOrg,
+        []github.Repository{{Name: github.String(repoOne)}},
+        []github.Repository{{Name: github.String(repoTwo)}},
     ),
 
     // The rate limiter will allow 10 requests per second, and a burst size of 1.
     // These two options together mean that the rate of requests will be strictly enforced, so if any two requests are
     // made less than 1/10th of a second apart, the latter will be refused and come back with a rate limit error.
     mock.WithRateLimit(10, 1),
-  )
+)
 ```
 
 ## Why
