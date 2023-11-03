@@ -12,15 +12,11 @@ go get github.com/migueleliasweb/go-github-mock
 ## Features
 
 - Create mocks for successive calls for the same endpoint
-- Pagination support
+- Pagination support (see `mock.WithRequestMatchPages`)
 - Mock error returns
 - High level abstraction helps writing readabe unittests (see `mock.WithRequestMatch`)
 - Lower level abstraction for advanced uses (see `mock.WithRequestMatchHandler`)
-
-## Breaking changes
-
-- `v0.0.3` the API for the server options have beem simplified
-- `v0.0.4` fixes to the gen script caused multiple url matches to change
+- Mock rate limiting errors from the api (see `mock.WithRateLimit`)
 
 ## Examples
 
