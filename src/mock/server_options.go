@@ -65,7 +65,7 @@ func WithRequestMatch(
 		}
 	}
 
-	return WithRequestMatchHandler(ep, &FIFOReponseHandler{
+	return WithRequestMatchHandler(ep, &FIFOResponseHandler{
 		Responses: responses,
 	})
 }
@@ -118,7 +118,7 @@ func WithRequestMatchPages(
 		p = append(p, MustMarshal(r))
 	}
 
-	return WithRequestMatchHandler(ep, &PaginatedReponseHandler{
+	return WithRequestMatchHandler(ep, &PaginatedResponseHandler{
 		ResponsePages: p,
 	})
 }
