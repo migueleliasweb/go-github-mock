@@ -37,7 +37,7 @@ func (srh *FIFOResponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 	srh.lock.Lock()
 	defer srh.lock.Unlock()
 
-	if srh.CurrentIndex > len(srh.Responses) {
+	if srh.CurrentIndex >= len(srh.Responses) {
 		panic(fmt.Sprintf(
 			"go-github-mock: no more mocks available for %s",
 			r.URL.Path,
