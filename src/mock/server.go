@@ -22,18 +22,18 @@ type EndpointPattern struct {
 // for the mocked backend
 type MockBackendOption func(*mux.Router)
 
-// FIFOReponseHandler handler implementation that
+// FIFOResponseHandler handler implementation that
 // responds to the HTTP requests following a FIFO approach.
 //
 // Once all available `Responses` have been used, this handler will panic()!
-type FIFOReponseHandler struct {
+type FIFOResponseHandler struct {
 	lock         sync.Mutex
 	Responses    [][]byte
 	CurrentIndex int
 }
 
 // ServeHTTP implementation of `http.Handler`
-func (srh *FIFOReponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (srh *FIFOResponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	srh.lock.Lock()
 	defer srh.lock.Unlock()
 
@@ -51,7 +51,7 @@ func (srh *FIFOReponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	w.Write(srh.Responses[srh.CurrentIndex])
 }
 
-// PaginatedReponseHandler handler implementation that
+// PaginatedResponseHandler handler implementation that
 // responds to the HTTP requests and honors the pagination headers
 //
 //	Header e.g: `Link: <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15>; rel="next",
@@ -60,11 +60,11 @@ func (srh *FIFOReponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 //	 <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=13>; rel="prev"`
 //
 // See: https://docs.github.com/en/rest/guides/traversing-with-pagination
-type PaginatedReponseHandler struct {
+type PaginatedResponseHandler struct {
 	ResponsePages [][]byte
 }
 
-func (prh *PaginatedReponseHandler) getCurrentPage(r *http.Request) int {
+func (prh *PaginatedResponseHandler) getCurrentPage(r *http.Request) int {
 	strPage := r.URL.Query().Get("page")
 
 	if strPage == "" {
@@ -81,7 +81,7 @@ func (prh *PaginatedReponseHandler) getCurrentPage(r *http.Request) int {
 	panic(fmt.Sprintf("invalid page: %s", strPage))
 }
 
-func (prh *PaginatedReponseHandler) generateLinkHeader(
+func (prh *PaginatedResponseHandler) generateLinkHeader(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
@@ -105,7 +105,7 @@ func (prh *PaginatedReponseHandler) generateLinkHeader(
 }
 
 // ServeHTTP implementation of `http.Handler`
-func (prh *PaginatedReponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (prh *PaginatedResponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	prh.generateLinkHeader(w, r)
 	w.Write(prh.ResponsePages[prh.getCurrentPage(r)-1])
 }
