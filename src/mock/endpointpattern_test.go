@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/google/go-github/v56/github"
+	"github.com/google/go-github/v59/github"
 )
 
 func TestRepoGetContents(t *testing.T) {
