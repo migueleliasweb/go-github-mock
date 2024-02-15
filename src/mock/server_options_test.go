@@ -3,7 +3,7 @@ package mock
 import (
 	"testing"
 
-	"github.com/google/go-github/v56/github"
+	"github.com/google/go-github/v59/github"
 	"github.com/gorilla/mux"
 )
 
