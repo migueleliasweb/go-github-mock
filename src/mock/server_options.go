@@ -37,6 +37,17 @@ func WithRequestMatchHandler(
 	}
 }
 
+// WithRequestMatchHandlerEnterprise Same as `WithRequestMatchHandler` but for Github Enterprise
+func WithRequestMatchHandlerEnterprise(
+	ep EndpointPattern,
+	handler http.Handler,
+) MockBackendOption {
+	return func(router *mux.Router) {
+		ep.Pattern = fmt.Sprintf("/api/v3%s", ep.Pattern)
+		router.Handle(ep.Pattern, handler).Methods(ep.Method)
+	}
+}
+
 // WithRequestMatch implements a simple FIFO for requests
 // of the given `pattern`.
 //
