@@ -382,6 +382,11 @@ var PatchNotificationsThreadsByThreadId EndpointPattern = EndpointPattern{
 	Method:  "PATCH",
 }
 
+var DeleteNotificationsThreadsByThreadId EndpointPattern = EndpointPattern{
+	Pattern: "/notifications/threads/{thread_id}",
+	Method:  "DELETE",
+}
+
 var GetNotificationsThreadsSubscriptionByThreadId EndpointPattern = EndpointPattern{
 	Pattern: "/notifications/threads/{thread_id}/subscription",
 	Method:  "GET",
@@ -1014,6 +1019,76 @@ var DeleteOrgsMigrationsReposLockByOrgByMigrationIdByRepoName EndpointPattern = 
 
 var GetOrgsMigrationsRepositoriesByOrgByMigrationId EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/migrations/{migration_id}/repositories",
+	Method:  "GET",
+}
+
+var GetOrgsOrganizationFineGrainedPermissionsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-fine-grained-permissions",
+	Method:  "GET",
+}
+
+var GetOrgsOrganizationRolesByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles",
+	Method:  "GET",
+}
+
+var PostOrgsOrganizationRolesByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles",
+	Method:  "POST",
+}
+
+var DeleteOrgsOrganizationRolesTeamsByOrgByTeamSlug EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles/teams/{team_slug}",
+	Method:  "DELETE",
+}
+
+var PutOrgsOrganizationRolesTeamsByOrgByTeamSlugByRoleId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles/teams/{team_slug}/{role_id}",
+	Method:  "PUT",
+}
+
+var DeleteOrgsOrganizationRolesTeamsByOrgByTeamSlugByRoleId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles/teams/{team_slug}/{role_id}",
+	Method:  "DELETE",
+}
+
+var DeleteOrgsOrganizationRolesUsersByOrgByUsername EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles/users/{username}",
+	Method:  "DELETE",
+}
+
+var PutOrgsOrganizationRolesUsersByOrgByUsernameByRoleId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles/users/{username}/{role_id}",
+	Method:  "PUT",
+}
+
+var DeleteOrgsOrganizationRolesUsersByOrgByUsernameByRoleId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles/users/{username}/{role_id}",
+	Method:  "DELETE",
+}
+
+var GetOrgsOrganizationRolesByOrgByRoleId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles/{role_id}",
+	Method:  "GET",
+}
+
+var PatchOrgsOrganizationRolesByOrgByRoleId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles/{role_id}",
+	Method:  "PATCH",
+}
+
+var DeleteOrgsOrganizationRolesByOrgByRoleId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles/{role_id}",
+	Method:  "DELETE",
+}
+
+var GetOrgsOrganizationRolesTeamsByOrgByRoleId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles/{role_id}/teams",
+	Method:  "GET",
+}
+
+var GetOrgsOrganizationRolesUsersByOrgByRoleId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/organization-roles/{role_id}/users",
 	Method:  "GET",
 }
 
@@ -3137,8 +3212,18 @@ var GetReposPagesBuildsByOwnerByRepoByBuildId EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
-var PostReposPagesDeploymentByOwnerByRepo EndpointPattern = EndpointPattern{
-	Pattern: "/repos/{owner}/{repo}/pages/deployment",
+var PostReposPagesDeploymentsByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/pages/deployments",
+	Method:  "POST",
+}
+
+var GetReposPagesDeploymentsByOwnerByRepoByPagesDeploymentId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/pages/deployments/{pages_deployment_id}",
+	Method:  "GET",
+}
+
+var PostReposPagesDeploymentsCancelByOwnerByRepoByPagesDeploymentId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/pages/deployments/{pages_deployment_id}/cancel",
 	Method:  "POST",
 }
 
@@ -3170,6 +3255,11 @@ var PostReposProjectsByOwnerByRepo EndpointPattern = EndpointPattern{
 var GetReposPropertiesValuesByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/properties/values",
 	Method:  "GET",
+}
+
+var PatchReposPropertiesValuesByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/properties/values",
+	Method:  "PATCH",
 }
 
 var GetReposPullsByOwnerByRepo EndpointPattern = EndpointPattern{
@@ -3504,6 +3594,11 @@ var PatchReposSecurityAdvisoriesByOwnerByRepoByGhsaId EndpointPattern = Endpoint
 
 var PostReposSecurityAdvisoriesCveByOwnerByRepoByGhsaId EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/security-advisories/{ghsa_id}/cve",
+	Method:  "POST",
+}
+
+var PostReposSecurityAdvisoriesForksByOwnerByRepoByGhsaId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/security-advisories/{ghsa_id}/forks",
 	Method:  "POST",
 }
 
