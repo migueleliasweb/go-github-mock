@@ -2702,6 +2702,56 @@ var DeleteReposEnvironmentsDeploymentProtectionRulesByOwnerByRepoByEnvironmentNa
 	Method:  "DELETE",
 }
 
+var GetReposEnvironmentsSecretsByOwnerByRepoByEnvironmentName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/secrets",
+	Method:  "GET",
+}
+
+var GetReposEnvironmentsSecretsPublicKeyByOwnerByRepoByEnvironmentName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/secrets/public-key",
+	Method:  "GET",
+}
+
+var GetReposEnvironmentsSecretsByOwnerByRepoByEnvironmentNameBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/secrets/{secret_name}",
+	Method:  "GET",
+}
+
+var PutReposEnvironmentsSecretsByOwnerByRepoByEnvironmentNameBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/secrets/{secret_name}",
+	Method:  "PUT",
+}
+
+var DeleteReposEnvironmentsSecretsByOwnerByRepoByEnvironmentNameBySecretName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/secrets/{secret_name}",
+	Method:  "DELETE",
+}
+
+var GetReposEnvironmentsVariablesByOwnerByRepoByEnvironmentName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/variables",
+	Method:  "GET",
+}
+
+var PostReposEnvironmentsVariablesByOwnerByRepoByEnvironmentName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/variables",
+	Method:  "POST",
+}
+
+var GetReposEnvironmentsVariablesByOwnerByRepoByEnvironmentNameByName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/variables/{name}",
+	Method:  "GET",
+}
+
+var PatchReposEnvironmentsVariablesByOwnerByRepoByEnvironmentNameByName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/variables/{name}",
+	Method:  "PATCH",
+}
+
+var DeleteReposEnvironmentsVariablesByOwnerByRepoByEnvironmentNameByName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/environments/{environment_name}/variables/{name}",
+	Method:  "DELETE",
+}
+
 var GetReposEventsByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/events",
 	Method:  "GET",
@@ -3232,6 +3282,11 @@ var GetReposPagesHealthByOwnerByRepo EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var GetReposPrivateVulnerabilityReportingByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/private-vulnerability-reporting",
+	Method:  "GET",
+}
+
 var PutReposPrivateVulnerabilityReportingByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/private-vulnerability-reporting",
 	Method:  "PUT",
@@ -3750,56 +3805,6 @@ var PostReposGenerateByTemplateOwnerByTemplateRepo EndpointPattern = EndpointPat
 var GetRepositories EndpointPattern = EndpointPattern{
 	Pattern: "/repositories",
 	Method:  "GET",
-}
-
-var GetRepositoriesEnvironmentsSecretsByRepositoryIdByEnvironmentName EndpointPattern = EndpointPattern{
-	Pattern: "/repositories/{repository_id}/environments/{environment_name}/secrets",
-	Method:  "GET",
-}
-
-var GetRepositoriesEnvironmentsSecretsPublicKeyByRepositoryIdByEnvironmentName EndpointPattern = EndpointPattern{
-	Pattern: "/repositories/{repository_id}/environments/{environment_name}/secrets/public-key",
-	Method:  "GET",
-}
-
-var GetRepositoriesEnvironmentsSecretsByRepositoryIdByEnvironmentNameBySecretName EndpointPattern = EndpointPattern{
-	Pattern: "/repositories/{repository_id}/environments/{environment_name}/secrets/{secret_name}",
-	Method:  "GET",
-}
-
-var PutRepositoriesEnvironmentsSecretsByRepositoryIdByEnvironmentNameBySecretName EndpointPattern = EndpointPattern{
-	Pattern: "/repositories/{repository_id}/environments/{environment_name}/secrets/{secret_name}",
-	Method:  "PUT",
-}
-
-var DeleteRepositoriesEnvironmentsSecretsByRepositoryIdByEnvironmentNameBySecretName EndpointPattern = EndpointPattern{
-	Pattern: "/repositories/{repository_id}/environments/{environment_name}/secrets/{secret_name}",
-	Method:  "DELETE",
-}
-
-var GetRepositoriesEnvironmentsVariablesByRepositoryIdByEnvironmentName EndpointPattern = EndpointPattern{
-	Pattern: "/repositories/{repository_id}/environments/{environment_name}/variables",
-	Method:  "GET",
-}
-
-var PostRepositoriesEnvironmentsVariablesByRepositoryIdByEnvironmentName EndpointPattern = EndpointPattern{
-	Pattern: "/repositories/{repository_id}/environments/{environment_name}/variables",
-	Method:  "POST",
-}
-
-var GetRepositoriesEnvironmentsVariablesByRepositoryIdByEnvironmentNameByName EndpointPattern = EndpointPattern{
-	Pattern: "/repositories/{repository_id}/environments/{environment_name}/variables/{name}",
-	Method:  "GET",
-}
-
-var PatchRepositoriesEnvironmentsVariablesByRepositoryIdByEnvironmentNameByName EndpointPattern = EndpointPattern{
-	Pattern: "/repositories/{repository_id}/environments/{environment_name}/variables/{name}",
-	Method:  "PATCH",
-}
-
-var DeleteRepositoriesEnvironmentsVariablesByRepositoryIdByEnvironmentNameByName EndpointPattern = EndpointPattern{
-	Pattern: "/repositories/{repository_id}/environments/{environment_name}/variables/{name}",
-	Method:  "DELETE",
 }
 
 var GetSearchCode EndpointPattern = EndpointPattern{
