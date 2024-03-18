@@ -1,0 +1,49 @@
+VERSION 			:= 0.0.0
+COVERAGE_DIR 		:= ./target
+PACKAGES 			= ./...
+GOPATH 				:= $(shell go env GOPATH)
+HOST 				:= github.com
+OWNER 				:= migueleliasweb
+
+init:
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.56.2
+
+lint: init
+	$(GOPATH)/bin/golangci-lint run ./...
+
+generate:
+	go generate $(PACKAGES)
+
+format:
+	go fmt $(PACKAGES)
+
+clean:
+	@echo "Cleaning target/"
+	@rm -rf target
+	go mod tidy
+
+test:
+	go test -coverprofile=$(COVERAGE_DIR)/coverage.out $(PACKAGES)
+	go tool cover -html=$(COVERAGE_DIR)/coverage.out -o $(COVERAGE_DIR)/coverage.html
+
+verify:
+	go mod verify
+	go vet -all $(PACKAGES)
+
+compile:
+	go build $(PACKAGES)
+
+build-init:
+	mkdir -p target/builds
+
+build: clean build-init verify compile test
+	for GOOS in darwin linux windows; do \
+		mkdir -p target/builds/$$GOOS ; \
+		GOOS=$$GOOS CGO_ENABLED=0 go build -a -installsuffix cgo \
+			-ldflags " \
+    		-X $(HOST)/$(OWNER)/$(COMPONENT)/cli.CLIVersion=$(VERSION) \
+    		-X $(HOST)/$(OWNER)/$(COMPONENT)/cli.CLISHA=$(shell git rev-parse --short HEAD) \
+    		-X $(HOST)/$(OWNER)/$(COMPONENT)/cli.CLIOS=$$GOOS" \
+		  -v -o target/builds/$$GOOS/$(COMPONENT) ; \
+	done
+	chmod -R 755 target/builds
