@@ -3,15 +3,12 @@ package main
 import (
 	"bytes"
 	"flag"
-	"fmt"
 	"io/ioutil"
-	"os"
+	"log"
 	"os/exec"
 
 	"github.com/buger/jsonparser"
 
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/migueleliasweb/go-github-mock/src/gen"
 )
 
@@ -24,20 +21,10 @@ func init() {
 func main() {
 	flag.Parse()
 
-	var l log.Logger
-
-	l = log.NewLogfmtLogger(log.NewSyncWriter(os.Stdout))
-
-	l = log.With(l, "caller", log.DefaultCaller)
-
-	if debug {
-		l = level.NewFilter(l, level.AllowDebug())
-		level.Debug(l).Log("msg", "running in debug mode")
-	} else {
-		l = level.NewFilter(l, level.AllowInfo())
+	apiDefinition, err := gen.FetchAPIDefinition()
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	apiDefinition := gen.FetchAPIDefinition(l)
 
 	buf := bytes.NewBuffer([]byte(gen.OUTPUT_FILE_HEADER))
 
@@ -59,7 +46,6 @@ func main() {
 
 			for _, httpMethod := range httpMethods {
 				code := gen.FormatToGolangVarNameAndValue(
-					l,
 					gen.ScrapeResult{
 						HTTPMethod:      httpMethod,
 						EndpointPattern: endpointPattern,
@@ -77,24 +63,16 @@ func main() {
 	ioutil.WriteFile(
 		gen.OUTPUT_FILEPATH,
 		buf.Bytes(),
-		0755,
+		0o755,
 	)
 
-	errorsFound := false
-
 	// to catch possible format errors
-	if err := exec.Command("gofmt", "-w", "src/mock/endpointpattern.go").Run(); err != nil {
-		level.Error(l).Log("msg", fmt.Sprintf("error executing gofmt: %s", err.Error()))
-		errorsFound = true
+	if err := exec.Command("gofmt", "-w", gen.OUTPUT_FILEPATH).Run(); err != nil {
+		log.Fatalf("error executing gofmt: %s", err)
 	}
 
 	// to catch everything else (hopefully)
 	if err := exec.Command("go", "vet", "./...").Run(); err != nil {
-		level.Error(l).Log("msg", fmt.Sprintf("error executing go vet: %s", err.Error()))
-		errorsFound = true
-	}
-
-	if errorsFound {
-		os.Exit(1)
+		log.Fatalf("error executing go vet: %s", err)
 	}
 }
