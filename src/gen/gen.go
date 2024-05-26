@@ -4,13 +4,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"regexp"
 	"strings"
-
-	"github.com/go-kit/log"
-
-	"github.com/go-kit/log/level"
 )
 
 const GITHUB_OPENAPI_DEFINITION_LOCATION = "https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json?raw=true"
@@ -20,6 +15,7 @@ const OUTPUT_FILE_HEADER = `package mock
 // Code generated; DO NOT EDIT.
 
 `
+
 const OUTPUT_FILEPATH = "src/mock/endpointpattern.go"
 
 type ScrapeResult struct {
@@ -27,37 +23,23 @@ type ScrapeResult struct {
 	EndpointPattern string
 }
 
-func FetchAPIDefinition(l log.Logger) []byte {
+func FetchAPIDefinition() ([]byte, error) {
 	resp, err := http.Get(GITHUB_OPENAPI_DEFINITION_LOCATION)
-
 	if err != nil {
-		level.Error(l).Log(
-			"msg", "error fetching github's api definition",
-			"err", err.Error(),
-		)
-
-		os.Exit(1)
+		return nil, fmt.Errorf("error fetching github's api definition: %w", err)
 	}
-
 	defer resp.Body.Close()
 
 	bodyBytes, err := io.ReadAll(resp.Body)
-
 	if err != nil {
-		level.Error(l).Log(
-			"msg", "error fetching github's api definition",
-			"err", err.Error(),
-		)
-
-		os.Exit(1)
+		return nil, fmt.Errorf("error reading github's api definition: %w", err)
 	}
-
-	return bodyBytes
+	return bodyBytes, nil
 }
 
 // FormatToGolangVarName generated the proper golang variable name
 // given a endpoint format from the API
-func FormatToGolangVarName(l log.Logger, sr ScrapeResult) string {
+func FormatToGolangVarName(sr ScrapeResult) string {
 	result := strings.Title(strings.ToLower(sr.HTTPMethod))
 
 	if sr.EndpointPattern == "/" {
@@ -91,7 +73,7 @@ func FormatToGolangVarName(l log.Logger, sr ScrapeResult) string {
 		}
 	}
 
-	//handle the "By`X`" part of the variable name
+	// handle the "By`X`" part of the variable name
 	for _, part := range epSplit {
 		if len(part) < 1 {
 			continue
@@ -112,7 +94,7 @@ func FormatToGolangVarName(l log.Logger, sr ScrapeResult) string {
 	return result
 }
 
-func FormatToGolangVarNameAndValue(l log.Logger, sr ScrapeResult) string {
+func FormatToGolangVarNameAndValue(sr ScrapeResult) string {
 	sr = applyMutation(sr)
 
 	return fmt.Sprintf(
@@ -121,7 +103,7 @@ func FormatToGolangVarNameAndValue(l log.Logger, sr ScrapeResult) string {
 	Method:  "%s",
 }
 `,
-		FormatToGolangVarName(l, sr),
+		FormatToGolangVarName(sr),
 		sr.EndpointPattern,
 		strings.ToUpper(sr.HTTPMethod),
 	) + "\n"
