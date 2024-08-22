@@ -162,6 +162,11 @@ var GetEmojis EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var GetEnterprisesCopilotBillingSeatsByEnterprise EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/copilot/billing/seats",
+	Method:  "GET",
+}
+
 var GetEnterprisesCopilotUsageByEnterprise EndpointPattern = EndpointPattern{
 	Pattern: "/enterprises/{enterprise}/copilot/usage",
 	Method:  "GET",
@@ -174,6 +179,11 @@ var GetEnterprisesDependabotAlertsByEnterprise EndpointPattern = EndpointPattern
 
 var GetEnterprisesSecretScanningAlertsByEnterprise EndpointPattern = EndpointPattern{
 	Pattern: "/enterprises/{enterprise}/secret-scanning/alerts",
+	Method:  "GET",
+}
+
+var GetEnterprisesTeamCopilotUsageByEnterpriseByTeamSlug EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/team/{team_slug}/copilot/usage",
 	Method:  "GET",
 }
 
@@ -652,6 +662,11 @@ var DeleteOrgsActionsVariablesRepositoriesByOrgByNameByRepositoryId EndpointPatt
 	Method:  "DELETE",
 }
 
+var GetOrgsAttestationsByOrgBySubjectDigest EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/attestations/{subject_digest}",
+	Method:  "GET",
+}
+
 var GetOrgsBlocksByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/blocks",
 	Method:  "GET",
@@ -674,6 +689,56 @@ var DeleteOrgsBlocksByOrgByUsername EndpointPattern = EndpointPattern{
 
 var GetOrgsCodeScanningAlertsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/code-scanning/alerts",
+	Method:  "GET",
+}
+
+var GetOrgsCodeSecurityConfigurationsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/code-security/configurations",
+	Method:  "GET",
+}
+
+var PostOrgsCodeSecurityConfigurationsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/code-security/configurations",
+	Method:  "POST",
+}
+
+var GetOrgsCodeSecurityConfigurationsDefaultsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/code-security/configurations/defaults",
+	Method:  "GET",
+}
+
+var DeleteOrgsCodeSecurityConfigurationsDetachByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/code-security/configurations/detach",
+	Method:  "DELETE",
+}
+
+var GetOrgsCodeSecurityConfigurationsByOrgByConfigurationId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/code-security/configurations/{configuration_id}",
+	Method:  "GET",
+}
+
+var PatchOrgsCodeSecurityConfigurationsByOrgByConfigurationId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/code-security/configurations/{configuration_id}",
+	Method:  "PATCH",
+}
+
+var DeleteOrgsCodeSecurityConfigurationsByOrgByConfigurationId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/code-security/configurations/{configuration_id}",
+	Method:  "DELETE",
+}
+
+var PostOrgsCodeSecurityConfigurationsAttachByOrgByConfigurationId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/code-security/configurations/{configuration_id}/attach",
+	Method:  "POST",
+}
+
+var PutOrgsCodeSecurityConfigurationsDefaultsByOrgByConfigurationId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/code-security/configurations/{configuration_id}/defaults",
+	Method:  "PUT",
+}
+
+var GetOrgsCodeSecurityConfigurationsRepositoriesByOrgByConfigurationId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/code-security/configurations/{configuration_id}/repositories",
 	Method:  "GET",
 }
 
@@ -1032,19 +1097,9 @@ var GetOrgsMigrationsRepositoriesByOrgByMigrationId EndpointPattern = EndpointPa
 	Method:  "GET",
 }
 
-var GetOrgsOrganizationFineGrainedPermissionsByOrg EndpointPattern = EndpointPattern{
-	Pattern: "/orgs/{org}/organization-fine-grained-permissions",
-	Method:  "GET",
-}
-
 var GetOrgsOrganizationRolesByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/organization-roles",
 	Method:  "GET",
-}
-
-var PostOrgsOrganizationRolesByOrg EndpointPattern = EndpointPattern{
-	Pattern: "/orgs/{org}/organization-roles",
-	Method:  "POST",
 }
 
 var DeleteOrgsOrganizationRolesTeamsByOrgByTeamSlug EndpointPattern = EndpointPattern{
@@ -1080,16 +1135,6 @@ var DeleteOrgsOrganizationRolesUsersByOrgByUsernameByRoleId EndpointPattern = En
 var GetOrgsOrganizationRolesByOrgByRoleId EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/organization-roles/{role_id}",
 	Method:  "GET",
-}
-
-var PatchOrgsOrganizationRolesByOrgByRoleId EndpointPattern = EndpointPattern{
-	Pattern: "/orgs/{org}/organization-roles/{role_id}",
-	Method:  "PATCH",
-}
-
-var DeleteOrgsOrganizationRolesByOrgByRoleId EndpointPattern = EndpointPattern{
-	Pattern: "/orgs/{org}/organization-roles/{role_id}",
-	Method:  "DELETE",
 }
 
 var GetOrgsOrganizationRolesTeamsByOrgByRoleId EndpointPattern = EndpointPattern{
@@ -2022,6 +2067,16 @@ var GetReposAssigneesByOwnerByRepoByAssignee EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var PostReposAttestationsByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/attestations",
+	Method:  "POST",
+}
+
+var GetReposAttestationsByOwnerByRepoBySubjectDigest EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/attestations/{subject_digest}",
+	Method:  "GET",
+}
+
 var GetReposAutolinksByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/autolinks",
 	Method:  "GET",
@@ -2332,6 +2387,21 @@ var GetReposCodeScanningCodeqlDatabasesByOwnerByRepoByLanguage EndpointPattern =
 	Method:  "GET",
 }
 
+var PostReposCodeScanningCodeqlVariantAnalysesByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/code-scanning/codeql/variant-analyses",
+	Method:  "POST",
+}
+
+var GetReposCodeScanningCodeqlVariantAnalysesByOwnerByRepoByCodeqlVariantAnalysisId EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/code-scanning/codeql/variant-analyses/{codeql_variant_analysis_id}",
+	Method:  "GET",
+}
+
+var GetReposCodeScanningCodeqlVariantAnalysesReposByOwnerByRepoByCodeqlVariantAnalysisIdByRepoOwnerByRepoName EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/code-scanning/codeql/variant-analyses/{codeql_variant_analysis_id}/repos/{repo_owner}/{repo_name}",
+	Method:  "GET",
+}
+
 var GetReposCodeScanningDefaultSetupByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/code-scanning/default-setup",
 	Method:  "GET",
@@ -2349,6 +2419,11 @@ var PostReposCodeScanningSarifsByOwnerByRepo EndpointPattern = EndpointPattern{
 
 var GetReposCodeScanningSarifsByOwnerByRepoBySarifId EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/code-scanning/sarifs/{sarif_id}",
+	Method:  "GET",
+}
+
+var GetReposCodeSecurityConfigurationByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/code-security-configuration",
 	Method:  "GET",
 }
 
@@ -3637,6 +3712,11 @@ var GetReposSecretScanningAlertsLocationsByOwnerByRepoByAlertNumber EndpointPatt
 	Method:  "GET",
 }
 
+var PostReposSecretScanningPushProtectionBypassesByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/secret-scanning/push-protection-bypasses",
+	Method:  "POST",
+}
+
 var GetReposSecurityAdvisoriesByOwnerByRepo EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/security-advisories",
 	Method:  "GET",
@@ -4492,6 +4572,11 @@ var GetUserTeams EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var GetUserByAccountId EndpointPattern = EndpointPattern{
+	Pattern: "/user/{account_id}",
+	Method:  "GET",
+}
+
 var GetUsers EndpointPattern = EndpointPattern{
 	Pattern: "/users",
 	Method:  "GET",
@@ -4499,6 +4584,11 @@ var GetUsers EndpointPattern = EndpointPattern{
 
 var GetUsersByUsername EndpointPattern = EndpointPattern{
 	Pattern: "/users/{username}",
+	Method:  "GET",
+}
+
+var GetUsersAttestationsByUsernameBySubjectDigest EndpointPattern = EndpointPattern{
+	Pattern: "/users/{username}/attestations/{subject_digest}",
 	Method:  "GET",
 }
 
