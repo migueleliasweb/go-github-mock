@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 
@@ -37,44 +36,64 @@ func main() {
 		l = level.NewFilter(l, level.AllowInfo())
 	}
 
-	apiDefinition := gen.FetchAPIDefinition(l)
+	fetchAndWriteAPIDefinition(l)
+}
+
+// type helper just to ensure uniqueness of the generated output
+type uniq map[string]struct{}
+
+func (u uniq) has(s string) bool {
+	_, ok := u[s]
+	return ok
+}
+
+func fetchAndWriteAPIDefinition(l log.Logger) {
 
 	buf := bytes.NewBuffer([]byte(gen.OUTPUT_FILE_HEADER))
+	u := make(uniq)
+	defs := [][]byte{
+		gen.FetchAPIDefinition(l, gen.GITHUB_OPENAPI_DEFINITION_LOCATION),
+		gen.FetchAPIDefinition(l, gen.GITHUB_OPENAPI_ENTERPRISE_DEFINITION_LOCATION),
+	}
 
-	jsonparser.ObjectEach(
-		apiDefinition,
-		func(key, endpointDefinition []byte, _ jsonparser.ValueType, _ int) error {
-			endpointPattern := string(key)
+	for _, d := range defs {
+		jsonparser.ObjectEach(
+			d,
+			func(key, endpointDefinition []byte, _ jsonparser.ValueType, _ int) error {
+				endpointPattern := string(key)
 
-			httpMethods := []string{}
+				httpMethods := []string{}
 
-			jsonparser.ObjectEach(
-				endpointDefinition,
-				func(key, _ []byte, _ jsonparser.ValueType, _ int) error {
-					httpMethods = append(httpMethods, string(key))
+				jsonparser.ObjectEach(
+					endpointDefinition,
+					func(key, _ []byte, _ jsonparser.ValueType, _ int) error {
+						httpMethods = append(httpMethods, string(key))
 
-					return nil
-				},
-			)
-
-			for _, httpMethod := range httpMethods {
-				code := gen.FormatToGolangVarNameAndValue(
-					l,
-					gen.ScrapeResult{
-						HTTPMethod:      httpMethod,
-						EndpointPattern: endpointPattern,
+						return nil
 					},
 				)
 
-				buf.WriteString(code)
-			}
+				for _, httpMethod := range httpMethods {
+					code := gen.FormatToGolangVarNameAndValue(
+						l,
+						gen.ScrapeResult{
+							HTTPMethod:      httpMethod,
+							EndpointPattern: endpointPattern,
+						},
+					)
+					if !u.has(code) {
+						u[code] = struct{}{}
+						buf.WriteString(code)
+					}
+				}
 
-			return nil
-		},
-		"paths",
-	)
+				return nil
+			},
+			"paths",
+		)
+	}
 
-	ioutil.WriteFile(
+	os.WriteFile(
 		gen.OUTPUT_FILEPATH,
 		buf.Bytes(),
 		0755,
@@ -83,7 +102,7 @@ func main() {
 	errorsFound := false
 
 	// to catch possible format errors
-	if err := exec.Command("gofmt", "-w", "src/mock/endpointpattern.go").Run(); err != nil {
+	if err := exec.Command("gofmt", "-w", gen.OUTPUT_FILEPATH).Run(); err != nil {
 		level.Error(l).Log("msg", fmt.Sprintf("error executing gofmt: %s", err.Error()))
 		errorsFound = true
 	}
