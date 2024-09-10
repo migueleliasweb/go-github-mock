@@ -15,6 +15,8 @@ import (
 
 const GITHUB_OPENAPI_DEFINITION_LOCATION = "https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json?raw=true"
 
+const GITHUB_OPENAPI_ENTERPRISE_DEFINITION_LOCATION = "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/ghec/ghec.json"
+
 const OUTPUT_FILE_HEADER = `package mock
 
 // Code generated; DO NOT EDIT.
@@ -27,8 +29,8 @@ type ScrapeResult struct {
 	EndpointPattern string
 }
 
-func FetchAPIDefinition(l log.Logger) []byte {
-	resp, err := http.Get(GITHUB_OPENAPI_DEFINITION_LOCATION)
+func FetchAPIDefinition(l log.Logger, d string) []byte {
+	resp, err := http.Get(d)
 
 	if err != nil {
 		level.Error(l).Log(
