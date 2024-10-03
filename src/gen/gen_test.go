@@ -63,7 +63,7 @@ func TestFormatToGolangVarName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FormatToGolangVarName(log.NewNopLogger(), tt.sr); got != tt.want {
+			if got := FormatToGolangVarName(log.NewNopLogger(), tt.sr, ""); got != tt.want {
 				t.Errorf("formatToGolangVarName() = %v, want %v", got, tt.want)
 			}
 		})

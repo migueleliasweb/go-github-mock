@@ -9,25 +9,20 @@ import (
 	"strings"
 
 	"github.com/go-kit/log"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 
 	"github.com/go-kit/log/level"
 )
-
-const GITHUB_OPENAPI_DEFINITION_LOCATION = "https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json?raw=true"
-
-const GITHUB_OPENAPI_ENTERPRISE_DEFINITION_LOCATION = "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/ghec/ghec.json"
-
-const OUTPUT_FILE_HEADER = `package mock
-
-// Code generated; DO NOT EDIT.
-
-`
-const OUTPUT_FILEPATH = "src/mock/endpointpattern.go"
 
 type ScrapeResult struct {
 	HTTPMethod      string
 	EndpointPattern string
 }
+
+// Replacing deprecated method strings.Title
+// requires a "Caser"
+var Caser = cases.Title(language.English)
 
 func FetchAPIDefinition(l log.Logger, d string) []byte {
 	resp, err := http.Get(d)
@@ -59,8 +54,10 @@ func FetchAPIDefinition(l log.Logger, d string) []byte {
 
 // FormatToGolangVarName generated the proper golang variable name
 // given a endpoint format from the API
-func FormatToGolangVarName(l log.Logger, sr ScrapeResult) string {
-	result := strings.Title(strings.ToLower(sr.HTTPMethod))
+// It can have an optional prefix, needed between method and endpoint
+func FormatToGolangVarName(l log.Logger, sr ScrapeResult, pr string) string {
+	result := Caser.String(strings.ToLower(sr.HTTPMethod))
+	result += pr
 
 	if sr.EndpointPattern == "/" {
 		return result + "Slash"
@@ -87,9 +84,14 @@ func FormatToGolangVarName(l log.Logger, sr ScrapeResult) string {
 		}
 
 		splitPart := strings.Split(part, "_")
-
 		for _, p := range splitPart {
-			result = result + strings.Title(p)
+			// avoid ending up with method like
+			// PostEnterpriseEnterprisesActionsRunnerGroupsByEnterprise
+			// by only adding part if different from the prefix
+			if pr == "" || !strings.Contains(Caser.String(p), pr) {
+				result = result + Caser.String(p)
+			}
+
 		}
 	}
 
@@ -106,7 +108,7 @@ func FormatToGolangVarName(l log.Logger, sr ScrapeResult) string {
 			result += "By"
 
 			for _, splitPart := range strings.Split(part, "_") {
-				result += strings.Title(splitPart)
+				result += Caser.String(splitPart)
 			}
 		}
 	}
@@ -114,7 +116,7 @@ func FormatToGolangVarName(l log.Logger, sr ScrapeResult) string {
 	return result
 }
 
-func FormatToGolangVarNameAndValue(l log.Logger, sr ScrapeResult) string {
+func FormatToGolangVarNameAndValue(l log.Logger, sr ScrapeResult, p string) string {
 	sr = applyMutation(sr)
 
 	return fmt.Sprintf(
@@ -123,7 +125,7 @@ func FormatToGolangVarNameAndValue(l log.Logger, sr ScrapeResult) string {
 	Method:  "%s",
 }
 `,
-		FormatToGolangVarName(l, sr),
+		FormatToGolangVarName(l, sr, p),
 		sr.EndpointPattern,
 		strings.ToUpper(sr.HTTPMethod),
 	) + "\n"

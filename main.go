@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/buger/jsonparser"
 
@@ -35,66 +36,64 @@ func main() {
 	} else {
 		l = level.NewFilter(l, level.AllowInfo())
 	}
+	configs := []gen.ConfigEntry{
+		{
+			URL: gen.GITHUB_OPENAPI_DEFINITION_LOCATION,
+		},
+		{
+			URL:    gen.GITHUB_OPENAPI_ENTERPRISE_DEFINITION_LOCATION,
+			Prefix: "enterprise",
+		},
+	}
 
-	fetchAndWriteAPIDefinition(l)
+	for _, c := range configs {
+		fetchAndWriteAPIDefinition(l, c)
+	}
+
 }
 
-// type helper just to ensure uniqueness of the generated output
-type uniq map[string]struct{}
-
-func (u uniq) has(s string) bool {
-	_, ok := u[s]
-	return ok
-}
-
-func fetchAndWriteAPIDefinition(l log.Logger) {
+func fetchAndWriteAPIDefinition(l log.Logger, c gen.ConfigEntry) {
 
 	buf := bytes.NewBuffer([]byte(gen.OUTPUT_FILE_HEADER))
-	u := make(uniq)
-	defs := [][]byte{
-		gen.FetchAPIDefinition(l, gen.GITHUB_OPENAPI_DEFINITION_LOCATION),
-		gen.FetchAPIDefinition(l, gen.GITHUB_OPENAPI_ENTERPRISE_DEFINITION_LOCATION),
-	}
 
-	for _, d := range defs {
-		jsonparser.ObjectEach(
-			d,
-			func(key, endpointDefinition []byte, _ jsonparser.ValueType, _ int) error {
-				endpointPattern := string(key)
+	d := gen.FetchAPIDefinition(l, c.URL)
 
-				httpMethods := []string{}
+	jsonparser.ObjectEach(
+		d,
+		func(key, endpointDefinition []byte, _ jsonparser.ValueType, _ int) error {
+			endpointPattern := string(key)
 
-				jsonparser.ObjectEach(
-					endpointDefinition,
-					func(key, _ []byte, _ jsonparser.ValueType, _ int) error {
-						httpMethods = append(httpMethods, string(key))
+			httpMethods := []string{}
 
-						return nil
+			jsonparser.ObjectEach(
+				endpointDefinition,
+				func(key, _ []byte, _ jsonparser.ValueType, _ int) error {
+					httpMethods = append(httpMethods, string(key))
+
+					return nil
+				},
+			)
+
+			for _, httpMethod := range httpMethods {
+				buf.WriteString(gen.FormatToGolangVarNameAndValue(
+					l,
+					gen.ScrapeResult{
+						HTTPMethod:      httpMethod,
+						EndpointPattern: endpointPattern,
 					},
-				)
+					c.FormatPrefix(),
+				))
+			}
 
-				for _, httpMethod := range httpMethods {
-					code := gen.FormatToGolangVarNameAndValue(
-						l,
-						gen.ScrapeResult{
-							HTTPMethod:      httpMethod,
-							EndpointPattern: endpointPattern,
-						},
-					)
-					if !u.has(code) {
-						u[code] = struct{}{}
-						buf.WriteString(code)
-					}
-				}
+			return nil
+		},
+		"paths",
+	)
 
-				return nil
-			},
-			"paths",
-		)
-	}
+	of := filepath.Join(gen.OUTPUT_DIR, c.ComputeFilename())
 
 	os.WriteFile(
-		gen.OUTPUT_FILEPATH,
+		of,
 		buf.Bytes(),
 		0755,
 	)
@@ -102,7 +101,7 @@ func fetchAndWriteAPIDefinition(l log.Logger) {
 	errorsFound := false
 
 	// to catch possible format errors
-	if err := exec.Command("gofmt", "-w", gen.OUTPUT_FILEPATH).Run(); err != nil {
+	if err := exec.Command("gofmt", "-w", of).Run(); err != nil {
 		level.Error(l).Log("msg", fmt.Sprintf("error executing gofmt: %s", err.Error()))
 		errorsFound = true
 	}
