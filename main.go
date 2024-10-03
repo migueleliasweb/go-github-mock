@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/buger/jsonparser"
 
@@ -36,13 +36,30 @@ func main() {
 	} else {
 		l = level.NewFilter(l, level.AllowInfo())
 	}
+	configs := []gen.ConfigEntry{
+		{
+			URL: gen.GITHUB_OPENAPI_DEFINITION_LOCATION,
+		},
+		{
+			URL:    gen.GITHUB_OPENAPI_ENTERPRISE_DEFINITION_LOCATION,
+			Prefix: "enterprise",
+		},
+	}
 
-	apiDefinition := gen.FetchAPIDefinition(l)
+	for _, c := range configs {
+		fetchAndWriteAPIDefinition(l, c)
+	}
+
+}
+
+func fetchAndWriteAPIDefinition(l log.Logger, c gen.ConfigEntry) {
 
 	buf := bytes.NewBuffer([]byte(gen.OUTPUT_FILE_HEADER))
 
+	d := gen.FetchAPIDefinition(l, c.URL)
+
 	jsonparser.ObjectEach(
-		apiDefinition,
+		d,
 		func(key, endpointDefinition []byte, _ jsonparser.ValueType, _ int) error {
 			endpointPattern := string(key)
 
@@ -58,15 +75,14 @@ func main() {
 			)
 
 			for _, httpMethod := range httpMethods {
-				code := gen.FormatToGolangVarNameAndValue(
+				buf.WriteString(gen.FormatToGolangVarNameAndValue(
 					l,
 					gen.ScrapeResult{
 						HTTPMethod:      httpMethod,
 						EndpointPattern: endpointPattern,
 					},
-				)
-
-				buf.WriteString(code)
+					c.FormatPrefix(),
+				))
 			}
 
 			return nil
@@ -74,8 +90,10 @@ func main() {
 		"paths",
 	)
 
-	ioutil.WriteFile(
-		gen.OUTPUT_FILEPATH,
+	of := filepath.Join(gen.OUTPUT_DIR, c.ComputeFilename())
+
+	os.WriteFile(
+		of,
 		buf.Bytes(),
 		0755,
 	)
@@ -83,7 +101,7 @@ func main() {
 	errorsFound := false
 
 	// to catch possible format errors
-	if err := exec.Command("gofmt", "-w", "src/mock/endpointpattern.go").Run(); err != nil {
+	if err := exec.Command("gofmt", "-w", of).Run(); err != nil {
 		level.Error(l).Log("msg", fmt.Sprintf("error executing gofmt: %s", err.Error()))
 		errorsFound = true
 	}
