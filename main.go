@@ -3,14 +3,12 @@ package main
 import (
 	"bytes"
 	"flag"
-	"fmt"
+	"log/slog"
 	"os"
 	"os/exec"
 
 	"github.com/buger/jsonparser"
 
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/migueleliasweb/go-github-mock/src/gen"
 )
 
@@ -23,37 +21,31 @@ func init() {
 func main() {
 	flag.Parse()
 
-	var l log.Logger
-
-	l = log.NewLogfmtLogger(log.NewSyncWriter(os.Stdout))
-
-	l = log.With(l, "caller", log.DefaultCaller)
-
-	if debug {
-		l = level.NewFilter(l, level.AllowDebug())
-		level.Debug(l).Log("msg", "running in debug mode")
-	} else {
-		l = level.NewFilter(l, level.AllowInfo())
-	}
-
-	fetchAndWriteAPIDefinition(l)
+	fetchAndWriteAPIDefinition()
 }
 
 // type helper just to ensure uniqueness of the generated output
 type uniq map[string]struct{}
 
+// has will add `s` to the map whe not found
 func (u uniq) has(s string) bool {
-	_, ok := u[s]
-	return ok
+	_, has := u[s]
+
+	if !has {
+		u[s] = struct{}{}
+	}
+
+	return has
 }
 
-func fetchAndWriteAPIDefinition(l log.Logger) {
-
+func fetchAndWriteAPIDefinition() {
 	buf := bytes.NewBuffer([]byte(gen.OUTPUT_FILE_HEADER))
+
 	u := make(uniq)
+
 	defs := [][]byte{
-		gen.FetchAPIDefinition(l, gen.GITHUB_OPENAPI_DEFINITION_LOCATION),
-		gen.FetchAPIDefinition(l, gen.GITHUB_OPENAPI_ENTERPRISE_DEFINITION_LOCATION),
+		gen.FetchAPIDefinition(gen.GITHUB_OPENAPI_DEFINITION_LOCATION),
+		// gen.FetchAPIDefinition(gen.GITHUB_OPENAPI_ENTERPRISE_DEFINITION_LOCATION),
 	}
 
 	for _, d := range defs {
@@ -75,14 +67,12 @@ func fetchAndWriteAPIDefinition(l log.Logger) {
 
 				for _, httpMethod := range httpMethods {
 					code := gen.FormatToGolangVarNameAndValue(
-						l,
 						gen.ScrapeResult{
 							HTTPMethod:      httpMethod,
 							EndpointPattern: endpointPattern,
 						},
 					)
 					if !u.has(code) {
-						u[code] = struct{}{}
 						buf.WriteString(code)
 					}
 				}
@@ -103,13 +93,13 @@ func fetchAndWriteAPIDefinition(l log.Logger) {
 
 	// to catch possible format errors
 	if err := exec.Command("gofmt", "-w", gen.OUTPUT_FILEPATH).Run(); err != nil {
-		level.Error(l).Log("msg", fmt.Sprintf("error executing gofmt: %s", err.Error()))
+		slog.Info("error executing gofmt", "err", err.Error())
 		errorsFound = true
 	}
 
 	// to catch everything else (hopefully)
 	if err := exec.Command("go", "vet", "./...").Run(); err != nil {
-		level.Error(l).Log("msg", fmt.Sprintf("error executing go vet: %s", err.Error()))
+		slog.Info("error executing go vet", "err", err.Error())
 		errorsFound = true
 	}
 
