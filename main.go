@@ -12,12 +12,6 @@ import (
 	"github.com/migueleliasweb/go-github-mock/src/gen"
 )
 
-var debug bool
-
-func init() {
-	flag.BoolVar(&debug, "debug", false, "output debug information")
-}
-
 func main() {
 	flag.Parse()
 
