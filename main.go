@@ -45,7 +45,7 @@ func fetchAndWriteAPIDefinition() {
 
 	defs := [][]byte{
 		gen.FetchAPIDefinition(gen.GITHUB_OPENAPI_DEFINITION_LOCATION),
-		// gen.FetchAPIDefinition(gen.GITHUB_OPENAPI_ENTERPRISE_DEFINITION_LOCATION),
+		gen.FetchAPIDefinition(gen.GITHUB_OPENAPI_ENTERPRISE_DEFINITION_LOCATION),
 	}
 
 	for _, d := range defs {
