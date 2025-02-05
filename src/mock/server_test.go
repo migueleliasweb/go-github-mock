@@ -15,14 +15,14 @@ func TestNewMockedHTTPClient(t *testing.T) {
 		WithRequestMatch(
 			GetUsersByUsername,
 			github.User{
-				Name: github.String("foobar"),
+				Name: github.Ptr("foobar"),
 			},
 		),
 		WithRequestMatch(
 			GetUsersOrgsByUsername,
 			[]github.Organization{
 				{
-					Name: github.String("foobar123thisorgwasmocked"),
+					Name: github.Ptr("foobar123thisorgwasmocked"),
 				},
 			},
 		),
@@ -149,7 +149,7 @@ func TestMocksNotConfiguredError(t *testing.T) {
 		WithRequestMatch(
 			GetUsersByUsername,
 			github.User{
-				Name: github.String("foobar"),
+				Name: github.Ptr("foobar"),
 			},
 		),
 	)
@@ -190,18 +190,18 @@ func TestMocksPaginationAllPages(t *testing.T) {
 			GetOrgsReposByOrg,
 			[]github.Repository{
 				{
-					Name: github.String("repo-A-on-first-page"),
+					Name: github.Ptr("repo-A-on-first-page"),
 				},
 				{
-					Name: github.String("repo-B-on-first-page"),
+					Name: github.Ptr("repo-B-on-first-page"),
 				},
 			},
 			[]github.Repository{
 				{
-					Name: github.String("repo-C-on-second-page"),
+					Name: github.Ptr("repo-C-on-second-page"),
 				},
 				{
-					Name: github.String("repo-D-on-second-page"),
+					Name: github.Ptr("repo-D-on-second-page"),
 				},
 			},
 		),
@@ -253,12 +253,12 @@ func TestEmptyArrayResult(t *testing.T) {
 			GetReposIssuesByOwnerByRepo,
 			[]github.Issue{
 				{
-					ID:    github.Int64(123),
-					Title: github.String("Issue 1"),
+					ID:    github.Ptr(int64(123)),
+					Title: github.Ptr("Issue 1"),
 				},
 				{
-					ID:    github.Int64(456),
-					Title: github.String("Issue 2"),
+					ID:    github.Ptr(int64(456)),
+					Title: github.Ptr("Issue 2"),
 				},
 			},
 			[]github.Issue{},

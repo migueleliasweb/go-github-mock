@@ -135,14 +135,14 @@ func (efrt *EnforceHostRoundTripper) RoundTrip(r *http.Request) (*http.Response,
 //	WithRequestMatch(
 //		GetUsersByUsername,
 //		github.User{
-//			Name: github.String("foobar"),
+//			Name: github.Ptr("foobar"),
 //		},
 //	),
 //	WithRequestMatch(
 //		GetUsersOrgsByUsername,
 //		[]github.Organization{
 //			{
-//				Name: github.String("foobar123thisorgwasmocked"),
+//				Name: github.Ptr("foobar123thisorgwasmocked"),
 //			},
 //		},
 //	),
@@ -151,10 +151,10 @@ func (efrt *EnforceHostRoundTripper) RoundTrip(r *http.Request) (*http.Response,
 //		func(w http.ResponseWriter, _ *http.Request) {
 //			w.Write(MustMarshal([]github.Project{
 //				{
-//					Name: github.String("mocked-proj-1"),
+//					Name: github.Ptr("mocked-proj-1"),
 //				},
 //				{
-//					Name: github.String("mocked-proj-2"),
+//					Name: github.Ptr("mocked-proj-2"),
 //				},
 //			}))
 //		},

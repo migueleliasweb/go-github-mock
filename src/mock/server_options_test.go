@@ -43,10 +43,10 @@ func TestWithRequestMatchPagesEnterprise(t *testing.T) {
 		GetOrgsReposByOrg,
 		[]github.Repository{
 			{
-				Name: github.String("repo-A-on-first-page"),
+				Name: github.Ptr("repo-A-on-first-page"),
 			},
 			{
-				Name: github.String("repo-B-on-first-page"),
+				Name: github.Ptr("repo-B-on-first-page"),
 			},
 		},
 	)

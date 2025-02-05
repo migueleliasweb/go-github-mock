@@ -31,14 +31,14 @@ mockedHTTPClient := mock.NewMockedHTTPClient(
     mock.WithRequestMatch(
         mock.GetUsersByUsername,
         github.User{
-            Name: github.String("foobar"),
+            Name: github.Ptr("foobar"),
         },
     ),
     mock.WithRequestMatch(
         mock.GetUsersOrgsByUsername,
         []github.Organization{
             {
-                Name: github.String("foobar123thisorgwasmocked"),
+                Name: github.Ptr("foobar123thisorgwasmocked"),
             },
         },
     ),
@@ -47,10 +47,10 @@ mockedHTTPClient := mock.NewMockedHTTPClient(
         http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
             w.Write(mock.MustMarshal([]github.Project{
                 {
-                    Name: github.String("mocked-proj-1"),
+                    Name: github.Ptr("mocked-proj-1"),
                 },
                 {
-                    Name: github.String("mocked-proj-2"),
+                    Name: github.Ptr("mocked-proj-2"),
                 },
             }))
         }),
@@ -91,12 +91,12 @@ mockedHTTPClient := NewMockedHTTPClient(
         GetReposIssuesByOwnerByRepo,
         []github.Issue{
             {
-                ID:    github.Int64(123),
-                Title: github.String("Issue 1"),
+                ID:    github.Ptr(int64(123)),
+                Title: github.Ptr("Issue 1"),
             },
             {
-                ID:    github.Int64(456),
-                Title: github.String("Issue 2"),
+                ID:    github.Ptr(int64(456)),
+                Title: github.Ptr("Issue 2"),
             },
         },
         []github.Issue{},
@@ -157,18 +157,18 @@ mockedHTTPClient := NewMockedHTTPClient(
         GetOrgsReposByOrg,
         []github.Repository{
             {
-                Name: github.String("repo-A-on-first-page"),
+                Name: github.Ptr("repo-A-on-first-page"),
             },
             {
-                Name: github.String("repo-B-on-first-page"),
+                Name: github.Ptr("repo-B-on-first-page"),
             },
         },
         []github.Repository{
             {
-                Name: github.String("repo-C-on-second-page"),
+                Name: github.Ptr("repo-C-on-second-page"),
             },
             {
-                Name: github.String("repo-D-on-second-page"),
+                Name: github.Ptr("repo-D-on-second-page"),
             },
         },
     ),
@@ -222,7 +222,7 @@ mockedHTTPClient := mock.NewMockedHTTPClient(
     mock.WithRequestMatchEnterprise( // uses enterprise endpoints instead
         mock.GetUsersByUsername,
         github.User{
-            Name: github.String("foobar"),
+            Name: github.Ptr("foobar"),
         },
     ),
 )
@@ -246,8 +246,8 @@ user, _, userErr := c.Users.Get(ctx, "myuser")
 mockedHTTPClient := mock.NewMockedHTTPClient(
     mock.WithRequestMatchPages(
         mock.GetOrgsReposByOrg,
-        []github.Repository{{Name: github.String(repoOne)}},
-        []github.Repository{{Name: github.String(repoTwo)}},
+        []github.Repository{{Name: github.Ptr(repoOne)}},
+        []github.Repository{{Name: github.Ptr(repoTwo)}},
     ),
 
     // The rate limiter will allow 10 requests per second, and a burst size of 1.
