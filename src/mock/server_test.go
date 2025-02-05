@@ -26,19 +26,6 @@ func TestNewMockedHTTPClient(t *testing.T) {
 				},
 			},
 		),
-		WithRequestMatchHandler(
-			GetOrgsProjectsByOrg,
-			http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-				w.Write(MustMarshal([]github.Project{
-					{
-						Name: github.String("mocked-proj-1"),
-					},
-					{
-						Name: github.String("mocked-proj-2"),
-					},
-				}))
-			}),
-		),
 	)
 	c := github.NewClient(mockedHTTPClient)
 
@@ -70,20 +57,6 @@ func TestNewMockedHTTPClient(t *testing.T) {
 
 	if *(orgs[0].Name) != "foobar123thisorgwasmocked" {
 		t.Errorf("orgs[0].Name is %s, want %s", *orgs[0].Name, "foobar123thisorgdoesnotexist")
-	}
-
-	projs, _, projsErr := c.Organizations.ListProjects(
-		ctx,
-		*orgs[0].Name,
-		&github.ProjectListOptions{},
-	)
-
-	if projsErr != nil {
-		t.Errorf("projs err is %s, want nil", projsErr.Error())
-	}
-
-	if len(projs) != 2 {
-		t.Errorf("projs len is %d want 2", len(projs))
 	}
 }
 

@@ -1307,16 +1307,6 @@ var GetOrgsPersonalAccessTokensRepositoriesByOrgByPatId EndpointPattern = Endpoi
 	Method:  "GET",
 }
 
-var GetOrgsProjectsByOrg EndpointPattern = EndpointPattern{
-	Pattern: "/orgs/{org}/projects",
-	Method:  "GET",
-}
-
-var PostOrgsProjectsByOrg EndpointPattern = EndpointPattern{
-	Pattern: "/orgs/{org}/projects",
-	Method:  "POST",
-}
-
 var GetOrgsPropertiesSchemaByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/properties/schema",
 	Method:  "GET",
