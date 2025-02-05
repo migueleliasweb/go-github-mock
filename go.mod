@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/buger/jsonparser v1.1.1
-	github.com/google/go-github/v64 v64.0.0
+	github.com/google/go-github/v68 v68.0.0
 	github.com/gorilla/mux v1.8.0
 	golang.org/x/text v0.19.0
 	golang.org/x/time v0.3.0

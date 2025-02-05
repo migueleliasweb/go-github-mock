@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/go-github/v64/github"
+	"github.com/google/go-github/v68/github"
 )
 
 func TestNewMockedHTTPClient(t *testing.T) {
