@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/go-github/v64/github"
+	"github.com/google/go-github/v69/github"
 )
 
 func TestNewMockedHTTPClient(t *testing.T) {
@@ -15,29 +15,16 @@ func TestNewMockedHTTPClient(t *testing.T) {
 		WithRequestMatch(
 			GetUsersByUsername,
 			github.User{
-				Name: github.String("foobar"),
+				Name: github.Ptr("foobar"),
 			},
 		),
 		WithRequestMatch(
 			GetUsersOrgsByUsername,
 			[]github.Organization{
 				{
-					Name: github.String("foobar123thisorgwasmocked"),
+					Name: github.Ptr("foobar123thisorgwasmocked"),
 				},
 			},
-		),
-		WithRequestMatchHandler(
-			GetOrgsProjectsByOrg,
-			http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-				w.Write(MustMarshal([]github.Project{
-					{
-						Name: github.String("mocked-proj-1"),
-					},
-					{
-						Name: github.String("mocked-proj-2"),
-					},
-				}))
-			}),
 		),
 	)
 	c := github.NewClient(mockedHTTPClient)
@@ -70,20 +57,6 @@ func TestNewMockedHTTPClient(t *testing.T) {
 
 	if *(orgs[0].Name) != "foobar123thisorgwasmocked" {
 		t.Errorf("orgs[0].Name is %s, want %s", *orgs[0].Name, "foobar123thisorgdoesnotexist")
-	}
-
-	projs, _, projsErr := c.Organizations.ListProjects(
-		ctx,
-		*orgs[0].Name,
-		&github.ProjectListOptions{},
-	)
-
-	if projsErr != nil {
-		t.Errorf("projs err is %s, want nil", projsErr.Error())
-	}
-
-	if len(projs) != 2 {
-		t.Errorf("projs len is %d want 2", len(projs))
 	}
 }
 
@@ -176,7 +149,7 @@ func TestMocksNotConfiguredError(t *testing.T) {
 		WithRequestMatch(
 			GetUsersByUsername,
 			github.User{
-				Name: github.String("foobar"),
+				Name: github.Ptr("foobar"),
 			},
 		),
 	)
@@ -217,18 +190,18 @@ func TestMocksPaginationAllPages(t *testing.T) {
 			GetOrgsReposByOrg,
 			[]github.Repository{
 				{
-					Name: github.String("repo-A-on-first-page"),
+					Name: github.Ptr("repo-A-on-first-page"),
 				},
 				{
-					Name: github.String("repo-B-on-first-page"),
+					Name: github.Ptr("repo-B-on-first-page"),
 				},
 			},
 			[]github.Repository{
 				{
-					Name: github.String("repo-C-on-second-page"),
+					Name: github.Ptr("repo-C-on-second-page"),
 				},
 				{
-					Name: github.String("repo-D-on-second-page"),
+					Name: github.Ptr("repo-D-on-second-page"),
 				},
 			},
 		),
@@ -280,12 +253,12 @@ func TestEmptyArrayResult(t *testing.T) {
 			GetReposIssuesByOwnerByRepo,
 			[]github.Issue{
 				{
-					ID:    github.Int64(123),
-					Title: github.String("Issue 1"),
+					ID:    github.Ptr(int64(123)),
+					Title: github.Ptr("Issue 1"),
 				},
 				{
-					ID:    github.Int64(456),
-					Title: github.String("Issue 2"),
+					ID:    github.Ptr(int64(456)),
+					Title: github.Ptr("Issue 2"),
 				},
 			},
 			[]github.Issue{},
