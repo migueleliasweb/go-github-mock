@@ -3,11 +3,12 @@ package main
 import (
 	"bytes"
 	"context"
-	"flag"
-	"fmt"
+	"io/fs"
 	"log/slog"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"strings"
 
 	"github.com/buger/jsonparser"
 	"github.com/google/go-github/v69/github"
@@ -17,8 +18,6 @@ import (
 )
 
 func main() {
-	flag.Parse()
-
 	fetchAndWriteAPIDefinition()
 	updateGoGithubDep()
 }
@@ -92,13 +91,13 @@ func fetchAndWriteAPIDefinition() {
 
 	// to catch possible format errors
 	if err := exec.Command("gofmt", "-w", gen.OUTPUT_FILEPATH).Run(); err != nil {
-		slog.Info("error executing gofmt", "err", err.Error())
+		slog.Error("error executing gofmt", "err", err.Error())
 		errorsFound = true
 	}
 
 	// to catch everything else (hopefully)
 	if err := exec.Command("go", "vet", "./...").Run(); err != nil {
-		slog.Info("error executing go vet", "err", err.Error())
+		slog.Error("error executing go vet", "err", err.Error())
 		errorsFound = true
 	}
 
@@ -110,33 +109,121 @@ func fetchAndWriteAPIDefinition() {
 func updateGoGithubDep() {
 	ghClient := github.NewClient(nil)
 
-	fileContent, _, _, err := ghClient.Repositories.GetContents(
+	releaseInfo, _, err := ghClient.Repositories.GetLatestRelease(
 		context.Background(),
 		"google",
 		"go-github",
-		"/go.mod",
-		nil,
 	)
 
 	if err != nil {
-		panic("error fetching go.mod contents from google/go-github: " + err.Error())
+		slog.Error(
+			"error fetching latest release from google/go-github",
+			"err", err.Error(),
+		)
+
+		os.Exit(1)
 	}
 
-	decodedContents, err := fileContent.GetContent()
+	goGithubMockFileBytes, err := os.ReadFile("go.mod")
 
 	if err != nil {
-		panic("error decoding go.mod contents from google/go-github: " + err.Error())
+		slog.Error(
+			"error reading go.mod contents from go-github-mock",
+			"err", err.Error(),
+		)
+
+		os.Exit(1)
 	}
 
-	goModFile, err := modfile.Parse(
+	goGithubMockModFile, err := modfile.Parse(
 		"go.mod",
-		[]byte(decodedContents),
+		goGithubMockFileBytes,
 		nil,
 	)
 
 	if err != nil {
-		panic("error parsing go.mod contents from google/go-github: " + err.Error())
+		slog.Error(
+			"error parsing go.mod contents from go-github-mock",
+			"err", err.Error(),
+		)
+
+		os.Exit(1)
 	}
 
-	fmt.Println(goModFile.Module.Mod.Path)
+	localGoGithubPath := ""
+	localGoGithubVersion := ""
+
+	for _, requireInfo := range goGithubMockModFile.Require {
+		if strings.HasPrefix(requireInfo.Mod.Path, "github.com/google/go-github/v") {
+			localGoGithubPath = requireInfo.Mod.Path
+			localGoGithubVersion = requireInfo.Mod.Version
+			break
+		}
+	}
+
+	// e.g. "v69.2.0" => "v69"
+	latestGoGithubPath := "github.com/google/go-github/" + strings.Split(*releaseInfo.TagName, ".")[0]
+	latestGoGithubVersion := *releaseInfo.TagName
+
+	// if versions are the same, exit early
+	if localGoGithubPath == latestGoGithubPath && localGoGithubVersion == latestGoGithubVersion {
+		slog.Info(
+			"go-github dependency already on latest release, skipping upgrade",
+			"local-go-github", localGoGithubPath,
+			"local-go-github-version", localGoGithubVersion,
+			"latest-go-github", latestGoGithubPath,
+			"latest-go-github-version", latestGoGithubVersion,
+		)
+		return
+	}
+
+	if localGoGithubPath == "" || localGoGithubVersion == "" {
+		slog.Error("unable to find local go-github version information")
+		os.Exit(1)
+	}
+
+	filepath.Walk(".", func(path string, info fs.FileInfo, err error) error {
+		if strings.HasSuffix(path, ".go") {
+			fileBytes, err := os.ReadFile(path)
+
+			if err != nil {
+				return err
+			}
+
+			fileContentsStr := string(fileBytes)
+
+			fileContentsStr = strings.ReplaceAll(
+				fileContentsStr,
+				localGoGithubPath,
+				latestGoGithubPath,
+			)
+
+			fileContentsStr = strings.ReplaceAll(
+				fileContentsStr,
+				localGoGithubVersion,
+				latestGoGithubVersion,
+			)
+
+			if err := os.WriteFile(
+				path,
+				[]byte(fileContentsStr),
+				os.FileMode(os.O_TRUNC),
+			); err != nil {
+				slog.Error(
+					"failed to write update to file",
+					"file", path,
+					"err", err.Error(),
+				)
+
+				os.Exit(1)
+			}
+		}
+
+		return nil
+	})
+
+	// to catch possible format errors
+	if err := exec.Command("gofmt", "-w", gen.OUTPUT_FILEPATH).Run(); err != nil {
+		slog.Info("error executing gofmt", "err", err.Error())
+	}
 }
