@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/google/go-github/v64/github"
+	"github.com/google/go-github/v69/github"
 )
 
 func TestRepoGetContents(t *testing.T) {
@@ -15,17 +15,17 @@ func TestRepoGetContents(t *testing.T) {
 		{
 			name: "fileWithoutForwardSlash",
 			repositoryContent: github.RepositoryContent{
-				Encoding: github.String("base64"),
-				Path:     github.String("README.md"),
-				Content:  github.String("fake-content"),
+				Encoding: github.Ptr("base64"),
+				Path:     github.Ptr("README.md"),
+				Content:  github.Ptr("fake-content"),
 			},
 		},
 		{
 			name: "fileWithForwardSlash",
 			repositoryContent: github.RepositoryContent{
-				Encoding: github.String("base64"),
-				Path:     github.String("path/test-file.txt"),
-				Content:  github.String("fake-content"),
+				Encoding: github.Ptr("base64"),
+				Path:     github.Ptr("path/test-file.txt"),
+				Content:  github.Ptr("fake-content"),
 			},
 		},
 	}
@@ -76,7 +76,7 @@ func TestPatchGitReference(t *testing.T) {
 		WithRequestMatch(
 			PatchReposGitRefsByOwnerByRepoByRef,
 			github.Reference{
-				Ref: github.String("refs/heads/new-branch"),
+				Ref: github.Ptr("refs/heads/new-branch"),
 			},
 		),
 	)
@@ -90,8 +90,8 @@ func TestPatchGitReference(t *testing.T) {
 		"owner",
 		"repo-name",
 		&github.Reference{
-			Ref:    github.String("refs/heads/new-branch"),
-			Object: &github.GitObject{SHA: github.String("fake-sha")},
+			Ref:    github.Ptr("refs/heads/new-branch"),
+			Object: &github.GitObject{SHA: github.Ptr("fake-sha")},
 		},
 		false,
 	)
@@ -110,7 +110,7 @@ func TestGetGitReference(t *testing.T) {
 		WithRequestMatch(
 			GetReposGitRefByOwnerByRepoByRef,
 			github.Reference{
-				Ref: github.String("refs/heads/new-branch"),
+				Ref: github.Ptr("refs/heads/new-branch"),
 			},
 		),
 	)

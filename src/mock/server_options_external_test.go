@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/go-github/v64/github"
+	"github.com/google/go-github/v69/github"
 	"github.com/migueleliasweb/go-github-mock/src/mock"
 )
 
@@ -21,8 +21,8 @@ func TestWithRateLimit(t *testing.T) {
 	mhc := mock.NewMockedHTTPClient(
 		mock.WithRequestMatchPages(
 			mock.GetOrgsReposByOrg,
-			[]github.Repository{{Name: github.String(repoOne)}},
-			[]github.Repository{{Name: github.String(repoTwo)}},
+			[]github.Repository{{Name: github.Ptr(repoOne)}},
+			[]github.Repository{{Name: github.Ptr(repoTwo)}},
 		),
 
 		// The rate limiter will allow 10 requests per second, and a burst size of 1.

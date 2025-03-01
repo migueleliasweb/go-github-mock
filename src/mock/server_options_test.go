@@ -3,7 +3,7 @@ package mock
 import (
 	"testing"
 
-	"github.com/google/go-github/v64/github"
+	"github.com/google/go-github/v69/github"
 	"github.com/gorilla/mux"
 )
 
@@ -43,10 +43,10 @@ func TestWithRequestMatchPagesEnterprise(t *testing.T) {
 		GetOrgsReposByOrg,
 		[]github.Repository{
 			{
-				Name: github.String("repo-A-on-first-page"),
+				Name: github.Ptr("repo-A-on-first-page"),
 			},
 			{
-				Name: github.String("repo-B-on-first-page"),
+				Name: github.Ptr("repo-B-on-first-page"),
 			},
 		},
 	)

@@ -20,10 +20,10 @@ import (
 //		http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 //			w.Write(MustMarshal([]github.Project{
 //				{
-//					Name: github.String("mocked-proj-1"),
+//					Name: github.Ptr("mocked-proj-1"),
 //				},
 //				{
-//					Name: github.String("mocked-proj-2"),
+//					Name: github.Ptr("mocked-proj-2"),
 //				},
 //			}))
 //		}),
@@ -47,7 +47,7 @@ func WithRequestMatchHandler(
 //	WithRequestMatch(
 //		GetUsersByUsername,
 //		github.User{
-//			Name: github.String("foobar"),
+//			Name: github.Ptr("foobar"),
 //		},
 //	)
 func WithRequestMatch(
@@ -92,18 +92,18 @@ func WithRequestMatchEnterprise(
 //			GetOrgsReposByOrg,
 //			[]github.Repository{
 //				{
-//					Name: github.String("repo-A-on-first-page"),
+//					Name: github.Ptr("repo-A-on-first-page"),
 //				},
 //				{
-//					Name: github.String("repo-B-on-first-page"),
+//					Name: github.Ptr("repo-B-on-first-page"),
 //				},
 //			},
 //			[]github.Repository{
 //				{
-//					Name: github.String("repo-C-on-second-page"),
+//					Name: github.Ptr("repo-C-on-second-page"),
 //				},
 //				{
-//					Name: github.String("repo-D-on-second-page"),
+//					Name: github.Ptr("repo-D-on-second-page"),
 //				},
 //			},
 //		),

@@ -2,20 +2,25 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"flag"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/exec"
 
 	"github.com/buger/jsonparser"
+	"github.com/google/go-github/v69/github"
 
 	"github.com/migueleliasweb/go-github-mock/src/gen"
+	"golang.org/x/mod/modfile"
 )
 
 func main() {
 	flag.Parse()
 
 	fetchAndWriteAPIDefinition()
+	updateGoGithubDep()
 }
 
 // type helper just to ensure uniqueness of the generated output
@@ -100,4 +105,38 @@ func fetchAndWriteAPIDefinition() {
 	if errorsFound {
 		os.Exit(1)
 	}
+}
+
+func updateGoGithubDep() {
+	ghClient := github.NewClient(nil)
+
+	fileContent, _, _, err := ghClient.Repositories.GetContents(
+		context.Background(),
+		"google",
+		"go-github",
+		"/go.mod",
+		nil,
+	)
+
+	if err != nil {
+		panic("error fetching go.mod contents from google/go-github: " + err.Error())
+	}
+
+	decodedContents, err := fileContent.GetContent()
+
+	if err != nil {
+		panic("error decoding go.mod contents from google/go-github: " + err.Error())
+	}
+
+	goModFile, err := modfile.Parse(
+		"go.mod",
+		[]byte(decodedContents),
+		nil,
+	)
+
+	if err != nil {
+		panic("error parsing go.mod contents from google/go-github: " + err.Error())
+	}
+
+	fmt.Println(goModFile.Module.Mod.Path)
 }
