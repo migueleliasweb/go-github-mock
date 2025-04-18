@@ -2908,7 +2908,7 @@ var GetReposCompareByOwnerByRepoByBasehead EndpointPattern = EndpointPattern{
 }
 
 var GetReposContentsByOwnerByRepoByPath EndpointPattern = EndpointPattern{
-	Pattern: "/repos/{owner}/{repo}/contents/{path:.+}",
+	Pattern: "/repos/{owner}/{repo}/contents/{path:.*}",
 	Method:  "GET",
 }
 

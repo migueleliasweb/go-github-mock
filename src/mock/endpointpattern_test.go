@@ -71,6 +71,80 @@ func TestRepoGetContents(t *testing.T) {
 	}
 }
 
+func TestRepoGetContentsForDirectory(t *testing.T) {
+	cases := []struct {
+		name              string
+		path              string
+		repositoryContent []*github.RepositoryContent
+	}{
+		{
+			name: "rootDirectory",
+			path: "",
+			repositoryContent: []*github.RepositoryContent{
+				{
+					Name:        github.Ptr("a.yaml"),
+					DownloadURL: github.Ptr("https://raw.githubusercontent.com/foo/bar/a.yaml"),
+				},
+				{
+					Name:        github.Ptr("b.json"),
+					DownloadURL: github.Ptr("https://raw.githubusercontent.com/foo/bar/b.json"),
+				},
+			},
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(rc []*github.RepositoryContent) func(t *testing.T) {
+			return func(t *testing.T) {
+				mockedHTTPClient := NewMockedHTTPClient(
+					WithRequestMatch(
+						GetReposContentsByOwnerByRepoByPath,
+						rc,
+					),
+				)
+
+				client := github.NewClient(mockedHTTPClient)
+
+				ctx := context.Background()
+
+				_, dirContent, _, err := client.Repositories.GetContents(
+					ctx,
+					"foo",
+					"bar",
+					c.path,
+					&github.RepositoryContentGetOptions{},
+				)
+
+				if len(dirContent) != len(rc) {
+					t.Errorf(
+						"dirContent length is %d, want %d",
+						len(dirContent),
+						len(rc),
+					)
+				}
+
+				for i := range rc {
+					if rc[i] == dirContent[1] {
+						t.Errorf(
+							"dirContent element at %d is '%s', want '%s'",
+							i,
+							*dirContent[i].Name,
+							*rc[i].Name,
+						)
+					}
+				}
+
+				if err != nil {
+					t.Errorf(
+						"err is %s, want nil",
+						err.Error(),
+					)
+				}
+			}
+		}(c.repositoryContent))
+	}
+}
+
 func TestPatchGitReference(t *testing.T) {
 	mockedHTTPClient := NewMockedHTTPClient(
 		WithRequestMatch(
