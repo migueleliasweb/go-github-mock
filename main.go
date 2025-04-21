@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/buger/jsonparser"
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v71/github"
 
 	"github.com/migueleliasweb/go-github-mock/src/gen"
 	"golang.org/x/mod/modfile"
@@ -161,7 +161,7 @@ func updateGoGithubDep() {
 		}
 	}
 
-	// e.g. "v69.2.0" => "v69"
+	// e.g. "v71.0.0" => "v69"
 	latestGoGithubPath := "github.com/google/go-github/" + strings.Split(*releaseInfo.TagName, ".")[0]
 	latestGoGithubVersion := *releaseInfo.TagName
 
