@@ -6,19 +6,22 @@ import (
 	"strings"
 )
 
-var enabledMutators = map[string]func(ScrapeResult) ScrapeResult{
-	"/repos/{owner}/{repo}/contents/{path}":                     allowExtendedLastParamMutatorHelper(),
-	"/repos/{owner}/{repo}/git/ref/{ref}":                       allowExtendedLastParamMutatorHelper(),
-	"/repos/{owner}/{repo}/git/refs/{ref}":                      allowExtendedLastParamMutatorHelper(), // thanks for the consistency, GitHub
-	"/repos/{owner}/{repo}/commits/{ref}":                       allowExtendedLastParamMutatorHelper(), // thanks for not base64encode the parameter, GitHub
-	"/repos/{owner}/{repo}/issues/{issue_number}/labels/{name}": allowExtendedLastParamMutatorHelper(),
-	"/orgs/{org}/actions/runners/{runner_id}/labels/{name}":     allowExtendedLastParamMutatorHelper(),
-	"/repos/{owner}/{repo}/labels/{name}":                       allowExtendedLastParamMutatorHelper(),
+const (
+	OptionalLastParameter = "{%s:.*}"
+	ExtendedLastParameter = "{%s:.+}"
+)
+
+var enabledMutations = map[string]string{
+	"/repos/{owner}/{repo}/contents/{path}":                     OptionalLastParameter,
+	"/repos/{owner}/{repo}/git/ref/{ref}":                       ExtendedLastParameter,
+	"/repos/{owner}/{repo}/git/refs/{ref}":                      ExtendedLastParameter,
+	"/repos/{owner}/{repo}/commits/{ref}":                       ExtendedLastParameter,
+	"/repos/{owner}/{repo}/issues/{issue_number}/labels/{name}": ExtendedLastParameter,
+	"/orgs/{org}/actions/runners/{runner_id}/labels/{name}":     ExtendedLastParameter,
+	"/repos/{owner}/{repo}/labels/{name}":                       ExtendedLastParameter,
 }
 
-// allowExtendedLastParamMutatorHelper mutates the last param of the endpoint pattern
-// allowing it to have any characters (including slashes)
-func allowExtendedLastParamMutatorHelper() func(ScrapeResult) ScrapeResult {
+func mutator(formatString string) func(ScrapeResult) ScrapeResult {
 	return func(sr ScrapeResult) ScrapeResult {
 		endpointSplits := strings.Split(sr.EndpointPattern, "/")
 		lastParam := endpointSplits[len(endpointSplits)-1]
@@ -27,7 +30,7 @@ func allowExtendedLastParamMutatorHelper() func(ScrapeResult) ScrapeResult {
 
 		lastParamCleaned := r.FindString(lastParam)
 
-		endpointSplits[len(endpointSplits)-1] = fmt.Sprintf("{%s:.+}", lastParamCleaned)
+		endpointSplits[len(endpointSplits)-1] = fmt.Sprintf(formatString, lastParamCleaned)
 
 		sr.EndpointPattern = strings.Join(endpointSplits, "/")
 
@@ -40,8 +43,8 @@ func allowExtendedLastParamMutatorHelper() func(ScrapeResult) ScrapeResult {
 // There are some edge cases due to inconsistencies between GitHub's OpenAPI definition
 // compared to the real world.
 func applyMutation(sr ScrapeResult) ScrapeResult {
-	if mutator, found := enabledMutators[sr.EndpointPattern]; found {
-		return mutator(sr)
+	if mutation, found := enabledMutations[sr.EndpointPattern]; found {
+		return mutator(mutation)(sr)
 	}
 
 	return sr

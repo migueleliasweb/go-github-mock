@@ -157,6 +157,11 @@ var GetCodesOfConductByKey EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var PostCredentialsRevoke EndpointPattern = EndpointPattern{
+	Pattern: "/credentials/revoke",
+	Method:  "POST",
+}
+
 var GetEmojis EndpointPattern = EndpointPattern{
 	Pattern: "/emojis",
 	Method:  "GET",
@@ -842,6 +847,31 @@ var DeleteOrgsBlocksByOrgByUsername EndpointPattern = EndpointPattern{
 	Method:  "DELETE",
 }
 
+var GetOrgsCampaignsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/campaigns",
+	Method:  "GET",
+}
+
+var PostOrgsCampaignsByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/campaigns",
+	Method:  "POST",
+}
+
+var GetOrgsCampaignsByOrgByCampaignNumber EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/campaigns/{campaign_number}",
+	Method:  "GET",
+}
+
+var PatchOrgsCampaignsByOrgByCampaignNumber EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/campaigns/{campaign_number}",
+	Method:  "PATCH",
+}
+
+var DeleteOrgsCampaignsByOrgByCampaignNumber EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/campaigns/{campaign_number}",
+	Method:  "DELETE",
+}
+
 var GetOrgsCodeScanningAlertsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/code-scanning/alerts",
 	Method:  "GET",
@@ -994,11 +1024,6 @@ var DeleteOrgsCopilotBillingSelectedUsersByOrg EndpointPattern = EndpointPattern
 
 var GetOrgsCopilotMetricsByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/copilot/metrics",
-	Method:  "GET",
-}
-
-var GetOrgsCopilotUsageByOrg EndpointPattern = EndpointPattern{
-	Pattern: "/orgs/{org}/copilot/usage",
 	Method:  "GET",
 }
 
@@ -1210,6 +1235,26 @@ var DeleteOrgsInvitationsByOrgByInvitationId EndpointPattern = EndpointPattern{
 var GetOrgsInvitationsTeamsByOrgByInvitationId EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/invitations/{invitation_id}/teams",
 	Method:  "GET",
+}
+
+var GetOrgsIssueTypesByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/issue-types",
+	Method:  "GET",
+}
+
+var PostOrgsIssueTypesByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/issue-types",
+	Method:  "POST",
+}
+
+var PutOrgsIssueTypesByOrgByIssueTypeId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/issue-types/{issue_type_id}",
+	Method:  "PUT",
+}
+
+var DeleteOrgsIssueTypesByOrgByIssueTypeId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/issue-types/{issue_type_id}",
+	Method:  "DELETE",
 }
 
 var GetOrgsIssuesByOrg EndpointPattern = EndpointPattern{
@@ -1669,11 +1714,6 @@ var GetOrgsSettingsNetworkSettingsByOrgByNetworkSettingsId EndpointPattern = End
 
 var GetOrgsTeamCopilotMetricsByOrgByTeamSlug EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/team/{team_slug}/copilot/metrics",
-	Method:  "GET",
-}
-
-var GetOrgsTeamCopilotUsageByOrgByTeamSlug EndpointPattern = EndpointPattern{
-	Pattern: "/orgs/{org}/team/{team_slug}/copilot/usage",
 	Method:  "GET",
 }
 
@@ -2908,17 +2948,17 @@ var GetReposCompareByOwnerByRepoByBasehead EndpointPattern = EndpointPattern{
 }
 
 var GetReposContentsByOwnerByRepoByPath EndpointPattern = EndpointPattern{
-	Pattern: "/repos/{owner}/{repo}/contents/{path:.+}",
+	Pattern: "/repos/{owner}/{repo}/contents/{path:.*}",
 	Method:  "GET",
 }
 
 var PutReposContentsByOwnerByRepoByPath EndpointPattern = EndpointPattern{
-	Pattern: "/repos/{owner}/{repo}/contents/{path:.+}",
+	Pattern: "/repos/{owner}/{repo}/contents/{path:.*}",
 	Method:  "PUT",
 }
 
 var DeleteReposContentsByOwnerByRepoByPath EndpointPattern = EndpointPattern{
-	Pattern: "/repos/{owner}/{repo}/contents/{path:.+}",
+	Pattern: "/repos/{owner}/{repo}/contents/{path:.*}",
 	Method:  "DELETE",
 }
 
@@ -5422,11 +5462,6 @@ var GetEnterprisesCopilotMetricsByEnterprise EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
-var GetEnterprisesCopilotUsageByEnterprise EndpointPattern = EndpointPattern{
-	Pattern: "/enterprises/{enterprise}/copilot/usage",
-	Method:  "GET",
-}
-
 var GetEnterprisesLicenseSyncStatusByEnterprise EndpointPattern = EndpointPattern{
 	Pattern: "/enterprises/{enterprise}/license-sync-status",
 	Method:  "GET",
@@ -5567,11 +5602,6 @@ var GetEnterprisesTeamCopilotMetricsByEnterpriseByTeamSlug EndpointPattern = End
 	Method:  "GET",
 }
 
-var GetEnterprisesTeamCopilotUsageByEnterpriseByTeamSlug EndpointPattern = EndpointPattern{
-	Pattern: "/enterprises/{enterprise}/team/{team_slug}/copilot/usage",
-	Method:  "GET",
-}
-
 var PostEnterprisesByEnterpriseBySecurityProductByEnablement EndpointPattern = EndpointPattern{
 	Pattern: "/enterprises/{enterprise}/{security_product}/{enablement}",
 	Method:  "POST",
@@ -5665,6 +5695,11 @@ var PatchOrgsCustomRolesByOrgByRoleId EndpointPattern = EndpointPattern{
 var DeleteOrgsCustomRolesByOrgByRoleId EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/custom_roles/{role_id}",
 	Method:  "DELETE",
+}
+
+var GetOrgsDismissalRequestsSecretScanningByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/dismissal-requests/secret-scanning",
+	Method:  "GET",
 }
 
 var GetOrgsExternalGroupByOrgByGroupId EndpointPattern = EndpointPattern{
@@ -5770,6 +5805,21 @@ var PatchReposBypassRequestsSecretScanningByOwnerByRepoByBypassRequestNumber End
 var DeleteReposBypassResponsesSecretScanningByOwnerByRepoByBypassResponseId EndpointPattern = EndpointPattern{
 	Pattern: "/repos/{owner}/{repo}/bypass-responses/secret-scanning/{bypass_response_id}",
 	Method:  "DELETE",
+}
+
+var GetReposDismissalRequestsSecretScanningByOwnerByRepo EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/dismissal-requests/secret-scanning",
+	Method:  "GET",
+}
+
+var GetReposDismissalRequestsSecretScanningByOwnerByRepoByAlertNumber EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/dismissal-requests/secret-scanning/{alert_number}",
+	Method:  "GET",
+}
+
+var PatchReposDismissalRequestsSecretScanningByOwnerByRepoByAlertNumber EndpointPattern = EndpointPattern{
+	Pattern: "/repos/{owner}/{repo}/dismissal-requests/secret-scanning/{alert_number}",
+	Method:  "PATCH",
 }
 
 var PutReposLfsByOwnerByRepo EndpointPattern = EndpointPattern{
