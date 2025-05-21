@@ -5107,6 +5107,11 @@ var GetUsersSettingsBillingSharedStorageByUsername EndpointPattern = EndpointPat
 	Method:  "GET",
 }
 
+var GetUsersSettingsBillingUsageByUsername EndpointPattern = EndpointPattern{
+	Pattern: "/users/{username}/settings/billing/usage",
+	Method:  "GET",
+}
+
 var GetUsersSocialAccountsByUsername EndpointPattern = EndpointPattern{
 	Pattern: "/users/{username}/social_accounts",
 	Method:  "GET",
@@ -5464,6 +5469,11 @@ var GetEnterprisesCopilotMetricsByEnterprise EndpointPattern = EndpointPattern{
 
 var GetEnterprisesLicenseSyncStatusByEnterprise EndpointPattern = EndpointPattern{
 	Pattern: "/enterprises/{enterprise}/license-sync-status",
+	Method:  "GET",
+}
+
+var GetEnterprisesMembersCopilotByEnterpriseByUsername EndpointPattern = EndpointPattern{
+	Pattern: "/enterprises/{enterprise}/members/{username}/copilot",
 	Method:  "GET",
 }
 
