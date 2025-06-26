@@ -462,6 +462,21 @@ var GetOrganizations EndpointPattern = EndpointPattern{
 	Method:  "GET",
 }
 
+var GetOrganizationsDependabotRepositoryAccessByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{org}/dependabot/repository-access",
+	Method:  "GET",
+}
+
+var PatchOrganizationsDependabotRepositoryAccessByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{org}/dependabot/repository-access",
+	Method:  "PATCH",
+}
+
+var PutOrganizationsDependabotRepositoryAccessDefaultLevelByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/organizations/{org}/dependabot/repository-access/default-level",
+	Method:  "PUT",
+}
+
 var GetOrganizationsSettingsBillingUsageByOrg EndpointPattern = EndpointPattern{
 	Pattern: "/organizations/{org}/settings/billing/usage",
 	Method:  "GET",
@@ -819,6 +834,26 @@ var PutOrgsActionsVariablesRepositoriesByOrgByNameByRepositoryId EndpointPattern
 
 var DeleteOrgsActionsVariablesRepositoriesByOrgByNameByRepositoryId EndpointPattern = EndpointPattern{
 	Pattern: "/orgs/{org}/actions/variables/{name}/repositories/{repository_id}",
+	Method:  "DELETE",
+}
+
+var PostOrgsAttestationsBulkListByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/attestations/bulk-list",
+	Method:  "POST",
+}
+
+var PostOrgsAttestationsDeleteRequestByOrg EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/attestations/delete-request",
+	Method:  "POST",
+}
+
+var DeleteOrgsAttestationsDigestByOrgBySubjectDigest EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/attestations/digest/{subject_digest}",
+	Method:  "DELETE",
+}
+
+var DeleteOrgsAttestationsByOrgByAttestationId EndpointPattern = EndpointPattern{
+	Pattern: "/orgs/{org}/attestations/{attestation_id}",
 	Method:  "DELETE",
 }
 
@@ -4960,6 +4995,21 @@ var GetUsers EndpointPattern = EndpointPattern{
 var GetUsersByUsername EndpointPattern = EndpointPattern{
 	Pattern: "/users/{username}",
 	Method:  "GET",
+}
+
+var PostUsersAttestationsDeleteRequestByUsername EndpointPattern = EndpointPattern{
+	Pattern: "/users/{username}/attestations/delete-request",
+	Method:  "POST",
+}
+
+var DeleteUsersAttestationsDigestByUsernameBySubjectDigest EndpointPattern = EndpointPattern{
+	Pattern: "/users/{username}/attestations/digest/{subject_digest}",
+	Method:  "DELETE",
+}
+
+var DeleteUsersAttestationsByUsernameByAttestationId EndpointPattern = EndpointPattern{
+	Pattern: "/users/{username}/attestations/{attestation_id}",
+	Method:  "DELETE",
 }
 
 var GetUsersAttestationsByUsernameBySubjectDigest EndpointPattern = EndpointPattern{
