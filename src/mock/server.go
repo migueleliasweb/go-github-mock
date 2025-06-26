@@ -164,6 +164,18 @@ func (efrt *EnforceHostRoundTripper) RoundTrip(r *http.Request) (*http.Response,
 //
 // c := github.NewClient(mockedHTTPClient)
 func NewMockedHTTPClient(options ...MockBackendOption) *http.Client {
+	_, c := NewMockedHTTPClientAndServer(options...)
+
+	return c
+}
+
+// Same as the original `NewMockedHTTPClient` but returns a pointer to the internal
+// `*httptest.Server`, which let's you close it, avoiding GoRoutine leaks on your tests.
+//
+// This avoids creating a breaking change, for now.
+//
+// To close the server, use: `mockServer.Close()`.
+func NewMockedHTTPClientAndServer(options ...MockBackendOption) (*httptest.Server, *http.Client) {
 	router := mux.NewRouter()
 
 	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -187,5 +199,5 @@ func NewMockedHTTPClient(options ...MockBackendOption) *http.Client {
 		UpstreamRoundTripper: mockServer.Client().Transport,
 	}
 
-	return c
+	return mockServer, c
 }
