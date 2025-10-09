@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/google/go-github/v73/github"
+	"github.com/google/go-github/v75/github"
 )
 
 func TestRepoGetContents(t *testing.T) {
@@ -163,11 +163,11 @@ func TestPatchGitReference(t *testing.T) {
 		ctx,
 		"owner",
 		"repo-name",
-		&github.Reference{
-			Ref:    github.Ptr("refs/heads/new-branch"),
-			Object: &github.GitObject{SHA: github.Ptr("fake-sha")},
+		"refs/heads/new-branch",
+		github.UpdateRef{
+			SHA:   "fake-sha",
+			Force: github.Ptr(false),
 		},
-		false,
 	)
 
 	if *(ref.Ref) != "refs/heads/new-branch" {
