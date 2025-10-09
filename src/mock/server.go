@@ -164,7 +164,7 @@ func (efrt *EnforceHostRoundTripper) RoundTrip(r *http.Request) (*http.Response,
 //
 // c := github.NewClient(mockedHTTPClient)
 func NewMockedHTTPClient(options ...MockBackendOption) *http.Client {
-	_, c := NewMockedHTTPClientAndServer(options...)
+	c, _ := NewMockedHTTPClientAndServer(options...)
 
 	return c
 }
@@ -175,7 +175,7 @@ func NewMockedHTTPClient(options ...MockBackendOption) *http.Client {
 // This avoids creating a breaking change, for now.
 //
 // To close the server, use: `mockServer.Close()`.
-func NewMockedHTTPClientAndServer(options ...MockBackendOption) (*httptest.Server, *http.Client) {
+func NewMockedHTTPClientAndServer(options ...MockBackendOption) (*http.Client, *httptest.Server) {
 	router := mux.NewRouter()
 
 	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -199,5 +199,5 @@ func NewMockedHTTPClientAndServer(options ...MockBackendOption) (*httptest.Serve
 		UpstreamRoundTripper: mockServer.Client().Transport,
 	}
 
-	return mockServer, c
+	return c, mockServer
 }
