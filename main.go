@@ -2,24 +2,16 @@ package main
 
 import (
 	"bytes"
-	"context"
-	"io/fs"
 	"log/slog"
 	"os"
 	"os/exec"
-	"path/filepath"
-	"strings"
 
 	"github.com/buger/jsonparser"
-	"github.com/google/go-github/v73/github"
-
 	"github.com/migueleliasweb/go-github-mock/src/gen"
-	"golang.org/x/mod/modfile"
 )
 
 func main() {
 	fetchAndWriteAPIDefinition()
-	updateGoGithubDep()
 }
 
 // type helper just to ensure uniqueness of the generated output
@@ -103,127 +95,5 @@ func fetchAndWriteAPIDefinition() {
 
 	if errorsFound {
 		os.Exit(1)
-	}
-}
-
-func updateGoGithubDep() {
-	ghClient := github.NewClient(nil)
-
-	releaseInfo, _, err := ghClient.Repositories.GetLatestRelease(
-		context.Background(),
-		"google",
-		"go-github",
-	)
-
-	if err != nil {
-		slog.Error(
-			"error fetching latest release from google/go-github",
-			"err", err.Error(),
-		)
-
-		os.Exit(1)
-	}
-
-	goGithubMockFileBytes, err := os.ReadFile("go.mod")
-
-	if err != nil {
-		slog.Error(
-			"error reading go.mod contents from go-github-mock",
-			"err", err.Error(),
-		)
-
-		os.Exit(1)
-	}
-
-	goGithubMockModFile, err := modfile.Parse(
-		"go.mod",
-		goGithubMockFileBytes,
-		nil,
-	)
-
-	if err != nil {
-		slog.Error(
-			"error parsing go.mod contents from go-github-mock",
-			"err", err.Error(),
-		)
-
-		os.Exit(1)
-	}
-
-	localGoGithubPath := ""
-	localGoGithubVersion := ""
-
-	for _, requireInfo := range goGithubMockModFile.Require {
-		if strings.HasPrefix(requireInfo.Mod.Path, "github.com/google/go-github/v") {
-			localGoGithubPath = requireInfo.Mod.Path
-			localGoGithubVersion = requireInfo.Mod.Version
-			break
-		}
-	}
-
-	// e.g. "v71.0.0" => "v69"
-	latestGoGithubPath := "github.com/google/go-github/" + strings.Split(*releaseInfo.TagName, ".")[0]
-	latestGoGithubVersion := *releaseInfo.TagName
-
-	// if versions are the same, exit early
-	if localGoGithubPath == latestGoGithubPath && localGoGithubVersion == latestGoGithubVersion {
-		slog.Info(
-			"go-github dependency already on latest release, skipping upgrade",
-			"local-go-github", localGoGithubPath,
-			"local-go-github-version", localGoGithubVersion,
-			"latest-go-github", latestGoGithubPath,
-			"latest-go-github-version", latestGoGithubVersion,
-		)
-		return
-	}
-
-	if localGoGithubPath == "" || localGoGithubVersion == "" {
-		slog.Error("unable to find local go-github version information")
-		os.Exit(1)
-	}
-
-	filepath.Walk(".", func(path string, info fs.FileInfo, err error) error {
-		if strings.HasSuffix(path, ".go") {
-			fileBytes, err := os.ReadFile(path)
-
-			if err != nil {
-				return err
-			}
-
-			fileContentsStr := string(fileBytes)
-
-			fileContentsStr = strings.ReplaceAll(
-				fileContentsStr,
-				localGoGithubPath,
-				latestGoGithubPath,
-			)
-
-			fileContentsStr = strings.ReplaceAll(
-				fileContentsStr,
-				localGoGithubVersion,
-				latestGoGithubVersion,
-			)
-
-			if err := os.WriteFile(
-				path,
-				[]byte(fileContentsStr),
-				os.FileMode(os.O_TRUNC),
-			); err != nil {
-				slog.Error(
-					"failed to write update to file",
-					"file", path,
-					"err", err.Error(),
-				)
-
-				os.Exit(1)
-			}
-		}
-
-		return nil
-	})
-
-	// to catch possible format errors
-	if err := exec.Command("gofmt", "-w", gen.OUTPUT_FILEPATH).Run(); err != nil {
-		slog.Info("error executing gofmt", "err", err.Error())
 	}
 }
