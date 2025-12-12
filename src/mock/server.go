@@ -169,13 +169,12 @@ func NewMockedHTTPClient(options ...MockBackendOption) *http.Client {
 	return c
 }
 
-// Same as the original `NewMockedHTTPClient` but returns a pointer to the internal
-// `*httptest.Server`, which let's you close it, avoiding GoRoutine leaks on your tests.
+// NewHandler returns an [http.Handler] that serves the given options.
+// It's up to the caller to arrange for an appropriate client to call it.
 //
-// This avoids creating a breaking change, for now.
-//
-// To close the server, use: `mockServer.Close()`.
-func NewMockedHTTPClientAndServer(options ...MockBackendOption) (*http.Client, *httptest.Server) {
+// One reason for using this is to avoid using the system network
+// stack for the server to allow use with the [synctest] package.
+func NewHandler(options ...MockBackendOption) http.Handler {
 	router := mux.NewRouter()
 
 	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -189,15 +188,21 @@ func NewMockedHTTPClientAndServer(options ...MockBackendOption) (*http.Client, *
 	for _, o := range options {
 		o(router)
 	}
+	return router
+}
 
-	mockServer := httptest.NewServer(router)
-
+// Same as the original `NewMockedHTTPClient` but returns a pointer to the internal
+// `*httptest.Server`, which let's you close it, avoiding GoRoutine leaks on your tests.
+//
+// This avoids creating a breaking change, for now.
+//
+// To close the server, use: `mockServer.Close()`.
+func NewMockedHTTPClientAndServer(options ...MockBackendOption) (*http.Client, *httptest.Server) {
+	mockServer := httptest.NewServer(NewHandler(options...))
 	c := mockServer.Client()
-
 	c.Transport = &EnforceHostRoundTripper{
 		Host:                 mockServer.URL,
 		UpstreamRoundTripper: mockServer.Client().Transport,
 	}
-
 	return c, mockServer
 }
