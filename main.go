@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/buger/jsonparser"
-	"github.com/google/go-github/v73/github"
+	"github.com/google/go-github/v81/github"
 
 	"golang.org/x/mod/modfile"
 

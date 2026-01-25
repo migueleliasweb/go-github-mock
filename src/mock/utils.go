@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/google/go-github/v73/github"
+	"github.com/google/go-github/v81/github"
 )
 
 // MustMarshal helper function that wraps json.Marshal.
