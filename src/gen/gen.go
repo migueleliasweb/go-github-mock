@@ -24,8 +24,8 @@ const OUTPUT_FILE_HEADER = `package mock
 `
 const OUTPUT_FILEPATH = "src/mock/endpointpattern.go"
 
-// Replacing deprecated method strings.Title
-// requires a "Caser"
+// Title is a Caser that replaces deprecated method strings.Title.
+// requires a "Caser".
 var Title = cases.Title(language.English)
 
 type ScrapeResult struct {
@@ -33,7 +33,21 @@ type ScrapeResult struct {
 	EndpointPattern string
 }
 
+type Exit struct{ Code int }
+
+func exitHandler() {
+	if e := recover(); e != nil {
+		if exit, ok := e.(Exit); ok {
+			os.Exit(exit.Code)
+		}
+
+		panic(e) // re-panic if not our Exit
+	}
+}
+
 func FetchAPIDefinition(d string) []byte {
+	defer exitHandler()
+
 	resp, err := http.Get(d)
 	if err != nil {
 		slog.Info(
@@ -41,7 +55,7 @@ func FetchAPIDefinition(d string) []byte {
 			"err", err.Error(),
 		)
 
-		os.Exit(1)
+		panic(Exit{1}) // exit with code 1, cleanup runs
 	}
 
 	defer resp.Body.Close()
@@ -53,14 +67,14 @@ func FetchAPIDefinition(d string) []byte {
 			"err", err.Error(),
 		)
 
-		os.Exit(1)
+		panic(Exit{1}) // exit with code 1, cleanup runs
 	}
 
 	return bodyBytes
 }
 
 // FormatToGolangVarName generated the proper golang variable name
-// given a endpoint format from the API
+// given a endpoint format from the API.
 func FormatToGolangVarName(sr ScrapeResult) string {
 	result := Title.String(strings.ToLower(sr.HTTPMethod))
 
@@ -88,10 +102,10 @@ func FormatToGolangVarName(sr ScrapeResult) string {
 			continue
 		}
 
-		splitPart := strings.Split(part, "_")
+		splitPart := strings.SplitSeq(part, "_")
 
-		for _, p := range splitPart {
-			result = result + Title.String(p)
+		for p := range splitPart {
+			result += Title.String(p)
 		}
 	}
 
@@ -107,7 +121,7 @@ func FormatToGolangVarName(sr ScrapeResult) string {
 
 			result += "By"
 
-			for _, splitPart := range strings.Split(part, "_") {
+			for splitPart := range strings.SplitSeq(part, "_") {
 				result += Title.String(splitPart)
 			}
 		}

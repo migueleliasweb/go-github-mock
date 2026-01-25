@@ -1,4 +1,54 @@
 version: '2'
+
+# https://golangci-lint.run/docs/linters/
+linters:
+  default: all
+
+  disable:
+    - cyclop # This is too opinionated to enable without maintainers input
+    - depguard
+    - exhaustruct # This is too opinionated to enable without maintainers input
+    - funcorder # This is too opinionated to enable without maintainers input
+    - funlen # This is too opinionated to enable without maintainers input
+    - gochecknoglobals # This is too opinionated to enable without maintainers input
+    - lll # This is too opinionated to enable without maintainers input
+    - noctx # This is too opinionated to enable without maintainers input
+    - noinlineerr # This is too opinionated to enable without maintainers input
+    - paralleltest # Enable separately
+    - revive # This needs a lot of configuration to be reasonable
+    - testpackage # This is too opinionated to enable without maintainers input
+    - varnamelen # This is too opinionated to enable without maintainers input
+    - perfsprint # This is too opinionated to enable without maintainers input
+    - gosec # This is too opinionated to enable without maintainers input
+    - wsl
+
+  settings:
+    mnd:
+      ignored-numbers:
+        - '0o755'
+
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+      - src/mock/endpointpattern.go
+    rules:
+      - path: _test\.go
+        linters:
+          - unparam
+        text: always receives
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
 formatters:
   enable:
     - gofmt
@@ -26,3 +76,4 @@ formatters:
       - third_party$
       - builtin$
       - examples$
+      - src/mock/endpointpattern\.go$

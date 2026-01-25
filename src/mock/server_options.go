@@ -1,7 +1,6 @@
 package mock
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -70,13 +69,13 @@ func WithRequestMatch(
 	})
 }
 
-// WithRequestMatchEnterprise Same as `WithRequestMatch` but for Github Enterprise
+// WithRequestMatchEnterprise Same as `WithRequestMatch` but for Github Enterprise.
 func WithRequestMatchEnterprise(
 	ep EndpointPattern,
 	responsesFIFO ...any,
 ) MockBackendOption {
 	// prepend `/api/v3` like go-github: https://github.com/google/go-github/blob/8c7625e6a26563e0e031916cc44231912fc52e49/github/github.go#L375
-	ep.Pattern = fmt.Sprintf("/api/v3%s", ep.Pattern)
+	ep.Pattern = "/api/v3" + ep.Pattern
 
 	return WithRequestMatch(ep, responsesFIFO...)
 }
@@ -112,7 +111,7 @@ func WithRequestMatchPages(
 	ep EndpointPattern,
 	pages ...any,
 ) MockBackendOption {
-	p := [][]byte{}
+	p := make([][]byte, 0, len(pages))
 
 	for _, r := range pages {
 		p = append(p, MustMarshal(r))
@@ -123,13 +122,13 @@ func WithRequestMatchPages(
 	})
 }
 
-// WithRequestMatchPagesEnterprise Same as `WithRequestMatchPages` but for Github Enterprise
+// WithRequestMatchPagesEnterprise Same as `WithRequestMatchPages` but for Github Enterprise.
 func WithRequestMatchPagesEnterprise(
 	ep EndpointPattern,
 	pages ...any,
 ) MockBackendOption {
 	// prepend `/api/v3` like go-github: https://github.com/google/go-github/blob/8c7625e6a26563e0e031916cc44231912fc52e49/github/github.go#L375
-	ep.Pattern = fmt.Sprintf("/api/v3%s", ep.Pattern)
+	ep.Pattern = "/api/v3" + ep.Pattern
 
 	return WithRequestMatchPages(ep, pages...)
 }

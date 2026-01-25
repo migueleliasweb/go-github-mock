@@ -12,14 +12,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// EndpointPattern models the GitHub's API endpoints
+// EndpointPattern models the GitHub's API endpoints.
 type EndpointPattern struct {
 	Pattern string // eg. "/repos/{owner}/{repo}/actions/artifacts"
 	Method  string // "GET", "POST", "PATCH", etc
 }
 
 // MockBackendOption is used to configure the *mux.router
-// for the mocked backend
+// for the mocked backend.
 type MockBackendOption func(*mux.Router)
 
 // FIFOResponseHandler handler implementation that
@@ -32,23 +32,23 @@ type FIFOResponseHandler struct {
 	CurrentIndex int
 }
 
-// ServeHTTP implementation of `http.Handler`
+// ServeHTTP implementation of `http.Handler`.
 func (srh *FIFOResponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	srh.lock.Lock()
 	defer srh.lock.Unlock()
 
 	if srh.CurrentIndex == len(srh.Responses) {
-		panic(fmt.Sprintf(
-			"go-github-mock: no more mocks available for %s",
-			r.URL.Path,
-		))
+		panic("go-github-mock: no more mocks available for " + r.URL.Path)
 	}
 
 	defer func() {
 		srh.CurrentIndex++
 	}()
 
-	w.Write(srh.Responses[srh.CurrentIndex])
+	_, err := w.Write(srh.Responses[srh.CurrentIndex])
+	if err != nil {
+		panic(fmt.Errorf("failed to write response: %w", err))
+	}
 }
 
 // PaginatedResponseHandler handler implementation that
@@ -72,13 +72,12 @@ func (prh *PaginatedResponseHandler) getCurrentPage(r *http.Request) int {
 	}
 
 	page, err := strconv.Atoi(r.URL.Query().Get("page"))
-
 	if err == nil {
 		return page
 	}
 
 	// this should never happen as the request is being made by the SDK
-	panic(fmt.Sprintf("invalid page: %s", strPage))
+	panic("invalid page: " + strPage)
 }
 
 func (prh *PaginatedResponseHandler) generateLinkHeader(
@@ -89,25 +88,29 @@ func (prh *PaginatedResponseHandler) generateLinkHeader(
 	lastPage := len(prh.ResponsePages)
 
 	buf := bytes.NewBufferString(`<?page=1>; rel="first",`)
-	buf.WriteString(fmt.Sprintf(`<?page=%d>; rel="last",`, lastPage))
+	fmt.Fprintf(buf, `<?page=%d>; rel="last",`, lastPage)
 
 	if currentPage < lastPage {
 		// when resp.NextPage == 0, it means no more pages
 		// which is basically as not setting it in the response
-		buf.WriteString(fmt.Sprintf(`<?page=%d>; rel="next",`, currentPage+1))
+		fmt.Fprintf(buf, `<?page=%d>; rel="next",`, currentPage+1)
 	}
 
 	if currentPage > 1 {
-		buf.WriteString(fmt.Sprintf(`<?page=%d>; rel="prev",`, currentPage-1))
+		fmt.Fprintf(buf, `<?page=%d>; rel="prev",`, currentPage-1)
 	}
 
 	w.Header().Add("Link", buf.String())
 }
 
-// ServeHTTP implementation of `http.Handler`
+// ServeHTTP implementation of `http.Handler`.
 func (prh *PaginatedResponseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	prh.generateLinkHeader(w, r)
-	w.Write(prh.ResponsePages[prh.getCurrentPage(r)-1])
+
+	_, err := w.Write(prh.ResponsePages[prh.getCurrentPage(r)-1])
+	if err != nil {
+		panic(fmt.Errorf("failed to write response: %w", err))
+	}
 }
 
 // EnforceHostRoundTripper rewrites all requests with the given `Host`.
@@ -116,13 +119,18 @@ type EnforceHostRoundTripper struct {
 	UpstreamRoundTripper http.RoundTripper
 }
 
-// RoundTrip implementation of `http.RoundTripper`
+// RoundTrip implementation of `http.RoundTripper`.
 func (efrt *EnforceHostRoundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 	splitHost := strings.Split(efrt.Host, "://")
 	r.URL.Scheme = splitHost[0]
 	r.URL.Host = splitHost[1]
 
-	return efrt.UpstreamRoundTripper.RoundTrip(r)
+	resp, err := efrt.UpstreamRoundTripper.RoundTrip(r)
+	if err != nil {
+		return nil, fmt.Errorf("failed while running upstream round trip: %w", err)
+	}
+
+	return resp, nil
 }
 
 // NewMockedHTTPClient creates and configures an http.Client that points to
@@ -162,14 +170,14 @@ func (efrt *EnforceHostRoundTripper) RoundTrip(r *http.Request) (*http.Response,
 //
 // )
 //
-// c := github.NewClient(mockedHTTPClient)
+// c := github.NewClient(mockedHTTPClient).
 func NewMockedHTTPClient(options ...MockBackendOption) *http.Client {
 	c, _ := NewMockedHTTPClientAndServer(options...)
 
 	return c
 }
 
-// Same as the original `NewMockedHTTPClient` but returns a pointer to the internal
+// NewMockedHTTPClientAndServer is the same as the original `NewMockedHTTPClient` but returns a pointer to the internal
 // `*httptest.Server`, which let's you close it, avoiding GoRoutine leaks on your tests.
 //
 // This avoids creating a breaking change, for now.
@@ -182,7 +190,7 @@ func NewMockedHTTPClientAndServer(options ...MockBackendOption) (*http.Client, *
 		WriteError(
 			w,
 			http.StatusNotFound,
-			fmt.Sprintf("mock response not found for %s", r.URL.Path),
+			"mock response not found for "+r.URL.Path,
 		)
 	})
 

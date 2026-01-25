@@ -23,7 +23,7 @@ func TestWithRequestMatchEnterprise(t *testing.T) {
 
 	option(router)
 
-	router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+	err := router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		pathRegexp, err := route.GetPathRegexp()
 		if err != nil {
 			t.Fatalf("got error reading path regexp: %s", err)
@@ -35,6 +35,9 @@ func TestWithRequestMatchEnterprise(t *testing.T) {
 
 		return nil
 	})
+	if err != nil {
+		t.Fatalf("got error walking router: %s", err)
+	}
 }
 
 func TestWithRequestMatchPagesEnterprise(t *testing.T) {
@@ -54,7 +57,7 @@ func TestWithRequestMatchPagesEnterprise(t *testing.T) {
 
 	option(router)
 
-	router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+	err := router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		pathRegexp, err := route.GetPathRegexp()
 		if err != nil {
 			t.Fatalf("got error reading path regexp: %s", err)
@@ -68,4 +71,7 @@ func TestWithRequestMatchPagesEnterprise(t *testing.T) {
 
 		return nil
 	})
+	if err != nil {
+		t.Fatalf("got error walking router: %s", err)
+	}
 }

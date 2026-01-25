@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io/fs"
 	"log/slog"
 	"os"
@@ -23,10 +24,10 @@ func main() {
 	updateGoGithubDep()
 }
 
-// type helper just to ensure uniqueness of the generated output
+// type helper just to ensure uniqueness of the generated output.
 type uniq map[string]struct{}
 
-// has will add `s` to the map whe not found
+// has will add `s` to the map whe not found.
 func (u uniq) has(s string) bool {
 	_, has := u[s]
 
@@ -38,7 +39,7 @@ func (u uniq) has(s string) bool {
 }
 
 func fetchAndWriteAPIDefinition() {
-	buf := bytes.NewBuffer([]byte(gen.OUTPUT_FILE_HEADER))
+	buf := bytes.NewBufferString(gen.OUTPUT_FILE_HEADER)
 
 	u := make(uniq)
 
@@ -93,12 +94,14 @@ func fetchAndWriteAPIDefinition() {
 	// to catch possible format errors
 	if err := exec.Command("gofmt", "-w", gen.OUTPUT_FILEPATH).Run(); err != nil {
 		slog.Error("error executing gofmt", "err", err.Error())
+
 		errorsFound = true
 	}
 
 	// to catch everything else (hopefully)
 	if err := exec.Command("go", "vet", "./...").Run(); err != nil {
 		slog.Error("error executing go vet", "err", err.Error())
+
 		errorsFound = true
 	}
 
@@ -155,6 +158,7 @@ func updateGoGithubDep() {
 		if strings.HasPrefix(requireInfo.Mod.Path, "github.com/google/go-github/v") {
 			localGoGithubPath = requireInfo.Mod.Path
 			localGoGithubVersion = requireInfo.Mod.Version
+
 			break
 		}
 	}
@@ -172,6 +176,7 @@ func updateGoGithubDep() {
 			"latest-go-github", latestGoGithubPath,
 			"latest-go-github-version", latestGoGithubVersion,
 		)
+
 		return
 	}
 
@@ -184,7 +189,7 @@ func updateGoGithubDep() {
 		if strings.HasSuffix(path, ".go") {
 			fileBytes, err := os.ReadFile(path)
 			if err != nil {
-				return err
+				return fmt.Errorf("failed to read file: %w", err)
 			}
 
 			fileContentsStr := string(fileBytes)

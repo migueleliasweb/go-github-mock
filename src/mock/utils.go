@@ -2,15 +2,15 @@ package mock
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/google/go-github/v73/github"
 )
 
-// MustMarshal helper function that wraps json.Marshal
+// MustMarshal helper function that wraps json.Marshal.
 func MustMarshal(v any) []byte {
 	b, err := json.Marshal(v)
-
 	if err == nil {
 		return b
 	}
@@ -18,7 +18,7 @@ func MustMarshal(v any) []byte {
 	panic(err)
 }
 
-// WriteError helper function to write errors to HTTP handlers
+// WriteError helper function to write errors to HTTP handlers.
 func WriteError(
 	w http.ResponseWriter,
 	httpStatus int,
@@ -27,8 +27,11 @@ func WriteError(
 ) {
 	w.WriteHeader(httpStatus)
 
-	w.Write(MustMarshal(github.ErrorResponse{
+	_, err := w.Write(MustMarshal(github.ErrorResponse{
 		Message: msg,
 		Errors:  errors,
 	}))
+	if err != nil {
+		panic(fmt.Errorf("failed to write HTTP error: %w", err))
+	}
 }

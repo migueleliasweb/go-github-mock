@@ -2,6 +2,7 @@ package mock
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"reflect"
 	"strings"
@@ -87,7 +88,8 @@ func TestMockErrorSimple(t *testing.T) {
 		t.Fatal("user err is nil, want *github.ErrorResponse")
 	}
 
-	ghErr, ok := userErr.(*github.ErrorResponse)
+	ghErr := &github.ErrorResponse{}
+	ok := errors.As(userErr, &ghErr)
 
 	if !ok {
 		t.Fatal("couldn't cast userErr to *github.ErrorResponse")
@@ -125,7 +127,8 @@ func TestMockErrorToError(t *testing.T) {
 		t.Fatal("user err is nil, want *github.ErrorResponse")
 	}
 
-	ghErr, ok := userErr.(*github.ErrorResponse)
+	ghErr := &github.ErrorResponse{}
+	ok := errors.As(userErr, &ghErr)
 
 	if !ok {
 		t.Fatal("couldn't cast userErr to *github.ErrorResponse")
@@ -176,7 +179,8 @@ func TestMocksNotConfiguredError(t *testing.T) {
 		t.Errorf("orgs len is %d, want 0", len(orgs))
 	}
 
-	if r, ok := orgsErr.(*github.ErrorResponse); ok {
+	r := &github.ErrorResponse{}
+	if errors.As(orgsErr, &r) {
 		if !strings.Contains(r.Message, "mock response not found for") {
 			t.Errorf("error message should contain 'mock response not found for'")
 		}
@@ -222,7 +226,6 @@ func TestMocksPaginationAllPages(t *testing.T) {
 
 	for {
 		repos, resp, listErr := c.Repositories.ListByOrg(ctx, "foobar", opt)
-
 		if listErr != nil {
 			t.Errorf("error listing repositories: %s", listErr.Error())
 		}
@@ -269,7 +272,6 @@ func TestEmptyArrayResult(t *testing.T) {
 	ctx := context.Background()
 
 	issues1, _, repo1Err := c.Issues.ListByRepo(ctx, "owner1", "repo1", &github.IssueListByRepoOptions{})
-
 	if repo1Err != nil {
 		t.Errorf("error listing repository1 issues: %s", repo1Err.Error())
 	}
@@ -279,7 +281,6 @@ func TestEmptyArrayResult(t *testing.T) {
 	}
 
 	issues2, _, repo2Err := c.Issues.ListByRepo(ctx, "owner1", "repo2", &github.IssueListByRepoOptions{})
-
 	if repo2Err != nil {
 		t.Errorf("error listing repository2 issues: %s", repo2Err.Error())
 	}
