@@ -82,8 +82,13 @@ func FormatToGolangVarName(sr ScrapeResult) string {
 		return result + "Slash"
 	}
 
-	// handles urls with dashes in them
-	pattern := strings.ReplaceAll(sr.EndpointPattern, "-", "/")
+	// handles dashes inside curly braces (e.g., {enterprise-team} -> {enterprise_team})
+	reBraces := regexp.MustCompile(`\{[^}]+\}`)
+	pattern := reBraces.ReplaceAllStringFunc(sr.EndpointPattern, func(s string) string {
+		return strings.ReplaceAll(s, "-", "_")
+	})
+	// handles urls with dashes in them (outside curly braces)
+	pattern = strings.ReplaceAll(pattern, "-", "/")
 
 	// cleans up varname when pattern was mutated
 	// e.g see `GetReposContentsByOwnerByRepoByPath`
