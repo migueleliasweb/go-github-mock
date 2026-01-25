@@ -35,7 +35,6 @@ type ScrapeResult struct {
 
 func FetchAPIDefinition(d string) []byte {
 	resp, err := http.Get(d)
-
 	if err != nil {
 		slog.Info(
 			"error fetching github's api definition",
@@ -48,7 +47,6 @@ func FetchAPIDefinition(d string) []byte {
 	defer resp.Body.Close()
 
 	bodyBytes, err := io.ReadAll(resp.Body)
-
 	if err != nil {
 		slog.Info(
 			"error fetching github's api definition",
@@ -97,7 +95,7 @@ func FormatToGolangVarName(sr ScrapeResult) string {
 		}
 	}
 
-	//handle the "By`X`" part of the variable name
+	// handle the "By`X`" part of the variable name
 	for _, part := range epSplit {
 		if len(part) < 1 {
 			continue

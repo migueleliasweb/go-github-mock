@@ -52,7 +52,7 @@ func WithRequestMatchHandler(
 //	)
 func WithRequestMatch(
 	ep EndpointPattern,
-	responsesFIFO ...interface{},
+	responsesFIFO ...any,
 ) MockBackendOption {
 	responses := [][]byte{}
 
@@ -73,7 +73,7 @@ func WithRequestMatch(
 // WithRequestMatchEnterprise Same as `WithRequestMatch` but for Github Enterprise
 func WithRequestMatchEnterprise(
 	ep EndpointPattern,
-	responsesFIFO ...interface{},
+	responsesFIFO ...any,
 ) MockBackendOption {
 	// prepend `/api/v3` like go-github: https://github.com/google/go-github/blob/8c7625e6a26563e0e031916cc44231912fc52e49/github/github.go#L375
 	ep.Pattern = fmt.Sprintf("/api/v3%s", ep.Pattern)
@@ -110,7 +110,7 @@ func WithRequestMatchEnterprise(
 //	)
 func WithRequestMatchPages(
 	ep EndpointPattern,
-	pages ...interface{},
+	pages ...any,
 ) MockBackendOption {
 	p := [][]byte{}
 
@@ -126,7 +126,7 @@ func WithRequestMatchPages(
 // WithRequestMatchPagesEnterprise Same as `WithRequestMatchPages` but for Github Enterprise
 func WithRequestMatchPagesEnterprise(
 	ep EndpointPattern,
-	pages ...interface{},
+	pages ...any,
 ) MockBackendOption {
 	// prepend `/api/v3` like go-github: https://github.com/google/go-github/blob/8c7625e6a26563e0e031916cc44231912fc52e49/github/github.go#L375
 	ep.Pattern = fmt.Sprintf("/api/v3%s", ep.Pattern)

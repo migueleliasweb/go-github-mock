@@ -8,7 +8,7 @@ import (
 )
 
 // MustMarshal helper function that wraps json.Marshal
-func MustMarshal(v interface{}) []byte {
+func MustMarshal(v any) []byte {
 	b, err := json.Marshal(v)
 
 	if err == nil {

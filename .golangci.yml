@@ -1,0 +1,28 @@
+version: '2'
+formatters:
+  enable:
+    - gofmt
+    - gofumpt
+    - goimports
+
+  settings:
+    gofmt:
+      simplify: true
+      rewrite-rules:
+        - pattern: interface{}
+          replacement: any
+        - pattern: a[b:len(a)]
+          replacement: a[b:]
+    gofumpt:
+      module-path: github.com/migueleliasweb/go-github-mock
+      extra-rules: true
+    goimports:
+      local-prefixes:
+        - github.com/migueleliasweb/go-github-mock
+
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

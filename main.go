@@ -13,8 +13,9 @@ import (
 	"github.com/buger/jsonparser"
 	"github.com/google/go-github/v73/github"
 
-	"github.com/migueleliasweb/go-github-mock/src/gen"
 	"golang.org/x/mod/modfile"
+
+	"github.com/migueleliasweb/go-github-mock/src/gen"
 )
 
 func main() {
@@ -84,7 +85,7 @@ func fetchAndWriteAPIDefinition() {
 	os.WriteFile(
 		gen.OUTPUT_FILEPATH,
 		buf.Bytes(),
-		0755,
+		0o755,
 	)
 
 	errorsFound := false
@@ -114,7 +115,6 @@ func updateGoGithubDep() {
 		"google",
 		"go-github",
 	)
-
 	if err != nil {
 		slog.Error(
 			"error fetching latest release from google/go-github",
@@ -125,7 +125,6 @@ func updateGoGithubDep() {
 	}
 
 	goGithubMockFileBytes, err := os.ReadFile("go.mod")
-
 	if err != nil {
 		slog.Error(
 			"error reading go.mod contents from go-github-mock",
@@ -140,7 +139,6 @@ func updateGoGithubDep() {
 		goGithubMockFileBytes,
 		nil,
 	)
-
 	if err != nil {
 		slog.Error(
 			"error parsing go.mod contents from go-github-mock",
@@ -185,7 +183,6 @@ func updateGoGithubDep() {
 	filepath.Walk(".", func(path string, info fs.FileInfo, err error) error {
 		if strings.HasSuffix(path, ".go") {
 			fileBytes, err := os.ReadFile(path)
-
 			if err != nil {
 				return err
 			}

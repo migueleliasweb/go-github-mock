@@ -96,7 +96,6 @@ func TestMockErrorSimple(t *testing.T) {
 	if ghErr.Message != "github went belly up or something" {
 		t.Errorf("user err is %s, want 'github went belly up or something'", userErr.Error())
 	}
-
 }
 
 func TestMockErrorToError(t *testing.T) {

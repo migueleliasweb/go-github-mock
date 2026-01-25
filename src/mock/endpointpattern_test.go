@@ -228,7 +228,6 @@ func TestRepositoriesGetCommitSHA1WithForwardSlash(t *testing.T) {
 		"refs/heads/ddd",
 		"",
 	)
-
 	if err != nil {
 		t.Errorf(
 			"err is %s, want nil",
