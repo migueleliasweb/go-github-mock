@@ -163,11 +163,11 @@ func TestPatchGitReference(t *testing.T) {
 		ctx,
 		"owner",
 		"repo-name",
-		&github.Reference{
-			Ref:    github.Ptr("refs/heads/new-branch"),
-			Object: &github.GitObject{SHA: github.Ptr("fake-sha")},
+		"refs/heads/new-branch",
+		github.UpdateRef{
+			Force: github.Ptr(false),
+			SHA:   "fake-sha",
 		},
-		false,
 	)
 
 	if *(ref.Ref) != "refs/heads/new-branch" {
