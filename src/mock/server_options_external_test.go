@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/go-github/v73/github"
+	"github.com/google/go-github/v87/github"
 	"github.com/migueleliasweb/go-github-mock/src/mock"
 )
 
@@ -31,7 +31,7 @@ func TestWithRateLimit(t *testing.T) {
 		mock.WithRateLimit(10, 1),
 	)
 
-	ghc := github.NewClient(mhc)
+	ghc := mock.MustNewGHClient(t, mhc)
 	opts := &github.RepositoryListByOrgOptions{}
 	repoNames := []string{}
 	rleCount := 0

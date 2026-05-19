@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/google/go-github/v73/github"
+	"github.com/google/go-github/v87/github"
 )
 
 func TestRepoGetContents(t *testing.T) {
@@ -40,7 +40,7 @@ func TestRepoGetContents(t *testing.T) {
 					),
 				)
 
-				c := github.NewClient(mockedHTTPClient)
+				c := MustNewGHClient(t, mockedHTTPClient)
 
 				ctx := context.Background()
 
@@ -103,7 +103,7 @@ func TestRepoGetContentsForDirectory(t *testing.T) {
 					),
 				)
 
-				client := github.NewClient(mockedHTTPClient)
+				client := MustNewGHClient(t, mockedHTTPClient)
 
 				ctx := context.Background()
 
@@ -155,7 +155,7 @@ func TestPatchGitReference(t *testing.T) {
 		),
 	)
 
-	c := github.NewClient(mockedHTTPClient)
+	c := MustNewGHClient(t, mockedHTTPClient)
 
 	ctx := context.Background()
 
@@ -163,11 +163,10 @@ func TestPatchGitReference(t *testing.T) {
 		ctx,
 		"owner",
 		"repo-name",
-		&github.Reference{
-			Ref:    github.Ptr("refs/heads/new-branch"),
-			Object: &github.GitObject{SHA: github.Ptr("fake-sha")},
+		"refs/heads/new-branch",
+		github.UpdateRef{
+			SHA: "fake-sha",
 		},
-		false,
 	)
 
 	if *(ref.Ref) != "refs/heads/new-branch" {
@@ -189,7 +188,7 @@ func TestGetGitReference(t *testing.T) {
 		),
 	)
 
-	c := github.NewClient(mockedHTTPClient)
+	c := MustNewGHClient(t, mockedHTTPClient)
 
 	ctx := context.Background()
 
@@ -217,7 +216,7 @@ func TestRepositoriesGetCommitSHA1WithForwardSlash(t *testing.T) {
 		),
 	)
 
-	c := github.NewClient(mockedHTTPClient)
+	c := MustNewGHClient(t, mockedHTTPClient)
 
 	ctx := context.Background()
 

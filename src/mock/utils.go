@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/google/go-github/v73/github"
+	"github.com/google/go-github/v87/github"
 )
 
 // MustMarshal helper function that wraps json.Marshal

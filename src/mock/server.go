@@ -162,7 +162,7 @@ func (efrt *EnforceHostRoundTripper) RoundTrip(r *http.Request) (*http.Response,
 //
 // )
 //
-// c := github.NewClient(mockedHTTPClient)
+// c, _ := github.NewClient(github.WithHTTPClient(mockedHTTPClient))
 func NewMockedHTTPClient(options ...MockBackendOption) *http.Client {
 	c, _ := NewMockedHTTPClientAndServer(options...)
 

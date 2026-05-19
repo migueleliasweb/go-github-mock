@@ -70,48 +70,46 @@ func FormatToGolangVarName(sr ScrapeResult) string {
 		return result + "Slash"
 	}
 
-	// handles urls with dashes in them
-	pattern := strings.ReplaceAll(sr.EndpointPattern, "-", "/")
+	// cleans up varname when pattern was mutated, e.g. `{path:.*}` → `{path}`
+	cleanRe := regexp.MustCompile(`[a-zA-Z0-9\/\{\}\_\-]+`)
 
-	// cleans up varname when pattern was mutated
-	// e.g see `GetReposContentsByOwnerByRepoByPath`
-	re := regexp.MustCompile(`[a-zA-Z0-9\/\{\}\_]+`)
-	matches := re.FindAllString(pattern, -1)
-	pattern = strings.Join(matches, "")
+	// wordSplit splits on `-` and `_` so multi-word path segments and
+	// parameter names (e.g. `enterprise-team`) title-case correctly.
+	wordSplit := func(s string) []string {
+		return strings.FieldsFunc(s, func(r rune) bool {
+			return r == '-' || r == '_'
+		})
+	}
 
-	epSplit := strings.Split(
-		pattern,
-		"/",
-	)
+	epSplit := strings.Split(sr.EndpointPattern, "/")
 
-	// handle the first part of the variable name
+	// handle the first part of the variable name (non-parameter segments)
 	for _, part := range epSplit {
 		if len(part) < 1 || string(part[0]) == "{" {
 			continue
 		}
 
-		splitPart := strings.Split(part, "_")
+		part = strings.Join(cleanRe.FindAllString(part, -1), "")
 
-		for _, p := range splitPart {
-			result = result + Title.String(p)
+		for _, p := range wordSplit(part) {
+			result += Title.String(p)
 		}
 	}
 
-	//handle the "By`X`" part of the variable name
+	// handle the "By`X`" part of the variable name (parameter segments)
 	for _, part := range epSplit {
-		if len(part) < 1 {
+		if len(part) < 1 || string(part[0]) != "{" {
 			continue
 		}
 
-		if string(part[0]) == "{" {
-			part = strings.ReplaceAll(part, "{", "")
-			part = strings.ReplaceAll(part, "}", "")
+		part = strings.Join(cleanRe.FindAllString(part, -1), "")
+		part = strings.ReplaceAll(part, "{", "")
+		part = strings.ReplaceAll(part, "}", "")
 
-			result += "By"
+		result += "By"
 
-			for _, splitPart := range strings.Split(part, "_") {
-				result += Title.String(splitPart)
-			}
+		for _, p := range wordSplit(part) {
+			result += Title.String(p)
 		}
 	}
 

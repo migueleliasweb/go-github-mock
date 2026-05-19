@@ -56,7 +56,10 @@ mockedHTTPClient := mock.NewMockedHTTPClient(
         }),
     ),
 )
-c := github.NewClient(mockedHTTPClient)
+c, err := github.NewClient(github.WithHTTPClient(mockedHTTPClient))
+if err != nil {
+    log.Fatal(err)
+}
 
 ctx := context.Background()
 
@@ -103,7 +106,10 @@ mockedHTTPClient := NewMockedHTTPClient(
     ),
 )
 
-c := github.NewClient(mockedHTTPClient)
+c, err := github.NewClient(github.WithHTTPClient(mockedHTTPClient))
+if err != nil {
+    log.Fatal(err)
+}
 
 ctx := context.Background()
 
@@ -133,7 +139,10 @@ mockedHTTPClient := mock.NewMockedHTTPClient(
         }),
     ),
 )
-c := github.NewClient(mockedHTTPClient)
+c, err := github.NewClient(github.WithHTTPClient(mockedHTTPClient))
+if err != nil {
+    log.Fatal(err)
+}
 
 ctx := context.Background()
 
@@ -174,7 +183,10 @@ mockedHTTPClient := NewMockedHTTPClient(
     ),
 )
 
-c := github.NewClient(mockedHTTPClient)
+c, err := github.NewClient(github.WithHTTPClient(mockedHTTPClient))
+if err != nil {
+    log.Fatal(err)
+}
 
 ctx := context.Background()
 
@@ -227,7 +239,10 @@ mockedHTTPClient := mock.NewMockedHTTPClient(
     ),
 )
 
-c := githubEnterprise.NewClient(mockedHTTPClient)
+c, err := githubEnterprise.NewClient(githubEnterprise.WithHTTPClient(mockedHTTPClient))
+if err != nil {
+    log.Fatal(err)
+}
 
 ctx := context.Background()
 
